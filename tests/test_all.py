@@ -1,3 +1,5 @@
-from perspective import *
+import perspective
+import perspective.psp as pp
 
-pass
+print(perspective)
+print(pp)
