@@ -2,6 +2,6 @@ languages:
 - python
 
 exclude:
-- /docs/.*
-- /tests/.*
-- setup.py
+- ./docs/.*
+- ./tests/.*
+- ./setup.py
