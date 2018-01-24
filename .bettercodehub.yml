@@ -1,5 +1,8 @@
 languages:
 - python
+
+
+- name: python
   production:
     exclude:
       - /tests/.*
