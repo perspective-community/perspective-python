@@ -1,0 +1,32 @@
+
+language: python
+cache: pip
+
+python:
+  - "3.6"
+
+git:
+    submodules: false
+
+# before_install:
+#     - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+#     - git submodule update --init --recursive
+
+install:
+    - pip install -r requirements.txt
+    # - pip install coveralls
+    - pip install codecov
+
+
+script: make test
+
+after_success:
+    - codecov --token d33ecf96-a51f-43b6-8429-c11f83b961ad
+    # - coveralls
+
+branches:
+  only:
+  - master
+
+notifications:
+  email: false
