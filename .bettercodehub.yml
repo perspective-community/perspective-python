@@ -1,0 +1,7 @@
+languages:
+- python
+
+exclude:
+- /docs/.*
+- /tests/.*
+- setup.py
