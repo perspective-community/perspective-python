@@ -1,5 +1,5 @@
 # perspective-python
-Python APIs for perspective front end
+Python APIs for [perspective](https://github.com/jpmorganchase/perspective) front end
 
 [![Version](https://img.shields.io/badge/version-0.0.1-lightgrey.svg)](https://img.shields.io/badge/version-0.0.1-lightgrey.svg)
 [![Build Status](https://travis-ci.org/timkpaine/perspective-python.svg?branch=master)](https://travis-ci.org/timkpaine/perspective-python)
