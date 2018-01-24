@@ -15,6 +15,7 @@ clean: ## clean the repository
 	find . -name "*.pyc" | xargs rm -rf 
 	find . -name ".ipynb_checkpoints" | xargs  rm -rf 
 	rm -rf .coverage cover htmlcov logs build dist *.egg-info
+	make -C ./docs clean
 
 labextension: install ## enable labextension
 	jupyter labextension install @jpmorganchase/perspective-jupyterlab
