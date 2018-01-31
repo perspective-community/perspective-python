@@ -17,10 +17,10 @@ perspective-python
    quickstart
 
 
-.. |version| image:: https://img.shields.io/badge/version-0.0.1-lightgrey.svg
+.. |version| image:: https://img.shields.io/badge/version-0.0.2-lightgrey.svg
     :alt: Version
     :scale: 100%
-    :target: https://img.shields.io/badge/version-0.0.1-lightgrey.svg
+    :target: https://img.shields.io/badge/version-0.0.2-lightgrey.svg
 
 .. |build-status| image:: https://travis-ci.org/timkpaine/perspective-python.svg?branch=master
     :alt: Build Status
@@ -48,14 +48,14 @@ perspective-python
     :target: https://bettercodehub.com/
 
 .. .. |pypiv| image:: https://img.shields.io/pypi/v/perspective-python.svg
-..     :alt: Version
-..     :scale: 100%
-..     :target: https://img.shields.io/pypi/v/perspective-python.svg
+    :alt: Version
+    :scale: 100%
+    :target: https://img.shields.io/pypi/v/perspective-python.svg
 
 .. .. |pypil| image:: https://img.shields.io/pypi/l/perspective-python.svg
-..     :alt: License
-..     :scale: 100%
-..     :target: https://img.shields.io/pypi/l/perspective-python.svg
+    :alt: License
+    :scale: 100%
+    :target: https://img.shields.io/pypi/l/perspective-python.svg
 
 .. |docs| image:: https://img.shields.io/readthedocs/perspective-python.svg
     :alt: Docs
