@@ -6,7 +6,7 @@
 perspective-python
 ===================================
 
-|version| |build-status| |issues| |waffle| |codecov| |bch| |docs|
+|version| |build-status| |issues| |waffle| |codecov| |bch| |pypiv| |pypil| |docs|
 
 
 .. toctree::
@@ -17,10 +17,10 @@ perspective-python
    quickstart
 
 
-.. |version| image:: https://img.shields.io/badge/version-0.0.2-lightgrey.svg
+.. |version| image:: https://img.shields.io/badge/version-0.0.3-lightgrey.svg
     :alt: Version
     :scale: 100%
-    :target: https://img.shields.io/badge/version-0.0.2-lightgrey.svg
+    :target: https://img.shields.io/badge/version-0.0.3-lightgrey.svg
 
 .. |build-status| image:: https://travis-ci.org/timkpaine/perspective-python.svg?branch=master
     :alt: Build Status
