@@ -1,3 +1,5 @@
+from mock import patch, MagicMock
+
 
 class TestTypedetect:
     def setup(self):
@@ -30,16 +32,21 @@ class TestTypedetect:
         assert x == expected
 
     def test_lantern(self):
-        from lantern.live import LanternLive
-        from perspective.psp import _type_detect
-
-        class Test(LanternLive):
+        class Test(object):
             def __init__(self):
                 pass
 
             def path(self):
                 return 'test'
 
-        x = _type_detect(Test())
+        module_mock = MagicMock()
+        with patch.dict('sys.modules', **{
+                'lantern': module_mock,
+                'lantern.live': module_mock,
+                }):
+            module_mock.LanternLive = Test
+            from perspective.psp import _type_detect
 
-        assert x == 'test'
+            x = _type_detect(Test())
+
+            assert x == 'test'
