@@ -9,7 +9,7 @@ Python APIs for [perspective](https://github.com/jpmorganchase/perspective) fron
 [![BCH compliance](https://bettercodehub.com/edge/badge/timkpaine/perspective-python?branch=master)](https://bettercodehub.com/)
 [![PyPI](https://img.shields.io/pypi/v/perspective-python.svg)]()
 [![PyPI](https://img.shields.io/pypi/l/perspective-python.svg)]()
-[![Docs](https://img.shields.io/readthedocs/perspective-python.svg)]()
+[![Docs](https://img.shields.io/readthedocs/perspective-python.svg)](https://perspective-python.readthedocs.io)
 
 ## Install
 To install the base package from pip:
