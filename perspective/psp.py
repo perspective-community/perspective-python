@@ -2,6 +2,21 @@ from enum import Enum
 
 
 def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
+    '''Render a perspective javascript widget in jupyter
+
+    [description]
+
+    Arguments:
+        data {dataframe or live source} -- The static or live datasource
+
+    Keyword Arguments:
+        view {str/View} -- what view to use. available in the enum View (default: {'hypergrid'})
+        columns {[string]} -- what columns to display
+        rowpivots {[string]} -- what names to use as rowpivots
+        columnpivots {[string]} -- what names to use as columnpivots
+        aggregates {dict(str, str/Aggregate)} -- dictionary of name to aggregate type (either string or enum Aggregate)
+        settings {bool} -- display settings
+    '''
     from IPython.display import display
     bundle = {}
     bundle['application/psp'] = {
@@ -13,21 +28,53 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
 
 def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
     import ujson
-    '''
-        view="hypergrid"  # grid
-        view="horizontal"  # horizontal
-        view="vertical"  # vertical
-        view="line"  # line
-        view="scatter"  # scatter
-    '''
     ret = {}
 
-    ret['view'] = view.value if isinstance(view, View) else view
+    if isinstance(view, View):
+        ret['view'] = view.value
+    elif isinstance(view, str):
+        if view not in View.options():
+            raise Exception('Unrecognized view: %s', view)
+        ret['view'] = view
+    else:
+        raise Exception('Cannot parse view type: %s', str(type(view)))
 
-    ret['columns'] = columns or ''
-    ret['row-pivots'] = rowpivots or ''
-    ret['column-pivots'] = columnpivots or ''
-    ret['aggregates'] = aggregates or ''
+    if columns is None:
+        ret['columns'] = ''
+    elif isinstance(columns, list):
+        ret['columns'] = columns
+    else:
+        raise Exception('Cannot parse columns type: %s', str(type(columns)))
+
+    if rowpivots is None:
+        ret['row-pivots'] = ''
+    elif isinstance(rowpivots, list):
+        ret['row-pivots'] = rowpivots
+    else:
+        raise Exception('Cannot parse rowpivots type: %s', str(type(rowpivots)))
+
+    if columnpivots is None:
+        ret['columnpivots'] = ''
+    elif isinstance(columnpivots, list):
+        ret['columnpivots'] = columnpivots
+    else:
+        raise Exception('Cannot parse columnpivots type: %s', str(type(columnpivots)))
+
+    if aggregates is None:
+        ret['aggregates'] = ''
+    elif isinstance(aggregates, dict):
+        for k, v in aggregates.items():
+            if isinstance(v, Aggregate):
+                aggregates[k] = v.value
+            elif isinstance(v, str):
+                if v not in Aggregate.options():
+                    raise Exception('Unrecognized aggregate: %s', v)
+            else:
+                raise Exception('Cannot parse aggregation of type %s', str(type(v)))
+        ret['aggregates'] = aggregates
+    else:
+        raise Exception('Cannot parse aggregates type: %s', str(type(aggregates)))
+
     return ujson.dumps(ret)
 
 
@@ -48,7 +95,7 @@ def _type_detect(data):
     return data
 
 
-class Aggregates(Enum):
+class Aggregate(Enum):
     ANY = 'any'
     AVG = 'avg'
     COUNT = 'count'
@@ -68,6 +115,10 @@ class Aggregates(Enum):
     SUM_NOT_NULL = 'sum_not_null'
     UNIQUE = 'unique'
 
+    @staticmethod
+    def options():
+        return list(map(lambda c: c.value, Aggregate))
+
 
 class View(Enum):
     HYPERGRID = 'hypergrid'
@@ -75,3 +126,7 @@ class View(Enum):
     HORIZONTAL = 'horizontal'
     LINE = 'line'
     SCATTER = 'scatter'
+
+    @staticmethod
+    def options():
+        return list(map(lambda c: c.value, View))
