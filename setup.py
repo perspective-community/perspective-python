@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='perspective-python',
-    version='v0.0.3,',
+    version='0.0.3',
     description='Analytics library',
     long_description=long_description,
     url='https://github.com/timkpaine/perspective-python',
@@ -26,7 +26,6 @@ setup(
     ],
 
     keywords='analytics tools plotting',
-
     packages=find_packages(exclude=['tests', ]),
     include_package_data=True,
     zip_safe=False,
