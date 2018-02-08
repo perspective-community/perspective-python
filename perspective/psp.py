@@ -1,7 +1,13 @@
-def psp(data):
+import ujson
+
+
+def psp(data, layout=None):
     from IPython.display import display
     bundle = {}
-    bundle['application/psp'] = _type_detect(data)
+    bundle['application/psp'] = {
+        'data': _type_detect(data),
+        'layout': ujson.dumps(layout or [])
+    }
     display(bundle, raw=True)
 
 
