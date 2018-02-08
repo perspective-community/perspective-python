@@ -47,12 +47,12 @@ perspective-python
     :scale: 100%
     :target: https://bettercodehub.com/
 
-.. .. |pypiv| image:: https://img.shields.io/pypi/v/perspective-python.svg
+.. |pypiv| image:: https://img.shields.io/pypi/v/perspective-python.svg
     :alt: Version
     :scale: 100%
     :target: https://img.shields.io/pypi/v/perspective-python.svg
 
-.. .. |pypil| image:: https://img.shields.io/pypi/l/perspective-python.svg
+.. |pypil| image:: https://img.shields.io/pypi/l/perspective-python.svg
     :alt: License
     :scale: 100%
     :target: https://img.shields.io/pypi/l/perspective-python.svg
