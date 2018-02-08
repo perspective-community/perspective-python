@@ -29,3 +29,5 @@ or from source:
 
 ## Getting Started
 [Read the docs!](http://perspective-python.readthedocs.io/en/latest/index.html)
+
+![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/scatter.png)
