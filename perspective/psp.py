@@ -4,8 +4,6 @@ from enum import Enum
 def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
     '''Render a perspective javascript widget in jupyter
 
-    [description]
-
     Arguments:
         data {dataframe or live source} -- The static or live datasource
 
