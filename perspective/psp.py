@@ -52,9 +52,9 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
         raise Exception('Cannot parse rowpivots type: %s', str(type(rowpivots)))
 
     if columnpivots is None:
-        ret['columnpivots'] = ''
+        ret['column-pivots'] = ''
     elif isinstance(columnpivots, list):
-        ret['columnpivots'] = columnpivots
+        ret['column-pivots'] = columnpivots
     else:
         raise Exception('Cannot parse columnpivots type: %s', str(type(columnpivots)))
 
@@ -80,7 +80,12 @@ def _type_detect(data):
     try:
         import pandas as pd
         if isinstance(data, pd.DataFrame):
-            return data.reset_index().to_json(orient='records')
+            if isinstance(data.index, pd.DatetimeIndex):
+                df = data.reset_index()
+                df['index'] = df['index'].astype(str)
+                return df.to_json(orient='records')
+            else:
+                return data.reset_index().to_json(orient='records')
     except ImportError:
         pass
 
