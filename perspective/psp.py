@@ -17,7 +17,7 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
     '''
     from IPython.display import display
     bundle = {}
-    bundle['application/psp'] = {
+    bundle['application/psp+json'] = {
         'data': _type_detect(data),
         'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, settings)
     }
