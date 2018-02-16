@@ -21,7 +21,7 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
         'data': _type_detect(data),
         'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, settings)
     }
-    display(bundle, raw=True)
+    return display(bundle, raw=True)
 
 
 def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
