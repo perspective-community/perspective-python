@@ -1,4 +1,5 @@
 from mock import patch, MagicMock
+from datetime import datetime
 
 
 class TestTypedetect:
@@ -31,6 +32,9 @@ class TestTypedetect:
         expected = ujson.dumps([{"index": 0, "0": 1}, {"index": 1, "0": 2}])
         assert x == expected
 
+        df = pd.DataFrame([[1, 2]], columns=['1', '2'], index=[datetime.today(), datetime.today()])
+        x = _type_detect(df)
+
     def test_lantern(self):
         class Test(object):
             def __init__(self):
@@ -50,3 +54,8 @@ class TestTypedetect:
             x = _type_detect(Test())
 
             assert x == 'test'
+
+    def test_other(self):
+        from perspective.psp import _type_detect
+        x = _type_detect('test')
+        assert x == 'test'

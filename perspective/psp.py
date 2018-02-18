@@ -1,6 +1,10 @@
 from enum import Enum
 
 
+class PSPException(Exception):
+    pass
+
+
 def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
     '''Render a perspective javascript widget in jupyter
 
@@ -32,31 +36,31 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
         ret['view'] = view.value
     elif isinstance(view, str):
         if view not in View.options():
-            raise Exception('Unrecognized view: %s', view)
+            raise PSPException('Unrecognized view: %s', view)
         ret['view'] = view
     else:
-        raise Exception('Cannot parse view type: %s', str(type(view)))
+        raise PSPException('Cannot parse view type: %s', str(type(view)))
 
     if columns is None:
         ret['columns'] = ''
     elif isinstance(columns, list):
         ret['columns'] = columns
     else:
-        raise Exception('Cannot parse columns type: %s', str(type(columns)))
+        raise PSPException('Cannot parse columns type: %s', str(type(columns)))
 
     if rowpivots is None:
         ret['row-pivots'] = ''
     elif isinstance(rowpivots, list):
         ret['row-pivots'] = rowpivots
     else:
-        raise Exception('Cannot parse rowpivots type: %s', str(type(rowpivots)))
+        raise PSPException('Cannot parse rowpivots type: %s', str(type(rowpivots)))
 
     if columnpivots is None:
         ret['column-pivots'] = ''
     elif isinstance(columnpivots, list):
         ret['column-pivots'] = columnpivots
     else:
-        raise Exception('Cannot parse columnpivots type: %s', str(type(columnpivots)))
+        raise PSPException('Cannot parse columnpivots type: %s', str(type(columnpivots)))
 
     if aggregates is None:
         ret['aggregates'] = ''
@@ -66,12 +70,12 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
                 aggregates[k] = v.value
             elif isinstance(v, str):
                 if v not in Aggregate.options():
-                    raise Exception('Unrecognized aggregate: %s', v)
+                    raise PSPException('Unrecognized aggregate: %s', v)
             else:
-                raise Exception('Cannot parse aggregation of type %s', str(type(v)))
+                raise PSPException('Cannot parse aggregation of type %s', str(type(v)))
         ret['aggregates'] = aggregates
     else:
-        raise Exception('Cannot parse aggregates type: %s', str(type(aggregates)))
+        raise PSPException('Cannot parse aggregates type: %s', str(type(aggregates)))
 
     return ujson.dumps(ret)
 

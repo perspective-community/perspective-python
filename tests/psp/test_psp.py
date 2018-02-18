@@ -24,6 +24,75 @@ class TestPSP:
         import pandas as pd
         from perspective import psp
         with patch('IPython.display.display') as m1:
-            df = pd.DataFrame([1, 2])
+            df = pd.DataFrame([1, 2], columns=['1'])
             psp(df)
             assert m1.call_count == 1
+
+    def test_layout(self):
+        import pandas as pd
+        from perspective import psp, View, PSPException
+        with patch('IPython.display.display'):
+            df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL)
+            psp(df, 'line')
+            try:
+                psp(df, 'test')
+                assert False
+            except PSPException:
+                pass
+
+    def test_layout2(self):
+        import pandas as pd
+        from perspective import psp, View, PSPException
+        with patch('IPython.display.display'):
+            df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, ['1'])
+            try:
+                psp(df, View.VERTICAL, 5)
+                assert False
+            except PSPException:
+                pass
+
+    def test_layout3(self):
+        import pandas as pd
+        from perspective import psp, View, PSPException
+        with patch('IPython.display.display'):
+            df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, ['1'])
+            psp(df, View.VERTICAL, ['1'], ['1'])
+            try:
+                psp(df, View.VERTICAL, ['1'], 5)
+                assert False
+            except PSPException:
+                pass
+
+    def test_layout4(self):
+        import pandas as pd
+        from perspective import psp, View, PSPException
+        with patch('IPython.display.display'):
+            df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, ['1'])
+            psp(df, View.VERTICAL, ['1'], None, ['1'])
+            try:
+                psp(df, View.VERTICAL, ['1'], None, 5)
+                assert False
+            except PSPException:
+                pass
+
+    def test_aggregates(self):
+        import pandas as pd
+        from perspective import psp, View, Aggregate, PSPException
+        with patch('IPython.display.display'):
+            df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': Aggregate.ANY})
+            psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 'any'})
+            try:
+                psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 'test'})
+                assert False
+            except PSPException:
+                pass
+            try:
+                psp(df, View.VERTICAL, ['1'], None, ['1'], 5)
+                assert False
+            except PSPException:
+                pass
