@@ -41,6 +41,12 @@ class TestPSP:
             except PSPException:
                 pass
 
+            try:
+                psp(df, 5)
+                assert False
+            except PSPException:
+                pass
+
     def test_layout2(self):
         import pandas as pd
         from perspective import psp, View, PSPException
@@ -88,6 +94,11 @@ class TestPSP:
             psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 'any'})
             try:
                 psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 'test'})
+                assert False
+            except PSPException:
+                pass
+            try:
+                psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 5})
                 assert False
             except PSPException:
                 pass
