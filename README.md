@@ -1,7 +1,7 @@
 # perspective-python
 Python APIs for [perspective](https://github.com/jpmorganchase/perspective) front end
 
-[![Version](https://img.shields.io/badge/version-0.0.3-lightgrey.svg)](https://img.shields.io/badge/version-0.0.3-lightgrey.svg)
+[![Version](https://img.shields.io/badge/version-0.0.4-lightgrey.svg)](https://img.shields.io/badge/version-0.0.4-lightgrey.svg)
 [![Build Status](https://travis-ci.org/timkpaine/perspective-python.svg?branch=master)](https://travis-ci.org/timkpaine/perspective-python)
 [![GitHub issues](https://img.shields.io/github/issues/timkpaine/perspective-python.svg)]()
 [![Waffle.io](https://badge.waffle.io/timkpaine/perspective-python.svg?label=ready&title=Ready)](http://waffle.io/timkpaine/perspective-python)
