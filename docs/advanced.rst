@@ -22,3 +22,24 @@ The following view types are supported through psp plugins
         - Vertical Bar (`'vertical'`)
         - Horizontal Bar (`'horizontal'`)
         - Line (`'line'`)
+
+`psp` aggregation types
+========================
+    - ANY
+    - AVG
+    - COUNT
+    - DISTINCT_COUNT
+    - DOMINANT
+    - FIRST
+    - LAST
+    - HIGH
+    - LOW
+    - MEAN
+    - MEAN_BY_COUNT
+    - MEDIAN
+    - PCT_SUM_PARENT
+    - PCT_SUM_GRAND_TOTAL
+    - SUM
+    - SUM_ABS
+    - SUM_NOT_NULL
+    - UNIQUE
