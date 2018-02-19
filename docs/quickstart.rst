@@ -32,7 +32,7 @@ The `psp` function
     :param columns: what columns to display
     :type columns: list of strings
     :param rowpivots: what names to use as rowpivots
-    :type rovpivots: list of strings
+    :type rowpivots: list of strings
     :param columnpivots: what names to use as columnpivots
     :type columnpivots: list of strings
     :param aggregates: dictionary of name to aggregate type (either string or enum Aggregate)

@@ -15,6 +15,7 @@ perspective-python
 
    installation
    quickstart
+   advanced
 
 
 .. |version| image:: https://img.shields.io/badge/version-0.0.4-lightgrey.svg
