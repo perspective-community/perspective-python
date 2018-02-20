@@ -6,7 +6,7 @@
 perspective-python
 ===================================
 
-|version| |build-status| |issues| |waffle| |codecov| |bch| |pypiv| |pypil| |docs|
+|build-status| |issues| |waffle| |codecov| |bch| |pypiv| |pypil| |docs|
 
 
 .. toctree::
@@ -51,14 +51,14 @@ perspective-python
 .. |pypiv| image:: https://img.shields.io/pypi/v/perspective-python.svg
     :alt: Version
     :scale: 100%
-    :target: https://img.shields.io/pypi/v/perspective-python.svg
+    :target: https://pypi.python.org/pypi/perspective-python
 
 .. |pypil| image:: https://img.shields.io/pypi/l/perspective-python.svg
     :alt: License
     :scale: 100%
-    :target: https://img.shields.io/pypi/l/perspective-python.svg
+    :target: https://pypi.python.org/pypi/perspective-python
 
 .. |docs| image:: https://img.shields.io/readthedocs/perspective-python.svg
     :alt: Docs
     :scale: 100%
-    :target: https://img.shields.io/readthedocs/perspective-python.svg
+    :target: https://perspective-python.readthedocs.io
