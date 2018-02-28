@@ -55,6 +55,23 @@ class TestTypedetect:
 
             assert x == 'test'
 
+    def test_pandas2(self):
+        import pandas as pd
+        from perspective.psp import _type_detect
+
+        class Nope(object):
+            @property
+            def DataFrame(self):
+                raise ImportError
+
+        import sys
+        sys.modules['pandas'] = Nope()
+
+        x = _type_detect('test')
+
+        sys.modules['pandas'] = pd
+
+
     def test_other(self):
         from perspective.psp import _type_detect
         x = _type_detect('test')
