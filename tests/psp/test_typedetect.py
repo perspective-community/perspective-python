@@ -35,6 +35,18 @@ class TestTypedetect:
         df = pd.DataFrame([[1, 2]], columns=['1', '2'], index=[datetime.today(), datetime.today()])
         x = _type_detect(df)
 
+        class Nope(object):
+            @property
+            def DataFrame(self):
+                raise ImportError
+
+        import sys
+        sys.modules['pandas'] = Nope()
+
+        x = _type_detect('test')
+
+        sys.modules['pandas'] = pd
+
     def test_lantern(self):
         class Test(object):
             def __init__(self):
@@ -55,22 +67,28 @@ class TestTypedetect:
 
             assert x == 'test'
 
-    def test_pandas2(self):
-        import pandas as pd
+    def test_list(self):
         from perspective.psp import _type_detect
+        x = ['a', 'simple', 'test']
 
-        class Nope(object):
-            @property
-            def DataFrame(self):
-                raise ImportError
+        y = _type_detect(x)
+        assert y == '["a","simple","test"]'
 
-        import sys
-        sys.modules['pandas'] = Nope()
+    def test_dict(self):
+        from perspective.psp import _type_detect
+        x = {'a': 'simple test'}
 
-        x = _type_detect('test')
+        y = _type_detect(x)
+        assert y == '[{"a":"simple test"}]'
 
-        sys.modules['pandas'] = pd
+    def test_pyarrow(self):
+        pass
 
+    def test_webroutes(self):
+        from perspective.psp import _type_detect
+        x = ['https://', 'http://', 'wss://', 'ws://', 'sio://']
+        for val in x:
+            assert val + 'test' == _type_detect(val + 'test')
 
     def test_other(self):
         from perspective.psp import _type_detect

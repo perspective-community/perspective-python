@@ -1,3 +1,4 @@
+import ujson
 from enum import Enum
 
 
@@ -29,7 +30,6 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
 
 
 def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
-    import ujson
     ret = {}
 
     if isinstance(view, View):
@@ -99,6 +99,28 @@ def _type_detect(data):
             return data.path()
     except ImportError:
         pass
+
+    try:
+        import pyarrow
+
+    except ImportError:
+        pass
+
+    if isinstance(data, str):
+        if ('http://' in data and 'http://' == data[:8]) or \
+           ('https://' in data and 'https://' == data[:9]) or \
+           ('ws://' in data and 'ws://' == data[:5]) or \
+           ('wss://' in data and 'wss://' == data[:6]) or \
+           ('sio://' in data and 'sio://' == data[:6]):
+            return data
+
+    elif isinstance(data, dict):
+        return ujson.dumps([data])
+
+    elif isinstance(data, list):
+        return ujson.dumps(data)
+
+    # throw error?
     return data
 
 
