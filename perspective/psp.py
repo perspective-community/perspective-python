@@ -101,8 +101,9 @@ def _type_detect(data):
         pass
 
     try:
-        import pyarrow
-
+        import pyarrow as pa
+        if isinstance(data, pa.Array) or isinstance(data, pa.Buffer):
+            pass
     except ImportError:
         pass
 

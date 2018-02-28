@@ -2,6 +2,20 @@ from mock import patch, MagicMock
 from datetime import datetime
 
 
+class Nope(object):
+    @property
+    def DataFrame(self):
+        raise ImportError
+
+    @property
+    def Array(self):
+        raise ImportError
+
+    @property
+    def Buffer(self):
+        raise ImportError
+
+
 class TestTypedetect:
     def setup(self):
         pass
@@ -35,16 +49,9 @@ class TestTypedetect:
         df = pd.DataFrame([[1, 2]], columns=['1', '2'], index=[datetime.today(), datetime.today()])
         x = _type_detect(df)
 
-        class Nope(object):
-            @property
-            def DataFrame(self):
-                raise ImportError
-
         import sys
         sys.modules['pandas'] = Nope()
-
-        x = _type_detect('test')
-
+        _type_detect('test')
         sys.modules['pandas'] = pd
 
     def test_lantern(self):
@@ -82,7 +89,19 @@ class TestTypedetect:
         assert y == '[{"a":"simple test"}]'
 
     def test_pyarrow(self):
-        pass
+        import pyarrow as pa
+        from perspective.psp import _type_detect
+        x1 = pa.Array(['test', 'test2'])
+        x2 = pa.frombuffer(b'test')
+
+        _type_detect(x1)
+        _type_detect(x2)
+
+        import sys
+        sys.modules['pyarrow'] = Nope()
+        _type_detect('test')
+        sys.modules['pyarrow'] = pa
+
 
     def test_webroutes(self):
         from perspective.psp import _type_detect
