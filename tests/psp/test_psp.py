@@ -107,3 +107,13 @@ class TestPSP:
                 assert False
             except PSPException:
                 pass
+
+    def test_config(self):
+        from perspective.psp import _config
+        assert _config('', None) == ''
+        assert _config('', 'test') == ''
+        assert _config('test', 'http://') == 'test'
+        assert _config('test', 'https://') == 'test'
+        assert _config('test', 'ws://') == 'test'
+        assert _config('test', 'wss://') == 'test'
+        assert _config('test', 'sio://') == 'test'
