@@ -52,6 +52,7 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, '1')
             psp(df, View.VERTICAL, ['1'])
             try:
                 psp(df, View.VERTICAL, 5)
@@ -64,7 +65,9 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, '1')
             psp(df, View.VERTICAL, ['1'])
+            psp(df, View.VERTICAL, ['1'], '1')
             psp(df, View.VERTICAL, ['1'], ['1'])
             try:
                 psp(df, View.VERTICAL, ['1'], 5)
@@ -79,8 +82,23 @@ class TestPSP:
             df = pd.DataFrame([1, 2], columns=['1'])
             psp(df, View.VERTICAL, ['1'])
             psp(df, View.VERTICAL, ['1'], None, ['1'])
+            psp(df, View.VERTICAL, ['1'], None, '1')
             try:
                 psp(df, View.VERTICAL, ['1'], None, 5)
+                assert False
+            except PSPException:
+                pass
+
+    def test_layout5(self):
+        import pandas as pd
+        from perspective import psp, View, PSPException
+        with patch('IPython.display.display'):
+            df = pd.DataFrame([1, 2], columns=['1'])
+            psp(df, View.VERTICAL, ['1'])
+            psp(df, View.VERTICAL, ['1'], None, None, None, 'test')
+            psp(df, View.VERTICAL, ['1'], None, None, None, ['test'])
+            try:
+                psp(df, View.VERTICAL, ['1'], None, None, None, 5)
                 assert False
             except PSPException:
                 pass

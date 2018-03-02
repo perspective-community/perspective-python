@@ -7,7 +7,7 @@ class PSPException(Exception):
     pass
 
 
-def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False, helper_config=None):
+def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, helper_config=None):
     '''Render a perspective javascript widget in jupyter
 
     Arguments:
@@ -25,13 +25,13 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
     bundle = {}
     bundle['application/psp+json'] = {
         'data': _type_detect(data),
-        'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, settings),
+        'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, sort, settings),
         'config': _config(helper_config, data)
     }
     return display(bundle, raw=True)
 
 
-def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
+def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False):
     ret = {}
 
     if isinstance(view, View):
@@ -45,6 +45,8 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
 
     if columns is None:
         ret['columns'] = ''
+    elif isinstance(columns, str):
+        ret['columns'] = [columns]
     elif isinstance(columns, list):
         ret['columns'] = columns
     else:
@@ -52,6 +54,8 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
 
     if rowpivots is None:
         ret['row-pivots'] = ''
+    elif isinstance(rowpivots, str):
+        ret['row-pivots'] = [rowpivots]
     elif isinstance(rowpivots, list):
         ret['row-pivots'] = rowpivots
     else:
@@ -59,6 +63,8 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
 
     if columnpivots is None:
         ret['column-pivots'] = ''
+    elif isinstance(columnpivots, str):
+        ret['column-pivots'] = [columnpivots]
     elif isinstance(columnpivots, list):
         ret['column-pivots'] = columnpivots
     else:
@@ -78,6 +84,17 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
         ret['aggregates'] = aggregates
     else:
         raise PSPException('Cannot parse aggregates type: %s', str(type(aggregates)))
+
+    if sort is None:
+        ret['sort'] = ''
+    elif isinstance(sort, str):
+        ret['sort'] = [sort]
+    elif isinstance(sort, list):
+        ret['sort'] = sort
+    else:
+        raise PSPException('Cannot parse sort type: %s', str(type(sort)))
+
+    ret['settings'] = settings
 
     return ujson.dumps(ret)
 
