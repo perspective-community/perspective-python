@@ -1,3 +1,4 @@
+import sys
 import ujson
 from enum import Enum
 
@@ -6,7 +7,7 @@ class PSPException(Exception):
     pass
 
 
-def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False):
+def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, settings=False, helper_config=None):
     '''Render a perspective javascript widget in jupyter
 
     Arguments:
@@ -24,7 +25,8 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
     bundle = {}
     bundle['application/psp+json'] = {
         'data': _type_detect(data),
-        'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, settings)
+        'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, settings),
+        'config': _config(helper_config, data)
     }
     return display(bundle, raw=True)
 
@@ -82,28 +84,31 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
 
 def _type_detect(data):
     try:
-        import pandas as pd
-        if isinstance(data, pd.DataFrame):
-            if isinstance(data.index, pd.DatetimeIndex):
-                df = data.reset_index()
-                df['index'] = df['index'].astype(str)
-                return df.to_json(orient='records')
-            else:
-                return data.reset_index().to_json(orient='records')
+        if 'pandas' in sys.modules:
+            import pandas as pd
+            if isinstance(data, pd.DataFrame):
+                if isinstance(data.index, pd.DatetimeIndex):
+                    df = data.reset_index()
+                    df['index'] = df['index'].astype(str)
+                    return df.to_json(orient='records')
+                else:
+                    return data.reset_index().to_json(orient='records')
     except ImportError:
         pass
 
     try:
-        import lantern as l
-        if isinstance(data, l.LanternLive):
-            return data.path()
+        if 'lantern' in sys.modules:
+            import lantern as l
+            if isinstance(data, l.LanternLive):
+                return data.path()
     except ImportError:
         pass
 
     try:
-        import pyarrow as pa
-        if isinstance(data, pa.Array) or isinstance(data, pa.Buffer):
-            pass
+        if 'pyarrow' in sys.modules:
+            import pyarrow as pa
+            if isinstance(data, pa.Array) or isinstance(data, pa.Buffer):
+                pass
     except ImportError:
         pass
 
@@ -123,6 +128,20 @@ def _type_detect(data):
 
     # throw error?
     return data
+
+
+def _config(config, data):
+    if not isinstance(data, str):
+        return ''
+    if ('http://' in data and 'http://' == data[:8]) or \
+       ('https://' in data and 'https://' == data[:9]) or \
+       ('ws://' in data and 'ws://' == data[:5]) or \
+       ('wss://' in data and 'wss://' == data[:6]) or \
+       ('sio://' in data and 'sio://' == data[:6]):
+        # TODO validation
+        return config
+    else:
+        return ''
 
 
 class Aggregate(Enum):
