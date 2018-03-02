@@ -113,8 +113,8 @@ def _type_detect(data):
         pass
 
     if isinstance(data, str):
-        if ('http://' in data and 'http://' == data[:8]) or \
-           ('https://' in data and 'https://' == data[:9]) or \
+        if ('http://' in data and 'http://' == data[:7]) or \
+           ('https://' in data and 'https://' == data[:8]) or \
            ('ws://' in data and 'ws://' == data[:5]) or \
            ('wss://' in data and 'wss://' == data[:6]) or \
            ('sio://' in data and 'sio://' == data[:6]):
@@ -133,8 +133,8 @@ def _type_detect(data):
 def _config(config, data):
     if not isinstance(data, str):
         return ''
-    if ('http://' in data and 'http://' == data[:8]) or \
-       ('https://' in data and 'https://' == data[:9]) or \
+    if ('http://' in data and 'http://' == data[:7]) or \
+       ('https://' in data and 'https://' == data[:8]) or \
        ('ws://' in data and 'ws://' == data[:5]) or \
        ('wss://' in data and 'wss://' == data[:6]) or \
        ('sio://' in data and 'sio://' == data[:6]):
