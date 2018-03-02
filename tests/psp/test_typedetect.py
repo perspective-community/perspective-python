@@ -8,6 +8,10 @@ class Nope(object):
         raise ImportError
 
     @property
+    def LanternLive(self):
+        raise ImportError
+
+    @property
     def Array(self):
         raise ImportError
 
