@@ -78,14 +78,9 @@ class TestTypedetect:
 
             assert x == 'test'
 
-    def test_lantern2(self):
-        import lantern as l
-        from perspective.psp import _type_detect
-
-        import sys
-        sys.modules['lantern'] = Nope()
-        _type_detect('test')
-        sys.modules['lantern'] = l
+            import sys
+            sys.modules['lantern'] = Nope()
+            _type_detect('test')
 
     def test_list(self):
         from perspective.psp import _type_detect
