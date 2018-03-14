@@ -214,6 +214,7 @@ class View(Enum):
     HORIZONTAL = 'horizontal'
     LINE = 'line'
     SCATTER = 'scatter'
+    HEATMAP = 'heatmap'
 
     @staticmethod
     def options():
