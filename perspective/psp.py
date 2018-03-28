@@ -7,7 +7,7 @@ class PSPException(Exception):
     pass
 
 
-def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, helper_config=None):
+def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False, helper_config=None):
     '''Render a perspective javascript widget in jupyter
 
     Arguments:
@@ -25,13 +25,13 @@ def psp(data, view='hypergrid', columns=None, rowpivots=None, columnpivots=None,
     bundle = {}
     bundle['application/psp+json'] = {
         'data': _type_detect(data),
-        'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, sort, settings),
+        'layout': _layout(view, columns, rowpivots, columnpivots, aggregates, sort, settings, dark),
         'config': _config(helper_config, data)
     }
     return display(bundle, raw=True)
 
 
-def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False):
+def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False):
     ret = {}
 
     if isinstance(view, View):
@@ -95,6 +95,9 @@ def _layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, a
         raise PSPException('Cannot parse sort type: %s', str(type(sort)))
 
     ret['settings'] = settings
+
+    if dark:
+        ret['colorscheme'] = 'dark'
 
     return ujson.dumps(ret)
 
