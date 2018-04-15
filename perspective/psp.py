@@ -213,10 +213,14 @@ class Aggregate(Enum):
 
 class View(Enum):
     HYPERGRID = 'hypergrid'
-    VERTICAL = 'vertical'
-    HORIZONTAL = 'horizontal'
-    LINE = 'line'
-    SCATTER = 'scatter'
+    GRID = 'hypergrid'
+    YBAR = 'y_bar'
+    XBAR = 'x_bar'
+    YLINE = 'y_line'
+    YAREA = 'y_area'
+    XYLINE = 'xy_line'
+    XYSCATTER = 'xy_scatter'
+    TREEMAP = 'treemap'
     HEATMAP = 'heatmap'
 
     @staticmethod

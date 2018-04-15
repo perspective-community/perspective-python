@@ -33,8 +33,8 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
-            psp(df, View.VERTICAL)
-            psp(df, 'line')
+            psp(df, View.YBAR)
+            psp(df, 'y_line')
             try:
                 psp(df, 'test')
                 assert False
@@ -52,10 +52,10 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
-            psp(df, View.VERTICAL, '1')
-            psp(df, View.VERTICAL, ['1'])
+            psp(df, View.YBAR, '1')
+            psp(df, View.YBAR, ['1'])
             try:
-                psp(df, View.VERTICAL, 5)
+                psp(df, View.YBAR, 5)
                 assert False
             except PSPException:
                 pass
@@ -65,12 +65,12 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
-            psp(df, View.VERTICAL, '1')
-            psp(df, View.VERTICAL, ['1'])
-            psp(df, View.VERTICAL, ['1'], '1')
-            psp(df, View.VERTICAL, ['1'], ['1'])
+            psp(df, View.YBAR, '1')
+            psp(df, View.YBAR, ['1'])
+            psp(df, View.YBAR, ['1'], '1')
+            psp(df, View.YBAR, ['1'], ['1'])
             try:
-                psp(df, View.VERTICAL, ['1'], 5)
+                psp(df, View.YBAR, ['1'], 5)
                 assert False
             except PSPException:
                 pass
@@ -80,11 +80,11 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
-            psp(df, View.VERTICAL, ['1'])
-            psp(df, View.VERTICAL, ['1'], None, ['1'])
-            psp(df, View.VERTICAL, ['1'], None, '1')
+            psp(df, View.YBAR, ['1'])
+            psp(df, View.YBAR, ['1'], None, ['1'])
+            psp(df, View.YBAR, ['1'], None, '1')
             try:
-                psp(df, View.VERTICAL, ['1'], None, 5)
+                psp(df, View.YBAR, ['1'], None, 5)
                 assert False
             except PSPException:
                 pass
@@ -94,11 +94,11 @@ class TestPSP:
         from perspective import psp, View, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
-            psp(df, View.VERTICAL, ['1'])
-            psp(df, View.VERTICAL, ['1'], None, None, None, 'test')
-            psp(df, View.VERTICAL, ['1'], None, None, None, ['test'])
+            psp(df, View.YBAR, ['1'])
+            psp(df, View.YBAR, ['1'], None, None, None, 'test')
+            psp(df, View.YBAR, ['1'], None, None, None, ['test'])
             try:
-                psp(df, View.VERTICAL, ['1'], None, None, None, 5)
+                psp(df, View.YBAR, ['1'], None, None, None, 5)
                 assert False
             except PSPException:
                 pass
@@ -108,20 +108,20 @@ class TestPSP:
         from perspective import psp, View, Aggregate, PSPException
         with patch('IPython.display.display'):
             df = pd.DataFrame([1, 2], columns=['1'])
-            psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': Aggregate.ANY})
-            psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 'any'})
+            psp(df, View.YBAR, ['1'], None, ['1'], {'1': Aggregate.ANY})
+            psp(df, View.YBAR, ['1'], None, ['1'], {'1': 'any'})
             try:
-                psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 'test'})
+                psp(df, View.YBAR, ['1'], None, ['1'], {'1': 'test'})
                 assert False
             except PSPException:
                 pass
             try:
-                psp(df, View.VERTICAL, ['1'], None, ['1'], {'1': 5})
+                psp(df, View.YBAR, ['1'], None, ['1'], {'1': 5})
                 assert False
             except PSPException:
                 pass
             try:
-                psp(df, View.VERTICAL, ['1'], None, ['1'], 5)
+                psp(df, View.YBAR, ['1'], None, ['1'], 5)
                 assert False
             except PSPException:
                 pass
