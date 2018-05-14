@@ -1,4 +1,5 @@
 IPython
 pandas
 pyarrow
+six
 ujson

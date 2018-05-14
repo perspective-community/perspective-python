@@ -2,7 +2,7 @@
 def line(dat, col, index='index', key='key'):
     from .psp import psp
     return psp(dat,
-               view='line',
+               view='xy_line',
                columns=[index, col],
                rowpivots=[index],
                columnpivots=[key],

@@ -42,20 +42,20 @@ class TestTypedetect:
     def test_pandas(self):
         import pandas as pd
         import ujson
-        from perspective.psp import _type_detect
+        from perspective._type import type_detect
 
         df = pd.DataFrame([1, 2])
-        x = _type_detect(df)
+        _, x = type_detect(df)
 
         expected = ujson.dumps([{"index": 0, "0": 1}, {"index": 1, "0": 2}])
         assert x == expected
 
         df = pd.DataFrame([[1, 2]], columns=['1', '2'], index=[datetime.today(), datetime.today()])
-        x = _type_detect(df)
+        _, x = type_detect(df)
 
         import sys
         sys.modules['pandas'] = Nope()
-        _type_detect('test')
+        type_detect('test')
         sys.modules['pandas'] = pd
 
     def test_lantern(self):
@@ -72,52 +72,51 @@ class TestTypedetect:
                 'lantern.live': module_mock,
                 }):
             module_mock.LanternLive = Test
-            from perspective.psp import _type_detect
+            from perspective._type import type_detect
 
-            x = _type_detect(Test())
+            _, x = type_detect(Test())
 
             assert x == 'test'
 
             import sys
             sys.modules['lantern'] = Nope()
-            _type_detect('test')
+            type_detect('test')
 
     def test_list(self):
-        from perspective.psp import _type_detect
+        from perspective._type import type_detect
         x = ['a', 'simple', 'test']
 
-        y = _type_detect(x)
+        _, y = type_detect(x)
         assert y == '["a","simple","test"]'
 
     def test_dict(self):
-        from perspective.psp import _type_detect
+        from perspective._type import type_detect
         x = {'a': 'simple test'}
 
-        y = _type_detect(x)
+        _, y = type_detect(x)
         assert y == '[{"a":"simple test"}]'
 
     def test_pyarrow(self):
         import pyarrow as pa
-        from perspective.psp import _type_detect
+        from perspective._type import type_detect
         x1 = pa.Array(['test', 'test2'])
         x2 = pa.frombuffer(b'test')
 
-        _type_detect(x1)
-        _type_detect(x2)
+        type_detect(x1)
+        type_detect(x2)
 
         import sys
         sys.modules['pyarrow'] = Nope()
-        _type_detect('test')
+        type_detect('test')
         sys.modules['pyarrow'] = pa
 
-
     def test_webroutes(self):
-        from perspective.psp import _type_detect
+        from perspective._type import type_detect
         x = ['https://', 'http://', 'wss://', 'ws://', 'sio://']
         for val in x:
-            assert val + 'test' == _type_detect(val + 'test')
+            assert val + 'test' == type_detect(val + 'test')[1]
 
     def test_other(self):
-        from perspective.psp import _type_detect
-        x = _type_detect('test')
+        from perspective._type import type_detect
+        _, x = type_detect('test')
         assert x == 'test'
