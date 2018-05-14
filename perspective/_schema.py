@@ -21,9 +21,8 @@ def convert_to_psp_schema(schema):
 def schema(data, typ):
     if typ in ('', 'url', 'lantern', 'pyarrow'):
         # TODO
-        return '{}'
-
-    if typ == 'dict':
+        return ''
+    elif typ == 'dict':
         schema = {k: str(type(v)) for k, v in iteritems(data)}
     elif typ == 'list':
         if isinstance(data[0], dict):
@@ -33,7 +32,6 @@ def schema(data, typ):
             raise NotImplemented()
     elif typ == 'pandas':
         schema = dict(data.reset_index().dtypes.astype(str))
-
     else:
         raise NotImplemented()
 

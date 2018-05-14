@@ -8,10 +8,10 @@ class TestLayout:
 
     def test_schema(self):
         from perspective._schema import schema
-        assert schema(None, '') == '{}'
-        assert schema(None, 'url') == '{}'
-        assert schema(None, 'lantern') == '{}'
-        assert schema(None, 'pyarrow') == '{}'
+        assert schema(None, '') == ''
+        assert schema(None, 'url') == ''
+        assert schema(None, 'lantern') == ''
+        assert schema(None, 'pyarrow') == ''
 
         x = schema({'test': 3}, 'dict')
         assert x == '{"test":"int"}'
