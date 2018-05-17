@@ -11,6 +11,7 @@ class View(Enum):
     XYLINE = 'xy_line'
     XYSCATTER = 'xy_scatter'
     TREEMAP = 'treemap'
+    SUNBURST = 'sunburst'
     HEATMAP = 'heatmap'
 
     @staticmethod
