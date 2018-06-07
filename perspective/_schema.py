@@ -31,7 +31,7 @@ def schema(data, typ):
             # TODO
             raise NotImplemented()
     elif typ == 'pandas':
-        schema = dict(data.reset_index().dtypes.astype(str))
+        schema = dict(data.dtypes.astype(str))
     else:
         raise NotImplemented()
 

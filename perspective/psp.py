@@ -21,16 +21,15 @@ def psp(data, view='hypergrid', schema=None, columns=None, rowpivots=None, colum
     '''
     from IPython.display import display
 
-    typ, dat = type_detect(data)
-
+    typ, dat_orig, dat = type_detect(data)
     if schema and not isinstance(schema, str):
         schema = ujson.dumps(schema)
 
     bundle = {}
     bundle['application/psp+json'] = {
         'data': dat,
-        'schema': schema or _schema(data, typ),
+        'schema': schema or _schema(dat_orig, typ),
         'layout': layout(view, columns, rowpivots, columnpivots, aggregates, sort, settings, dark),
-        'config': config(helper_config, data)
+        'config': config(helper_config, dat_orig)
     }
     return display(bundle, raw=True)
