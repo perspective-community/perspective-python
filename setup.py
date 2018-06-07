@@ -9,11 +9,11 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='perspective-python',
-    version='0.0.8',
+    version='0.0.9',
     description='Analytics library',
     long_description=long_description,
     url='https://github.com/timkpaine/perspective-python',
-    download_url='https://github.com/timkpaine/perspective-python/archive/v0.0.8.tar.gz',
+    download_url='https://github.com/timkpaine/perspective-python/archive/v0.0.9.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='Apache 2.0',
@@ -26,6 +26,7 @@ setup(
     ],
 
     keywords='analytics tools plotting',
+    data_files=[('', ["LICENSE", "README.md"])],
     packages=find_packages(exclude=['tests', ]),
     include_package_data=True,
     zip_safe=False,
