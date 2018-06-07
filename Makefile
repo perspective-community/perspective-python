@@ -3,7 +3,7 @@ tests: ## Clean and Make unit tests
 	
 test: ## run the tests for travis CI
 	@ python3 -m nose -v tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
- 
+
 annotate: ## MyPy type annotation check
 	mypy -s perspective
 
@@ -28,6 +28,9 @@ preinstall:  ## install dependencies
 
 docs:  ## make documentation
 	make -C ./docs html
+
+dist:  ## dist to pypi
+	python3 setup.py sdist upload -r pypi
 
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
