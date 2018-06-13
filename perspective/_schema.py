@@ -8,7 +8,7 @@ def convert_to_psp_schema(schema):
         if 'float' in v:
             d[k] = 'float'
         elif 'int' in v:
-            d[k] = 'int'
+            d[k] = 'integer'
         elif 'bool' in v:
             d[k] = 'boolean'
         elif ':' in v or '-' in v or 'date' in v or 'time' in v:
