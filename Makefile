@@ -40,4 +40,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean test tests help annotate annotate_l docs
+.PHONY: clean test tests help annotate annotate_l docs dist
