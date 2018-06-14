@@ -15,6 +15,8 @@ def convert_to_psp_schema(schema):
             d[k] = 'date'
         elif 'str' in v or 'string' in v:
             d[k] = 'string'
+        else:
+            d[k] = 'string'
     return d
 
 

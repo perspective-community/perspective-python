@@ -19,9 +19,14 @@ The following view types are supported through psp plugins
     - Grids
         - Hypergrid (`'grid'` or `'hypergrid'`)
     - Charts
-        - Vertical Bar (`'vertical'`)
-        - Horizontal Bar (`'horizontal'`)
-        - Line (`'line'`)
+        - Vertical Bar (`'y_bar'`)
+        - Horizontal Bar (`'x_bar'`)
+        - Line (`'y_line'`)
+        - Area (`'y_area'`)
+        - XY Line (`'xy_line'`)
+        - Treemap (`'treemap'`)
+        - Sunburst (`'sunburst'`)
+        - Heatmap (`'heatmap'`)
 
 `psp` aggregation types
 ========================
