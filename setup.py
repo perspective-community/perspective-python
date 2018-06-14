@@ -26,7 +26,6 @@ setup(
     ],
 
     keywords='analytics tools plotting',
-    data_files=[('', ["LICENSE", "README.md"])],
     packages=find_packages(exclude=['tests', ]),
     include_package_data=True,
     zip_safe=False,
