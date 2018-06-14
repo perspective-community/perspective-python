@@ -14,16 +14,16 @@ class TestLayout:
         assert schema(None, 'pyarrow') == ''
 
         x = schema({'test': 3}, 'dict')
-        assert x == '{"test":"int"}'
+        assert x == '{"test":"integer"}'
         x = schema([{'test': 3}], 'list')
-        assert x == '{"test":"int"}'
+        assert x == '{"test":"integer"}'
 
         x = pd.DataFrame([{'test': 3}])
         x = schema(x, 'pandas')
-        assert x == '{"index":"int","test":"int"}'
+        assert x == '{"test":"integer"}'
 
     def test_convert_to_psp_schema(self):
         from perspective._schema import convert_to_psp_schema
-        x = {1: 'float', 2: 'int', 3: 'bool', 4: 'time', 5: 'str'}
-        y = {1: 'float', 2: 'int', 3: 'boolean', 4: 'date', 5: 'string'}
+        x = {1: 'float', 2: 'integer', 3: 'bool', 4: 'time', 5: 'str'}
+        y = {1: 'float', 2: 'integer', 3: 'boolean', 4: 'date', 5: 'string'}
         assert y == convert_to_psp_schema(x)

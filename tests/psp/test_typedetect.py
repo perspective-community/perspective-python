@@ -45,13 +45,15 @@ class TestTypedetect:
         from perspective._type import type_detect
 
         df = pd.DataFrame([1, 2])
-        _, x = type_detect(df)
+        t, _, x = type_detect(df)
 
         expected = ujson.dumps([{"index": 0, "0": 1}, {"index": 1, "0": 2}])
         assert x == expected
+        assert t == 'pandas'
 
         df = pd.DataFrame([[1, 2]], columns=['1', '2'], index=[datetime.today(), datetime.today()])
-        _, x = type_detect(df)
+        t, _, x = type_detect(df)
+        assert t == 'pandas'
 
         import sys
         sys.modules['pandas'] = Nope()
@@ -74,9 +76,10 @@ class TestTypedetect:
             module_mock.LanternLive = Test
             from perspective._type import type_detect
 
-            _, x = type_detect(Test())
+            t, _, x = type_detect(Test())
 
             assert x == 'test'
+            assert t == 'lantern'
 
             import sys
             sys.modules['lantern'] = Nope()
@@ -86,15 +89,17 @@ class TestTypedetect:
         from perspective._type import type_detect
         x = ['a', 'simple', 'test']
 
-        _, y = type_detect(x)
+        t, _, y = type_detect(x)
         assert y == '["a","simple","test"]'
+        assert t == 'list'
 
     def test_dict(self):
         from perspective._type import type_detect
         x = {'a': 'simple test'}
 
-        _, y = type_detect(x)
+        t, _, y = type_detect(x)
         assert y == '[{"a":"simple test"}]'
+        assert t == 'dict'
 
     def test_pyarrow(self):
         import pyarrow as pa
@@ -114,9 +119,10 @@ class TestTypedetect:
         from perspective._type import type_detect
         x = ['https://', 'http://', 'wss://', 'ws://', 'sio://']
         for val in x:
-            assert val + 'test' == type_detect(val + 'test')[1]
+            assert val + 'test' == type_detect(val + 'test')[2]
 
     def test_other(self):
         from perspective._type import type_detect
-        _, x = type_detect('test')
+        t, _, x = type_detect('test')
         assert x == 'test'
+        assert t == ''
