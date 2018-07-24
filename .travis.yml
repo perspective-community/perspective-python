@@ -7,9 +7,8 @@ python:
 git:
     submodules: false
 
-# before_install:
-#     - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-#     - git submodule update --init --recursive
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq install libboost-python-dev; fi
 
 install:
     - pip install -r requirements.txt
