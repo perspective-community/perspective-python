@@ -1,8 +1,14 @@
+build: ## build the package
+	python3 setup.py build
+
+buildext: ## build the package extensions
+	python3 setup.py build_ext
+
 tests: ## Clean and Make unit tests
-	python3 -m nose -v tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
+	python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 	
-test: ## run the tests for travis CI
-	@ python3 -m nose -v tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
+test: clean build ## run the tests for travis CI
+	@ python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 
 annotate: ## MyPy type annotation check
 	mypy -s perspective
@@ -40,4 +46,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean test tests help annotate annotate_l docs dist
+.PHONY: clean test tests help annotate annotate_l docs dist build buildext

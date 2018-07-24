@@ -5,10 +5,10 @@ languages:
 - name: python
   production:
     exclude:
-      - /tests/.*
+      - /perspective/tests/.*
   test:
     include:
-      - /tests/.*
+      - /perspective/tests/.*
 
 exclude:
 - /docs/.*

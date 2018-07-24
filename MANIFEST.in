@@ -1,5 +1,2 @@
-recursive-include jupyterlab_templates/templates/ *
-prune tests/
+recursive-include perspective *
 prune examples/
-include README.md
-include LICENSE
