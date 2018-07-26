@@ -9,7 +9,7 @@
 
 #ifndef PSP_ENABLE_PYTHON
 // #define PSP_ENABLE_PYTHON
-#define PSP_PARALLEL_FOR
+// #define PSP_PARALLEL_FOR
 #endif
 
 #pragma once

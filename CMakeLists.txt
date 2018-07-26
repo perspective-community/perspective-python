@@ -15,23 +15,12 @@ include_directories("/boost_includes")
 
 
 if(DEFINED ENV{PSP_DEBUG})
-	set(OPT_FLAGS " \
-		-O1 \
-		-g4 \
-	    -s ASSERTIONS=2 \
-	")
+	set(OPT_FLAGS "-O1 -g4 -s ASSERTIONS=2")
 else()
-    set(OPT_FLAGS " \
-		-O3 \
-		-g0 \
-	")
+    set(OPT_FLAGS "-O3 -g0")
 endif()
 
-set(CMAKE_C_FLAGS " \
-	${CMAKE_C_FLAGS} \
-	${EXTENDED_FLAGS} \
-	${OPT_FLAGS} \
-")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTENDED_FLAGS} ${OPT_FLAGS} ")
 
 set (SOURCE_FILES
 perspective/src/aggregate.cpp
