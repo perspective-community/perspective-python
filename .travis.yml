@@ -13,7 +13,7 @@ git:
 
 before_install:
   # LINUX
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq install libboost-python-dev; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -qq install libboost-python-dev tbb-devel; fi
 
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo rm -f /usr/lib/libboost_python.so; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo rm -f /usr/lib/x86_64-linux-gnu/libboost_python.so; fi
