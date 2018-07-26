@@ -7,7 +7,7 @@
  *
  */
 
-#ifdef __linux__
+#ifdef __APPLE__
 
 #include <perspective/first.h>
 #ifdef PSP_ENABLE_PYTHON

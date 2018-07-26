@@ -39,6 +39,7 @@ perspective/src/aggspec.cpp
 perspective/src/arg_sort.cpp
 perspective/src/base.cpp
 perspective/src/base_impl_linux.cpp
+perspective/src/base_impl_osx.cpp
 perspective/src/base_impl_win.cpp
 perspective/src/build_filter.cpp
 perspective/src/calc_agg_dtype.cpp
@@ -46,6 +47,7 @@ perspective/src/column.cpp
 perspective/src/comparators.cpp
 perspective/src/compat.cpp
 perspective/src/compat_impl_linux.cpp
+perspective/src/compat_impl_osx.cpp
 perspective/src/compat_impl_win.cpp
 perspective/src/config.cpp
 perspective/src/context_base.cpp
@@ -78,6 +80,7 @@ perspective/src/port.cpp
 perspective/src/query.cpp
 perspective/src/raii.cpp
 perspective/src/raii_impl_linux.cpp
+perspective/src/raii_impl_osx.cpp
 perspective/src/raii_impl_win.cpp
 perspective/src/range.cpp
 perspective/src/rlookup.cpp
@@ -91,6 +94,7 @@ perspective/src/sparse_tree_node.cpp
 perspective/src/step_delta.cpp
 perspective/src/storage.cpp
 perspective/src/storage_impl_linux.cpp
+perspective/src/storage_impl_osx.cpp
 perspective/src/storage_impl_win.cpp
 perspective/src/sym_table.cpp
 perspective/src/table.cpp
