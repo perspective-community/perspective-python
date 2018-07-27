@@ -15,9 +15,9 @@ include_directories("/boost_includes")
 
 
 if(DEFINED ENV{PSP_DEBUG})
-	set(OPT_FLAGS "-O1 -g4 -s ASSERTIONS=2")
+	set(OPT_FLAGS "-O1 -g4 -s ASSERTIONS=2 -DPSP_ENABLE_PYTHON")
 else()
-    set(OPT_FLAGS "-O3 -g0")
+    set(OPT_FLAGS "-O3 -g0 -DPSP_ENABLE_PYTHON")
 endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTENDED_FLAGS} ${OPT_FLAGS} ")
@@ -98,4 +98,9 @@ perspective/src/vocab.cpp
 
 set(CMAKE_CXX_FLAGS " -std=c++0x ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 
-add_library(psp.so ${SOURCE_FILES})
+add_library(psp.a ${SOURCE_FILES})
+
+add_executable(perspective_test perspective/src/main.cpp)
+target_link_libraries(perspective_test psp.a)
+set_target_properties(perspective_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../")
+
