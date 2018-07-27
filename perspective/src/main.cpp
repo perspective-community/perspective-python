@@ -30,14 +30,22 @@ using namespace perspective;
 int
 main(int argc, char** argv)
 {
-    t_svec colnames = std::vector<std::string>();
-    t_dtypevec dtypes = std::vector<t_dtype>();
+    // t_svec colnames = std::vector<std::string>();
+    t_svec colnames = {"Col1", "Col2"};
+    // t_dtypevec dtypes = std::vector<t_dtype>();
+    t_dtypevec dtypes = {DTYPE_INT64, DTYPE_STR};
 
-    t_uint32 size = 1000;
+    t_uint32 size = 10;
 
     auto tbl = std::make_shared<t_table>(t_schema(colnames, dtypes));
     tbl->init();
     tbl->extend(size);
 
     std::cout << "Perspective initialized successfully." << std::endl;
+    std::cout << tbl->num_columns() << std::endl;
+    std::cout << tbl->num_rows() << std::endl;
+    std::cout << tbl->size() << std::endl;
+    std::cout << tbl->get_schema() << std::endl;
+    std::cout << tbl->get_capacity() << std::endl;
+    tbl->pprint();
 }
