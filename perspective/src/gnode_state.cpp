@@ -16,7 +16,10 @@
 #include <perspective/sym_table.h>
 #ifdef PSP_PARALLEL_FOR
 #include <tbb/tbb.h>
-// #include <perspective/config_proc.h>
+#endif
+
+#ifdef PSP_ENABLE_PYTHON_JPM
+#include <perspective/config_proc.h>
 #endif
 
 namespace perspective
@@ -439,7 +442,7 @@ t_gstate::pprint() const
     m_table->pprint(indices);
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 t_gstate::get_mask() const
 {
@@ -675,7 +678,7 @@ t_table*
 t_gstate::_get_pkeyed_table(const t_schema& schema,
                             const t_mask& mask) const
 {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     static bool const enable_pkeyed_table_mask_fix = athena::Conf_proc::isFeatureEnabled("PSP_GNODE_PKEYED_TABLE_MASK_FIX");
 #else
     static bool const enable_pkeyed_table_mask_fix = true;

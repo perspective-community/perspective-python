@@ -65,8 +65,13 @@ enum t_dtype
     DTYPE_LAST
 };
 
+#ifdef PSP_ENABLE_WASM
+typedef t_uint32 t_uindex;
+typedef t_int32 t_index;
+#else
 typedef t_uint64 t_uindex;
 typedef t_int64 t_index;
+#endif
 
 #ifdef WIN32
 typedef t_uint32 t_fflag;

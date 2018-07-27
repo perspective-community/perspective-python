@@ -13,6 +13,12 @@
 #include <perspective/update_task.h>
 #include <perspective/compat.h>
 #include <perspective/env_vars.h>
+
+#ifdef PSP_ENABLE_PYTHON_JPM
+#include <ASGWidget/ASGWidget.h>
+#include <polaris/jitcompiler_psp.h>
+#endif
+
 #include <thread>
 #include <chrono>
 
@@ -28,7 +34,7 @@ t_updctx::t_updctx(t_uindex gnode_id, const t_str& ctx)
 {
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_pool::t_pool(PyObject* update_delegate)
     : m_sleep(
           100),
@@ -36,6 +42,17 @@ t_pool::t_pool(PyObject* update_delegate)
       m_has_python_dep(false)
 {
     Py_XINCREF(m_update_delegate);
+    m_run.clear();
+#ifdef PSP_ENABLE_PYTHON_JPM
+    JITCompiler::init();
+#endif
+}
+#elif PSP_ENABLE_WASM
+t_pool::t_pool(emscripten::val update_delegate)
+    : m_sleep(0),
+      m_update_delegate(update_delegate),
+      m_has_python_dep(false)
+{
     m_run.clear();
 }
 #else
@@ -52,7 +69,7 @@ t_pool::t_pool()
 
 t_pool::~t_pool()
 {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     Py_XDECREF(m_update_delegate);
 #endif
 }
@@ -64,7 +81,7 @@ t_pool::init()
     {
         std::cout << "t_pool.init " << std::endl;
     }
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     if (m_update_delegate != Py_None)
     {
         t_str fn_name("step_completed");
@@ -91,7 +108,7 @@ t_pool::init()
     t.detach();
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_uindex
 t_pool::register_gnode(t_gnode* node, PyObject* pynode)
 {
@@ -147,7 +164,7 @@ t_pool::unregister_gnode(t_uindex idx)
     }
 
     m_gnodes[idx] = 0;
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     if (m_pynodes[idx])
         Py_XDECREF(m_pynodes[idx]);
     m_pynodes[idx] = 0;
@@ -159,7 +176,7 @@ t_pool::send(t_uindex gnode_id,
              t_uindex port_id,
              const t_table& table)
 {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     Py_BEGIN_ALLOW_THREADS;
 #endif
     {
@@ -183,7 +200,7 @@ t_pool::send(t_uindex gnode_id,
             table.pprint();
         }
     }
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     Py_END_ALLOW_THREADS;
 #endif
 }
@@ -194,8 +211,13 @@ t_pool::_process_helper()
     auto work_to_do = m_data_remaining.load();
     if (work_to_do)
     {
+#ifdef PSP_ENABLE_PYTHON_JPM
+        auto task = new t_update_task(*this);
+        ASGWidget::c_task_queue_post(task);
+#else
         t_update_task task(*this);
         task.run();
+#endif
     }
 }
 
@@ -203,14 +225,14 @@ void
 t_pool::_process()
 {
     t_uindex sleep_time = m_sleep.load();
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     while (m_run.test_and_set(std::memory_order_acquire))
     {
 #endif
         _process_helper();
         std::this_thread::sleep_for(
             std::chrono::milliseconds(sleep_time));
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     }
 #endif
 }
@@ -240,7 +262,7 @@ t_pool::set_sleep(t_uindex ms)
 void
 t_pool::py_notify_userspace()
 {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     if (m_update_delegate == Py_None)
         return;
     if (t_env::log_progress())
@@ -254,8 +276,8 @@ t_pool::py_notify_userspace()
         PyErr_Print();
     }
     Py_XDECREF(rval);
+#elif PSP_ENABLE_WASM
     m_update_delegate.call<void>("_update_callback");
-#else
 #endif
 }
 
@@ -281,7 +303,7 @@ t_pool::get_trees()
     return rval;
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 void
 t_pool::set_update_delegate(PyObject* ud)
 {
@@ -296,14 +318,16 @@ t_pool::set_update_delegate(PyObject* ud)
                   << " ud => " << ud << std::endl;
     }
 }
-#else
+#elif PSP_ENABLE_WASM
 void
-t_pool::set_update_delegate()
-{}
+t_pool::set_update_delegate(emscripten::val ud)
+{
+    m_update_delegate = ud;
+}
 
 #endif
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 void
 t_pool::register_context(t_uindex gnode_id,
                          const t_str& name,
@@ -329,6 +353,27 @@ t_pool::register_context(t_uindex gnode_id,
                   << " py_ctx => " << py_ctx << std::endl;
     }
 }
+#elif PSP_ENABLE_WASM
+void
+t_pool::register_context(t_uindex gnode_id,
+                         const t_str& name,
+                         t_ctx_type type,
+                         t_int32 ptr)
+{
+    std::lock_guard<std::mutex> lg(m_mtx);
+    if (!validate_gnode_id(gnode_id))
+        return;
+    m_gnodes[gnode_id]->_register_context(name, type, ptr);
+
+    if (t_env::log_progress())
+    {
+        std::cout << repr() << " << t_pool.register_context: "
+                  << " gnode_id => " << gnode_id << " name => "
+                  << name << " type => " << type << " ptr => " << ptr
+                  << std::endl;
+    }
+}
+
 #else
 
 void
@@ -366,7 +411,7 @@ t_pool::unregister_context(t_uindex gnode_id, const t_str& name)
     if (!validate_gnode_id(gnode_id))
         return;
     m_gnodes[gnode_id]->_unregister_context(name);
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     auto ctx_iter = m_ctx_refmap.find(t_ctx_id(gnode_id, name));
     if (ctx_iter != m_ctx_refmap.end())
     {

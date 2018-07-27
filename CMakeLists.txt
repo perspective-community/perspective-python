@@ -98,4 +98,4 @@ perspective/src/vocab.cpp
 
 set(CMAKE_CXX_FLAGS " -std=c++0x ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 
-add_library(libpsp.so ${SOURCE_FILES})
+add_library(psp.so ${SOURCE_FILES})

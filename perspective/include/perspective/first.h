@@ -7,8 +7,7 @@
  *
  */
 
-#ifndef PSP_ENABLE_PYTHON
-// #define PSP_ENABLE_PYTHON
+#ifndef PSP_ENABLE_WASM
 #define PSP_PARALLEL_FOR
 #endif
 

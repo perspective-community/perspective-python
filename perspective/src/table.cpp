@@ -18,10 +18,13 @@
 #include <perspective/utils.h>
 #include <perspective/logtime.h>
 #include <sstream>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <perspective/pyutils.h>
 #include <perspective/pythonhelpers.h>
+#include <polaris/jitcompiler_psp.h>
 #endif
+
 namespace perspective
 {
 
@@ -662,7 +665,7 @@ t_table::filter_cpp(t_filter_op combiner,
     return mask;
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 
 t_mask
 t_table::where(const t_str& expr) const
@@ -1137,6 +1140,7 @@ t_table::fill_expr_helper(const t_svec& icol_names,
 #endif
 }
 
+#ifndef PSP_ENABLE_PYTHON_JPM
 t_uindex
 t_table::register_jit_expr(PyObject* fn, const t_str& output_column)
 {
@@ -1147,7 +1151,61 @@ void
 t_table::fill_expr_jit(t_uindex expr_idx)
 {
 }
+#else
+t_uindex
+t_table::register_jit_expr(PyObject* fn, const t_str& output_column)
+{
+    if (!fn || !PyFunction_Check(fn))
+    {
+        std::cout << "Invalid function passed in to register_jit_expr"
+                  << std::endl;
+        return -1;
+    }
+    namespace jc = JITCompiler;
 
+    auto fn_ = reinterpret_cast<PyFunctionObject*>(fn);
+
+    t_dtype col_dtype = m_schema.has_column(output_column)
+                            ? get_column(output_column)->get_dtype()
+                            : DTYPE_NONE;
+    auto s_tblctx = m_schema.get_table_context();
+
+    try
+    {
+        t_jitsptr jit =
+            std::make_shared<t_jit>(fn_, s_tblctx, col_dtype);
+        m_einfovec.emplace_back(t_expr_info(jit, output_column));
+    }
+    catch (jc::CompilationError const& exn)
+    {
+        std::cout << "Failed compiling expression " << std::endl;
+        std::cout << exn.what() << std::endl;
+        exn.pyErrFormat();
+        return -1;
+    }
+
+    const auto& einfo = m_einfovec.back();
+    if (!m_schema.has_column(output_column))
+    {
+        add_column(output_column, einfo.m_jit->resultType(), true);
+    }
+
+    return m_einfovec.size() - 1;
+}
+
+void
+t_table::fill_expr_jit(t_uindex expr_idx)
+{
+    if (expr_idx >= m_einfovec.size())
+        return;
+
+    const auto& einfo = m_einfovec[expr_idx];
+    auto d_tblctx = get_dynamic_context();
+    auto ocol_dctx = get_column(einfo.m_ocol)->get_dynamic_context();
+    const t_jit& jit = *(einfo.m_jit);
+    jit.invoke(d_tblctx.data(), size(), &ocol_dctx);
+}
+#endif
 void
 t_table::fill_expr_jit(PyObject* fn, const t_str& output_column)
 {
