@@ -142,7 +142,7 @@ t_filter::t_filter(const t_svec& columns, t_uindex mask_size)
 {
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_filter::t_filter(const t_svec& columns, PyObject* mask)
     : m_mode(SELECT_MODE_MASK), m_columns(columns),
       m_mask(std::make_shared<t_mask>(mask))

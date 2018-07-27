@@ -64,7 +64,7 @@ union t_scalar_u {
 };
 
 // t_scalar should remain a POD type.
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 #pragma pack(push)
 #pragma pack(1)
 #endif
@@ -152,7 +152,7 @@ struct PERSPECTIVE_EXPORT t_tscalar
     t_bool m_inplace;
 };
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 #pragma pack(pop)
 #endif
 
@@ -176,7 +176,7 @@ t_tscalar::coerce_numeric() const
 template <>
 t_tscalar t_tscalar::coerce_numeric<t_bool>() const;
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_int64 py_to_int(PyObject* pyo, t_bool& valid);
 t_float64 py_to_float(PyObject* pyo, t_bool& valid);
 

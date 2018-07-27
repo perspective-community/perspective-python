@@ -17,13 +17,16 @@
 #include <perspective/mask.h>
 #include <perspective/filter.h>
 #include <perspective/compat.h>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <polaris/jitcompiler_psp.h>
 #endif
+
 #ifdef PSP_PARALLEL_FOR
 #include <tbb/parallel_sort.h>
 #include <tbb/tbb.h>
 #endif
+
 #include <tuple>
 
 namespace perspective
@@ -75,7 +78,7 @@ struct PERSPECTIVE_EXPORT t_table_recipe
     t_column_recipe_vec m_columns;
 };
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 typedef JITCompiler::PspCompiledComputedColumn t_jit;
 typedef std::shared_ptr< t_jit > t_jitsptr;
 
@@ -160,7 +163,7 @@ class PERSPECTIVE_EXPORT t_table
 
     t_column* clone_column(const t_str& existing_col,
                            const t_str& new_colname);
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     PyObject* filter(t_filter_op combiner,
                      const t_ftermvec& fops) const;
     void fill_expr_helper(const t_svec& icol_names,
@@ -279,7 +282,7 @@ class PERSPECTIVE_EXPORT t_table
     t_colsptrvec m_columns;
     t_table_recipe m_recipe;
     t_bool m_from_recipe;
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     t_expr_infovec m_einfovec;
 #endif
 };

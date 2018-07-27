@@ -10,11 +10,13 @@
 #include <perspective/first.h>
 #include <perspective/portable.h>
 SUPPRESS_WARNINGS_VC(4505)
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #define NO_IMPORT_ARRAY
 #define PY_ARRAY_UNIQUE_SYMBOL _perspectiveNumpy
 #include <numpy/arrayobject.h>
 #endif
+
 #include <perspective/column.h>
 #include <perspective/defaults.h>
 #include <perspective/base.h>
@@ -190,7 +192,7 @@ t_column::~t_column()
     LOG_DESTRUCTOR("t_column");
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 t_column::_as_numpy()
 {

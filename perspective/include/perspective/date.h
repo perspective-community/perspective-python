@@ -105,7 +105,7 @@ class PERSPECTIVE_EXPORT t_date
     friend inline size_t hash_value(const t_date& d);
 
     void set_psp_date(t_uindex dt);
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     void set_py_date(PyObject* pyo);
     PyObject* get_py_date() const;
 #endif

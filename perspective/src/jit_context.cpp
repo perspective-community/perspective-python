@@ -12,7 +12,8 @@
 #include <perspective/utils.h>
 #include <perspective/pythonhelpers.h>
 #include <perspective/init.h>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <polaris/jitcompiler_psp.h>
 #endif
 

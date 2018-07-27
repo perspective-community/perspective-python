@@ -16,7 +16,7 @@
 #include <perspective/config.h>
 #include <perspective/pivot.h>
 #include <perspective/filter.h>
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <perspective/jit_context.h>
 #endif
 
@@ -162,7 +162,7 @@ class PERSPECTIVE_EXPORT t_config
     void build_expressions(const t_table_static_ctx& pkeyed_ctx,
                            const t_table_static_ctx& non_pkeyed_ctx);
     t_fmode get_fmode() const;
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     t_jit_ctxcsptr
     get_pkeyed_jit() const
     {
@@ -204,7 +204,7 @@ class PERSPECTIVE_EXPORT t_config
     t_fmode m_fmode;
     t_svec m_filter_exprs;
     t_str m_grand_agg_str;
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     t_jit_ctxsptr m_pkeyed_jit;
     t_jit_ctxsptr m_non_pkeyed_jit;
 #endif

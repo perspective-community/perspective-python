@@ -8,7 +8,7 @@
  */
 
 #include <perspective/first.h>
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <datetime.h>
 #endif
 #include <perspective/date.h>
@@ -20,7 +20,7 @@ t_date::t_date() : m_storage(0)
 {
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 void
 t_date::set_py_date(PyObject* pyo)
 

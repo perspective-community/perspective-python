@@ -17,9 +17,11 @@
 #include <perspective/mask.h>
 #include <perspective/tracing.h>
 #include <perspective/env_vars.h>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <perspective/pythonhelpers.h>
 #endif
+
 #include <perspective/logtime.h>
 #include <perspective/utils.h>
 
@@ -189,7 +191,7 @@ t_gnode::init()
 
     t_port_sptr& iport = m_iports[0];
     t_table_sptr flattened = iport->get_table()->flatten();
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     for (const auto& ccol : m_custom_columns)
     {
         flattened->fill_expr(ccol.get_icols(),
@@ -417,7 +419,7 @@ t_gnode::_process()
     {
         for (const auto& ccol : m_custom_columns)
         {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
             flattened->fill_expr(ccol.get_icols(),
                                  ccol.get_expr(),
                                  ccol.get_ocol(),
@@ -612,7 +614,7 @@ t_gnode::_process()
         populate_icols_in_flattened(lkup, flattened);
         for (const auto& ccol : m_custom_columns)
         {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
             flattened->fill_expr(ccol.get_icols(),
                                  ccol.get_expr(),
                                  ccol.get_ocol(),
@@ -991,7 +993,7 @@ t_gnode::pprint() const
     m_state->pprint();
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 t_gnode::get_mask() const
 {

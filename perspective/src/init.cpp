@@ -10,7 +10,8 @@
 #include <perspective/first.h>
 #include <perspective/init.h>
 #include <perspective/numpy.h>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <polaris/jitcompiler_psp.h>
 #endif
 
@@ -22,7 +23,7 @@ perspective_jit_global_dict()
 {
     static PyObject* global_d = 0;
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     if (!global_d)
     {
         global_d = PyDict_New();

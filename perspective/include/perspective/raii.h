@@ -15,7 +15,7 @@
 namespace perspective
 {
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 struct t_py_handle
 {
     PyObject* m_pyo;

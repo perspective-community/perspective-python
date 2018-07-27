@@ -104,7 +104,7 @@ t_aggspec::t_aggspec(const t_str& aggname,
 {
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_aggspec::t_aggspec(const t_str& aggname,
                      const t_str& disp_aggname,
                      t_aggtype agg,
@@ -123,7 +123,7 @@ t_aggspec::t_aggspec(const t_str& aggname,
 
 t_aggspec::~t_aggspec()
 {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     if (m_kernel)
     {
         Py_XDECREF(m_kernel);
@@ -520,7 +520,7 @@ t_aggspec::is_reducer_agg() const
     return m_agg == AGGTYPE_UDF_REDUCER;
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 t_aggspec::get_py_kernel()
 {

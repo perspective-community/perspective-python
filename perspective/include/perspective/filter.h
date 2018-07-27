@@ -220,7 +220,7 @@ class PERSPECTIVE_EXPORT t_filter
     t_filter(const t_svec& columns, t_uindex bidx, t_uindex eidx);
 
     t_filter(const t_svec& columns, t_uindex mask_size);
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     t_filter(const t_svec& columns, PyObject* mask);
 #endif
     t_filter(const t_mask& mask);

@@ -430,7 +430,7 @@ t_config::has_filters() const
             return !m_fterms.empty();
         }
         break;
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
         case FMODE_JIT_EXPR:
         {
             return m_pkeyed_jit->has_fn() &&
@@ -601,7 +601,7 @@ void
 t_config::build_expressions(const t_table_static_ctx& pkeyed_ctx,
                             const t_table_static_ctx& non_pkeyed_ctx)
 {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     if (m_fmode != FMODE_JIT_EXPR)
         return;
     m_pkeyed_jit.reset(new t_jit_ctx(m_filter_exprs, m_combiner));

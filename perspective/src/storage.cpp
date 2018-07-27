@@ -10,12 +10,14 @@
 #include <perspective/first.h>
 #include <perspective/portable.h>
 SUPPRESS_WARNINGS_VC(4505)
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #define NO_IMPORT_ARRAY
 #define PY_ARRAY_UNIQUE_SYMBOL _perspectiveNumpy
 #include <numpy/arrayobject.h>
 #include <perspective/numpy.h>
 #endif
+
 #include <stdlib.h>
 #include <assert.h>
 #include <csignal>
@@ -493,7 +495,7 @@ t_lstore::warmup()
     PSP_VERBOSE_ASSERT(m_init, "touching uninited object");
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 t_lstore::_as_numpy(t_dtype dtype)
 {

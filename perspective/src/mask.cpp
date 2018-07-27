@@ -9,11 +9,13 @@
 
 #include <perspective/first.h>
 #include <perspective/mask.h>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #define NO_IMPORT_ARRAY
 #define PY_ARRAY_UNIQUE_SYMBOL _perspectiveNumpy
 #include <numpy/arrayobject.h>
 #endif
+
 #include <perspective/raii.h>
 
 namespace perspective
@@ -29,7 +31,7 @@ t_mask::t_mask(t_uindex size) : m_bitmap(t_msize(size))
     LOG_CONSTRUCTOR("t_mask");
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_mask::t_mask(PyObject* mask)
 {
     LOG_CONSTRUCTOR("t_mask");
@@ -143,7 +145,7 @@ t_mask::find_next(t_uindex pos) const
     return m_bitmap.find_next(t_msize(pos));
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 t_mask::as_numpy() const
 {

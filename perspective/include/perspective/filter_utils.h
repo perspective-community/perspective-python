@@ -22,7 +22,7 @@ filter_table_for_config(const t_table& tbl, const t_config& config)
 
     switch (config.get_fmode())
     {
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
         case FMODE_JIT_EXPR:
         {
             t_mask msk(tbl.size());

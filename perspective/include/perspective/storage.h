@@ -186,7 +186,7 @@ class PERSPECTIVE_MPROTECT_EXPORT t_lstore : public t_debug_helper
     template <typename T>
     T* extend(t_uindex idx);
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     /* Python bits */
     PyObject* _as_numpy(t_dtype dtype);
 

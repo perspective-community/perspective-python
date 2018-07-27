@@ -19,7 +19,7 @@
 namespace perspective
 {
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_py_handle::t_py_handle(PyObject* pyo) : m_pyo(pyo)
 {
 }

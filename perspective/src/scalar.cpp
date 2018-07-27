@@ -21,10 +21,12 @@
 #include <sstream>
 #include <cmath>
 #include <limits>
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <datetime.h>
 #include <perspective/pythonhelpers.h>
 #endif
+
 SUPPRESS_WARNINGS_VC(4800)
 
 namespace perspective
@@ -1449,7 +1451,7 @@ t_tscalar::get_dtype() const
     return static_cast<t_dtype>(m_type);
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 PyObject*
 tscalar_to_python(const t_tscalar& s)
 {

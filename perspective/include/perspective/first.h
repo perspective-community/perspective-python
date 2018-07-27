@@ -17,7 +17,8 @@
 #define NOMINMAX
 #endif // ifndex nominmax
 #endif // win32
-#ifdef PSP_ENABLE_PYTHON
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #include <Python.h>
 #endif
 

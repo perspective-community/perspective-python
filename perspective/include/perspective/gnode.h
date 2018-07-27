@@ -92,7 +92,7 @@ class PERSPECTIVE_EXPORT t_gnode
 
     void pprint() const;
     t_svec get_registered_contexts() const;
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
     PyObject* get_mask() const;
 #endif
     t_schema get_tblschema() const;

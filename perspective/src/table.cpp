@@ -28,7 +28,7 @@
 namespace perspective
 {
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_expr_info::t_expr_info(t_jitsptr jit, const t_str& ocol)
     : m_jit(jit), m_ocol(ocol)
 {

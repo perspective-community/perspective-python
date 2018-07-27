@@ -151,7 +151,7 @@ t_leaf_data_iter<CONTEXT_T>& t_leaf_data_iter<CONTEXT_T>::operator++()
     return *this;
 }
 
-#ifdef PSP_ENABLE_PYTHON
+#ifdef PSP_ENABLE_PYTHON_JPM
 template <typename ITER_T>
 PyObject* iter_into_numpy_arrays(PyObject* py_iterable,
                                  ITER_T& iter,
