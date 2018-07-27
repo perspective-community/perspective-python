@@ -6,13 +6,17 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_AR ar)
 set(CMAKE_RANLIB ranlib)
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+find_package(TBB)
+
 list(APPEND CMAKE_PREFIX_PATH /usr/local)
 
 include_directories("${CMAKE_SOURCE_DIR}/perspective/include")
 include_directories("/usr/local/include")
 include_directories("/usr/local/include/python3.7m")
 include_directories("/boost_includes")
-
+find_library(tbb tbb)
 
 if(DEFINED ENV{PSP_DEBUG})
 	set(OPT_FLAGS "-O1 -g4 -s ASSERTIONS=2 -DPSP_ENABLE_PYTHON")
@@ -100,7 +104,9 @@ set(CMAKE_CXX_FLAGS " -std=c++0x ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 
 add_library(psp.a ${SOURCE_FILES})
 
+
 add_executable(perspective_test perspective/src/main.cpp)
 target_link_libraries(perspective_test psp.a)
+target_link_libraries(perspective_test tbb)
 set_target_properties(perspective_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../")
 

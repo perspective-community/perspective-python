@@ -7,6 +7,8 @@
  *
  */
 
+#include <vector>
+#include <string>
 #include <perspective/base.h>
 #include <perspective/gnode.h>
 #include <perspective/table.h>
@@ -28,5 +30,14 @@ using namespace perspective;
 int
 main(int argc, char** argv)
 {
+    t_svec colnames = std::vector<std::string>();
+    t_dtypevec dtypes = std::vector<t_dtype>();
+
+    t_uint32 size = 1000;
+
+    auto tbl = std::make_shared<t_table>(t_schema(colnames, dtypes));
+    tbl->init();
+    tbl->extend(size);
+
     std::cout << "Perspective initialized successfully." << std::endl;
 }
