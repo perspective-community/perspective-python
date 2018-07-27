@@ -6,7 +6,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_AR ar)
 set(CMAKE_RANLIB ranlib)
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
 
 find_package(TBB)
 
@@ -108,5 +109,10 @@ add_library(psp ${SOURCE_FILES})
 add_executable(perspective_test perspective/src/main.cpp)
 target_link_libraries(perspective_test psp)
 target_link_libraries(perspective_test tbb)
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(perspective_test pthread)
+endif()
+
 set_target_properties(perspective_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../")
 
