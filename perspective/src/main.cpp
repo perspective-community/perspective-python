@@ -10,16 +10,10 @@
 #include <vector>
 #include <string>
 #include <perspective/base.h>
-#include <perspective/gnode.h>
 #include <perspective/table.h>
-#include <perspective/pool.h>
-#include <perspective/context_zero.h>
-#include <perspective/context_one.h>
-#include <perspective/context_two.h>
 #include <random>
 #include <cmath>
 #include <sstream>
-#include <perspective/sym_table.h>
 
 using namespace perspective;
 

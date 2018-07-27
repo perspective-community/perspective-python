@@ -9,16 +9,20 @@
 
 #include <perspective/first.h>
 #include <perspective/base.h>
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 #define NO_IMPORT_ARRAY
 #define PY_ARRAY_UNIQUE_SYMBOL _perspectiveNumpy
 #include <numpy/arrayobject.h>
 SUPPRESS_WARNINGS_GCC(-Wreorder)
 #include <chartdir/chartdir.h>
 RESTORE_WARNINGS_GCC()
+#include <perspective/pythonhelpers.h>
+#endif
+
 #include <perspective/raii.h>
 #include <perspective/sym_table.h>
 #include <perspective/chart_interfaces.h>
-#include <perspective/pythonhelpers.h>
 #include <perspective/config.h>
 #include <perspective/min_max.h>
 #include <perspective/context_zero.h>
@@ -139,6 +143,9 @@ init_numeric_bin(std::vector<void*>& out,
                  t_uindex ridx,
                  t_float64 x_value)
 {
+#ifndef PSP_ENABLE_PYTHON_JPM
+    return 0;
+#else
     t_float64* x_col_ptr = static_cast<t_float64*>(out[0]);
 
     for (t_uindex bi = 0; bi < 4; bi++)
@@ -154,6 +161,7 @@ init_numeric_bin(std::vector<void*>& out,
     }
 
     return ridx;
+#endif
 }
 
 // if bin represents few rows, all four values are not needed so
@@ -163,6 +171,9 @@ contract_numeric_bin(std::vector<void*>& out,
                      t_uindex ridx,
                      t_uindex count)
 {
+#ifndef PSP_ENABLE_PYTHON_JPM
+    return 0;
+#else
     if (ridx < 4)
         return ridx;
 
@@ -185,6 +196,7 @@ contract_numeric_bin(std::vector<void*>& out,
         default:
             return ridx;
     }
+#endif
 }
 
 // update array (column) aidx in current bin with value.
@@ -194,6 +206,9 @@ update_numeric_bin(std::vector<void*>& out,
                    t_float64 aidx,
                    t_float64 value)
 {
+#ifndef PSP_ENABLE_PYTHON_JPM
+    return;
+#else
     t_float64* col_ptr = static_cast<t_float64*>(out[aidx]);
 
     // skip NaNs altogether
@@ -219,9 +234,9 @@ update_numeric_bin(std::vector<void*>& out,
                 col_ptr[ridx - 3] = value;
         }
     }
+#endif
 }
 
-#ifdef PSP_ENABLE_PYTHON_JPM
 // read rows from iterator and store in the numpy array columns,
 // but bin on the first column's values (x-value) to reduce the
 // result.
@@ -238,6 +253,9 @@ _iter_into_numpy_arrays_binned(ITER_T& iter,
                                const t_idxvec& idxs,
                                const t_idxvec& types)
 {
+#ifndef PSP_ENABLE_PYTHON_JPM
+    return 0;
+#else
     t_float64* x_col_ptr = static_cast<t_float64*>(out[0]);
     t_float64 start_x = 0.0;
     t_float64 this_x = 0.0;
@@ -319,6 +337,7 @@ _iter_into_numpy_arrays_binned(ITER_T& iter,
 
     ridx = contract_numeric_bin(out, ridx, this_count);
     return ridx;
+#endif
 }
 
 // read rows from iterator and store directly in the numpy array
@@ -334,6 +353,9 @@ _iter_into_numpy_arrays_simple(ITER_T& iter,
                                const t_idxvec& idxs,
                                const t_idxvec& types)
 {
+#ifndef PSP_ENABLE_PYTHON_JPM
+    return 0;
+#else
     t_float64 this_x = 0.0;
 
     // interpret and copy the data
@@ -395,8 +417,11 @@ _iter_into_numpy_arrays_simple(ITER_T& iter,
     }
 
     return ridx;
+#endif
 }
 
+
+#ifdef PSP_ENABLE_PYTHON_JPM
 // Python API: Take a list of Numpy arrays and a row iterator of
 // data and copy+convert the data to ChartDirector friendly format
 // stored in the array columns, optionally binning to reduce amount.
@@ -616,8 +641,8 @@ context_into_numpy_arrays_2s(PyObject* py_iterable,
         idxs,
         types);
 }
-
 #endif
+
 
 t_leaf_data_iter<t_ctx0>::t_leaf_data_iter(t_ftrav_csptr traversal,
                                            t_gstate_csptr ds,

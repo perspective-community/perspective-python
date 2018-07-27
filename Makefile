@@ -4,6 +4,9 @@ build: ## build the package
 buildext: ## build the package extensions
 	python3 setup.py build_ext
 
+buildinplace: build  ## build the package extensions
+	cp -r build/`ls build | grep temp`/*.a ./perspective
+
 tests: ## Clean and Make unit tests
 	python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 	
@@ -22,6 +25,8 @@ clean: ## clean the repository
 	find . -name ".ipynb_checkpoints" | xargs  rm -rf 
 	rm -rf .coverage cover htmlcov logs build dist *.egg-info
 	make -C ./docs clean
+	find . -name "*.so"  | xargs rm -rf
+	find . -name "*.a"  | xargs rm -rf
 
 labextension: install ## enable labextension
 	jupyter labextension install @jpmorganchase/perspective-jupyterlab

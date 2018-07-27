@@ -10,15 +10,6 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-# sources = []
-# outputs = []
-# for path, subdirs, files in os.walk('perspective/src/binding'):
-#     for name in files:
-#         fp = os.path.join(path, name)
-#         if fp.endswith('cpp'):
-#             outputs.append(fp.replace('.cpp', '').replace('/src/binding', ''))
-#             sources.append(fp)
-
 
 class CMakeExtension(Extension):
 
@@ -47,20 +38,20 @@ class build_ext(build_ext_orig):
         # example of cmake args
         config = 'Debug' if self.debug else 'Release'
         cmake_args = [
-            '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + str(extdir.parent.absolute()),
-            '-DCMAKE_BUILD_TYPE=' + config
+            '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + str(os.path.join(extdir.parent.absolute(), 'perspective')),
+            '-DCMAKE_BUILD_TYPE=' + config,
         ]
 
         # example of build args
         build_args = [
             '--config', config,
-            '--', '-j4'
+            '--', '-j8',
         ]
 
         os.chdir(str(build_temp))
         self.spawn(['cmake', str(cwd)] + cmake_args)
         if not self.dry_run:
-            self.spawn(['cmake', '--build', '.'] + build_args)
+            self.spawn(['cmake', '--build', '.', ] + build_args)
         os.chdir(str(cwd))
 
 
@@ -90,10 +81,6 @@ setup(
     include_package_data=True,
     zip_safe=False,
     ext_modules=[
-        # Extension(x,
-        #           include_dirs=["perspective/include"],
-        #           sources=[y],
-        #           libraries=["boost_python"]) for x, y in zip(outputs, sources),
         CMakeExtension('perspective')
     ],
     cmdclass={

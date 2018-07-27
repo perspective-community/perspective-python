@@ -8,16 +8,19 @@ set(CMAKE_RANLIB ranlib)
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
-
-find_package(TBB)
-
 list(APPEND CMAKE_PREFIX_PATH /usr/local)
 
 include_directories("${CMAKE_SOURCE_DIR}/perspective/include")
 include_directories("/usr/local/include")
 include_directories("/usr/local/include/python3.7m")
 include_directories("/boost_includes")
-find_library(tbb tbb)
+find_package(TBB)
+
+find_package( Boost COMPONENTS python REQUIRED )
+include_directories( ${Boost_INCLUDE_DIR} )
+
+find_package( PythonLibs 3.7 REQUIRED )
+include_directories( ${PYTHON_INCLUDE_DIRS} )
 
 if(DEFINED ENV{PSP_DEBUG})
 	set(OPT_FLAGS "-O1 -g4 -s ASSERTIONS=2 -DPSP_ENABLE_PYTHON")
@@ -37,6 +40,7 @@ perspective/src/base_impl_osx.cpp
 perspective/src/base_impl_win.cpp
 perspective/src/build_filter.cpp
 perspective/src/calc_agg_dtype.cpp
+perspective/src/chart_interfaces.cpp
 perspective/src/column.cpp
 perspective/src/comparators.cpp
 perspective/src/compat.cpp
@@ -103,8 +107,13 @@ perspective/src/vocab.cpp
 
 set(CMAKE_CXX_FLAGS " -std=c++0x ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 
-add_library(psp ${SOURCE_FILES})
+add_library(psp SHARED ${SOURCE_FILES})
+target_link_libraries(psp tbb)
 
+add_library(binding SHARED perspective/src/binding.cpp)
+target_link_libraries(binding psp)
+target_link_libraries(binding tbb)
+target_link_libraries(binding ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
 add_executable(perspective_test perspective/src/main.cpp)
 target_link_libraries(perspective_test psp)
@@ -113,6 +122,11 @@ target_link_libraries(perspective_test tbb)
 if(UNIX AND NOT APPLE)
     target_link_libraries(perspective_test pthread)
 endif()
+
+if(APPLE)
+    set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+endif(APPLE)
+
 
 set_target_properties(perspective_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../")
 
