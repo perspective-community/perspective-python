@@ -30,9 +30,7 @@ using namespace perspective;
 int
 main(int argc, char** argv)
 {
-    // t_svec colnames = std::vector<std::string>();
     t_svec colnames = {"Col1", "Col2"};
-    // t_dtypevec dtypes = std::vector<t_dtype>();
     t_dtypevec dtypes = {DTYPE_INT64, DTYPE_STR};
 
     t_uint32 size = 10;
