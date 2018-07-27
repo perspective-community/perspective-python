@@ -15,11 +15,6 @@
 #include <mutex>
 #include <atomic>
 
-#ifdef PSP_ENABLE_WASM
-#include <emscripten/val.h>
-#endif
-
-
 namespace perspective
 {
 
@@ -53,15 +48,6 @@ class PERSPECTIVE_EXPORT t_pool
                           t_int64 ptr,
                           PyObject* py_ctx = 0);
     void set_update_delegate(PyObject* ud);
-    void py_notify_userspace();
-#elif PSP_ENABLE_WASM
-    t_pool(emscripten::val update_delegate);
-    void set_update_delegate(emscripten::val ud);
-    t_uindex register_gnode(t_gnode* node);
-    void register_context(t_uindex gnode_id,
-                          const t_str& name,
-                          t_ctx_type type,
-                          t_int32 ptr);
     void py_notify_userspace();
 #else
     t_pool();
@@ -121,10 +107,6 @@ class PERSPECTIVE_EXPORT t_pool
     std::vector<PyObject*> m_pynodes;
     PyObject* m_update_delegate;
     t_ctx_refmap m_ctx_refmap;
-#endif
-
-#ifdef PSP_ENABLE_WASM
-    emscripten::val m_update_delegate;
 #endif
     std::atomic_flag m_run;
     std::atomic<t_bool> m_data_remaining;

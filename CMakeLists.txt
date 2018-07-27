@@ -98,11 +98,4 @@ perspective/src/vocab.cpp
 
 set(CMAKE_CXX_FLAGS " -std=c++0x ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 
-add_library(psp ${SOURCE_FILES})
-
-add_executable(perspective.exe perspective/src/main.cpp)
-target_link_libraries(perspective.exe psp)
-set_target_properties(perspective.exe PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../build/")
-set_target_properties(perspective.exe PROPERTIES OUTPUT_NAME "psp")
-
-
+add_library(libpsp.so ${SOURCE_FILES})

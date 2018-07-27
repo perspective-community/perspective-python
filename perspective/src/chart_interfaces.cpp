@@ -72,62 +72,13 @@ t_leaf_data_iter_base::increment()
 inline t_tscalar
 chartdir_time_to_scalar(t_float64 cd_time)
 {
-#ifdef PSP_ENABLE_WASM
     return mknone();
-#else
-    static t_float64 s_cd_epoch = Chart::chartTime(1970, 1, 1);
-
-    t_time asgpivot_time(static_cast<boost::int64_t>(
-        (cd_time - s_cd_epoch) * 1000000));
-    t_tscalar ret;
-    ret.set(asgpivot_time);
-    return ret;
-#endif
 }
 
 inline t_float64
 scalar_to_chartdir_double(const t_tscalar& sv, const t_index& dtype)
 {
-#ifdef PSP_ENABLE_WASM
     return 0;
-#else
-    t_float64 dv = Chart::NoValue;
-
-    if (!sv.is_valid())
-        return dv;
-
-    static t_float64 s_cd_epoch = Chart::chartTime(1970, 1, 1);
-
-    switch (dtype)
-    {
-        case DTYPE_DATE:
-        {
-            t_date dvalue = sv.get<t_date>();
-
-            dv = Chart::chartTime(
-                dvalue.year(), dvalue.month(), dvalue.day());
-        }
-        break;
-
-        case DTYPE_TIME:
-        {
-            t_time tvalue = sv.get<t_time>();
-            dv = s_cd_epoch + tvalue.as_seconds() +
-                 tvalue.microseconds() / 1000000.0;
-        }
-        break;
-
-        default:
-        {
-            if (sv.is_numeric())
-                dv = sv.to_double();
-            else
-                dv = Chart::NoValue;
-        }
-    };
-
-    return dv;
-#endif
 }
 
 // A bin is four numbers: (open, hi, lo, close), in that order.

@@ -13,10 +13,6 @@
 #include <perspective/update_task.h>
 #include <perspective/compat.h>
 #include <perspective/env_vars.h>
-#ifdef PSP_ENABLE_PYTHON
-#include <ASGWidget/ASGWidget.h>
-#include <polaris/jitcompiler_psp.h>
-#endif
 #include <thread>
 #include <chrono>
 
@@ -40,17 +36,6 @@ t_pool::t_pool(PyObject* update_delegate)
       m_has_python_dep(false)
 {
     Py_XINCREF(m_update_delegate);
-    m_run.clear();
-#ifdef PSP_ENABLE_PYTHON
-    JITCompiler::init();
-#endif
-}
-#elif PSP_ENABLE_WASM
-t_pool::t_pool(emscripten::val update_delegate)
-    : m_sleep(0),
-      m_update_delegate(update_delegate),
-      m_has_python_dep(false)
-{
     m_run.clear();
 }
 #else
@@ -209,13 +194,8 @@ t_pool::_process_helper()
     auto work_to_do = m_data_remaining.load();
     if (work_to_do)
     {
-#ifdef PSP_ENABLE_WASM
         t_update_task task(*this);
         task.run();
-#else
-        auto task = new t_update_task(*this);
-        ASGWidget::c_task_queue_post(task);
-#endif
     }
 }
 
@@ -274,8 +254,8 @@ t_pool::py_notify_userspace()
         PyErr_Print();
     }
     Py_XDECREF(rval);
-#elif PSP_ENABLE_WASM
     m_update_delegate.call<void>("_update_callback");
+#else
 #endif
 }
 
@@ -316,12 +296,10 @@ t_pool::set_update_delegate(PyObject* ud)
                   << " ud => " << ud << std::endl;
     }
 }
-#elif PSP_ENABLE_WASM
+#else
 void
-t_pool::set_update_delegate(emscripten::val ud)
-{
-    m_update_delegate = ud;
-}
+t_pool::set_update_delegate()
+{}
 
 #endif
 
@@ -351,27 +329,6 @@ t_pool::register_context(t_uindex gnode_id,
                   << " py_ctx => " << py_ctx << std::endl;
     }
 }
-#elif PSP_ENABLE_WASM
-void
-t_pool::register_context(t_uindex gnode_id,
-                         const t_str& name,
-                         t_ctx_type type,
-                         t_int32 ptr)
-{
-    std::lock_guard<std::mutex> lg(m_mtx);
-    if (!validate_gnode_id(gnode_id))
-        return;
-    m_gnodes[gnode_id]->_register_context(name, type, ptr);
-
-    if (t_env::log_progress())
-    {
-        std::cout << repr() << " << t_pool.register_context: "
-                  << " gnode_id => " << gnode_id << " name => "
-                  << name << " type => " << type << " ptr => " << ptr
-                  << std::endl;
-    }
-}
-
 #else
 
 void
