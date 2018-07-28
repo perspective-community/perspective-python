@@ -17,13 +17,23 @@ BOOST_PYTHON_MODULE(libbinding)
 
     class_<perspective::t_schema>("t_schema", init<perspective::t_svec, perspective::t_dtypevec>());
 
-    // class_<perspective::t_table>("t_table", init<perspective::t_schema>());
-    //     .def("num_columns", &perspective::t_table::num_columns)
-    //     .def("num_rows", &perspective::t_table::num_rows)
-    //     .def("size", &perspective::t_table::size)
-    //     .def("get_schema", &perspective::t_table::get_schema)
-    //     .def("get_capacity", &perspective::t_table::get_capacity)
-    //     .def("pprint", &perspective::t_table::pprint)
-    // ;
+    // need boost:noncopyable for PSP_NON_COPYABLE
+    class_<perspective::t_table, boost::noncopyable>("t_table", init<perspective::t_schema>())
+
+        .def("size", &perspective::t_table::size)
+        .def("num_columns", &perspective::t_table::num_columns)
+
+        // when returning const, need return_value_policy<copy_const_reference>
+        .def("name", &perspective::t_table::name, return_value_policy<copy_const_reference>())
+        .def("get_schema", &perspective::t_table::get_schema, return_value_policy<copy_const_reference>())
+
+        // when multiple overloading methods, need to static_cast to specify
+        .def("num_rows", static_cast<perspective::t_uindex (perspective::t_table::*)() const> (&perspective::t_table::num_rows))
+        .def("num_rows", static_cast<perspective::t_uindex (perspective::t_table::*)(const perspective::t_mask&) const> (&perspective::t_table::num_rows));
+
+
+        // .def("pprint", &perspective::t_table::pprint);
+        // .def("get_capacity", &perspective::t_table::get_capacity)
+
 }
 #endif
