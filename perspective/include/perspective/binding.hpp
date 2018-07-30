@@ -1,6 +1,9 @@
+
+#ifdef PSP_ENABLE_PYTHON
 #include <iostream>
 #include <boost/python.hpp>
 #include <boost/python/def.hpp>
+#include <boost/python/numpy.hpp>
 #include <perspective/base.h>
 #include <perspective/table.h>
 
@@ -8,83 +11,22 @@
 #define __PSP_BINDING_HPP__
 
 using namespace boost::python;
+namespace np = boost::python::numpy;
 
 void test(const char* name);
 
 
-perspective::t_schema* t_schema_init(list& columns, list& types){
-    perspective::t_svec cols;
-    perspective::t_dtypevec ts;
-
-    for(ssize_t i=0; i < len(columns); i++) {
-        cols.push_back(extract<perspective::t_str>(columns[i]));
-    }
-
-    for(ssize_t i=0; i < len(types); i++) {
-        ts.push_back(extract<perspective::t_dtype>(types[i]));
-    }
-
-    return new perspective::t_schema(cols, ts);
-}
+perspective::t_schema* t_schema_init(list& columns, list& types);
 
 template<typename T>
 void
-_fill_col(std::vector<T> dcol, perspective::t_col_sptr col)
-{
-    perspective::t_uindex nrows = col->size();
-
-    for (auto i = 0; i < nrows; ++i)
-    {
-        auto elem = dcol[i];
-        col->set_nth(i, elem);
-    }
-}
+_fill_col(std::vector<T> dcol, perspective::t_col_sptr col);
 
 void
 _fill_data_single_column(perspective::t_table& tbl,
                          const std::string& colname_i,
                          list& data_cols_i,
-                         perspective::t_dtype col_type)
-{
-    perspective::t_str name = colname_i;
-    perspective::t_col_sptr col = tbl.get_column(name);
-
-    switch(col_type){
-        case perspective::DTYPE_INT64 : {
-            std::vector<perspective::t_int64> dcol;
-
-            for(ssize_t i=0; i < len(data_cols_i); i++)
-            {
-                dcol.push_back(extract<perspective::t_int64>(data_cols_i[i]));
-            }
-
-            _fill_col<perspective::t_int64>(dcol, col);
-            break;
-        }
-
-        case perspective::DTYPE_STR : {
-
-            std::vector<perspective::t_str> dcol;
-
-            for(ssize_t i=0; i < len(data_cols_i); i++)
-            {
-                dcol.push_back(extract<perspective::t_str>(data_cols_i[i]));
-            }
-
-            _fill_col<perspective::t_str>(dcol, col);
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-    // t_svec colnames1 = {"Col1"};
-    // std::vector<std::vector<t_int64> > data1 = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    // t_dtypevec dtype1 = {DTYPE_INT64};
-    // _fill_data<t_int64>(tbl, colnames1, data1, dtype1, 0);
-}
-
-
+                         perspective::t_dtype col_type);
 
 BOOST_PYTHON_MODULE(libbinding)
 {
@@ -178,5 +120,7 @@ BOOST_PYTHON_MODULE(libbinding)
     ;
 }
 
+
+#endif
 
 #endif

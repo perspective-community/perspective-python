@@ -3,18 +3,18 @@ build: ## build the package
 
 buildjs: ## build the package with emscripten
 	../emsdk/emsdk activate latest
-	../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build
+	bash "source ../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build"
 
 buildext: ## build the package extensions
 	python3 setup.py build_ext
 
-buildinplace: build  ## build the package extensions
-	cp -r build/`ls build | grep temp`/*.a ./perspective
+buildip: build  ## build the package extensions
+	cp -r build/`ls build | grep lib`/perspective/*.so ./perspective
 
 tests: ## Clean and Make unit tests
 	python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 	
-test: clean build ## run the tests for travis CI
+test: clean build buildip ## run the tests for travis CI
 	@ python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 
 annotate: ## MyPy type annotation check
@@ -55,4 +55,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean test tests help annotate annotate_l docs dist build buildext buildjs
+.PHONY: clean test tests help annotate annotate_l docs dist build buildext buildjs buildip
