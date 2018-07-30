@@ -1,6 +1,10 @@
 build: ## build the package
 	python3 setup.py build
 
+buildjs: ## build the package with emscripten
+	../emsdk/emsdk activate latest
+	 ../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build
+
 buildext: ## build the package extensions
 	python3 setup.py build_ext
 
@@ -51,4 +55,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean test tests help annotate annotate_l docs dist build buildext
+.PHONY: clean test tests help annotate annotate_l docs dist build buildext buildjs
