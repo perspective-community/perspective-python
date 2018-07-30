@@ -3,7 +3,7 @@ build: ## build the package
 
 buildjs: ## build the package with emscripten
 	../emsdk/emsdk activate latest
-	 ../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build
+	../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build
 
 buildext: ## build the package extensions
 	python3 setup.py build_ext
