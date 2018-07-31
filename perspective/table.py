@@ -1,3 +1,4 @@
+import numpy as np
 from .libbinding import t_schema, t_dtype, t_table
 
 
@@ -20,13 +21,34 @@ class Perspective(object):
     def _type_to_dtype(self, _type):
         if isinstance(_type, t_dtype):
             return _type
+        if isinstance(_type, np.ndarray):
+            if _type.dtype == np.int64:
+                return t_dtype.NP_INT64
+            if _type.dtype == np.float64:
+                return t_dtype.NP_FLOAT64
+            if _type.dtype == np.str:
+                return t_dtype.NP_STR
+            if _type.dtype == np.bool:
+                return t_dtype.NP_BOOL
+            if _type.dtype == np.complex128:
+                return t_dtype.NP_COMPLEX128
+        if _type == np.int64:
+            return t_dtype.NP_INT64
+        if _type == np.float64:
+            return t_dtype.NP_FLOAT64
+        if _type == np.str:
+            return t_dtype.NP_STR
+        if _type == np.bool:
+            return t_dtype.NP_BOOL
+        if _type == np.complex128:
+            return t_dtype.NP_COMPLEX128
         if _type == int:
             return t_dtype.INT64
         if _type == float:
             return t_dtype.FLOAT64
         if _type == bool:
             return t_dtype.BOOL
-        elif _type == str:
+        if _type == str:
             return t_dtype.STR
         else:
             raise Exception('%s not currently supported' % _type)
@@ -44,6 +66,10 @@ class Perspective(object):
 
         if not self._t_table.get_schema().has_column(col):
             raise Exception('schema change not implemented')
+
+        if isinstance(data, np.ndarray):
+            self._t_table.load_column(col, data, self._type_to_dtype(data))
+            return
 
         self._validate_col(data)
         self._t_table.load_column(col, data, self._type_to_dtype(type(data[0])))

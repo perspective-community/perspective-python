@@ -39,8 +39,13 @@ include_directories("/boost_includes")
 
 
 find_package(TBB)
+find_package(NumPy)
 find_package( Boost COMPONENTS python REQUIRED )
+find_library( BOOST_PYTHON boost_python)
+find_library( BOOST_NUMPY boost_numpy)
 include_directories( ${Boost_INCLUDE_DIR} )
+
+include_directories( ${PYTHON_NUMPY_INCLUDE_DIR})
 
 find_package( PythonLibs 3.7 REQUIRED )
 include_directories( ${PYTHON_INCLUDE_DIRS} )
@@ -196,6 +201,8 @@ else()
     add_library(binding SHARED perspective/src/binding.cpp)
     target_link_libraries(binding psp)
     target_link_libraries(binding tbb)
+    target_link_libraries(binding ${BOOST_PYTHON})
+    target_link_libraries(binding ${BOOST_NUMPY})
     target_link_libraries(binding ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
     add_executable(perspective_test perspective/src/main.cpp)
