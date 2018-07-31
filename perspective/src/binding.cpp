@@ -101,6 +101,26 @@ _fill_data_single_column(perspective::t_table& tbl,
             _fill_col<perspective::t_str>(dcol, col);
             break;
         }
+#ifdef PSP_ENABLE_PYTHON
+        case perspective::DTYPE_NP_INT64 : {
+            break;
+        }
+        case perspective::DTYPE_NP_FLOAT64 : {
+            break;
+        }
+        case perspective::DTYPE_NP_STR : {
+            break;
+        }
+        case perspective::DTYPE_NP_COMPLEX128 : {
+            break;
+        }
+        case perspective::DTYPE_NP_DATE : {
+            break;
+        }
+        case perspective::DTYPE_NP_TIME : {
+            break;
+        }
+#endif  
         default: {
             break;
         }

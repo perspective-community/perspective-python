@@ -6,6 +6,7 @@ ADD . /usr/src/app
 RUN apt-get update
 RUN apt-get -y install apt-transport-https libboost-python-dev libtbb-dev cmake
 RUN ls -al /usr/lib/x86_64-linux-gnu
+RUN ls -al /usr/include/boost
 RUN rm -f /usr/lib/libboost_python.so
 RUN rm -f /usr/lib/x86_64-linux-gnu/libboost_python.so
 RUN rm -f /usr/lib/libboost_python-py27*
