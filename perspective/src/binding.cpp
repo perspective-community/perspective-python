@@ -29,7 +29,7 @@ _fill_col(std::vector<T> dcol, perspective::t_col_sptr col)
 
     for (auto i = 0; i < nrows; ++i)
     {
-        T elem = dcol[i];
+        auto elem = dcol[i];
         col->set_nth(i, elem);
     }
 }
@@ -38,6 +38,7 @@ template<typename T>
 void
 _fill_col(np::ndarray& dcol, perspective::t_col_sptr col)
 {
+    _import_array();
     perspective::t_uindex nrows = col->size();
     for (auto i = 0; i < nrows; ++i)
     {
@@ -126,6 +127,7 @@ _fill_data_single_column(perspective::t_table& tbl,
                          perspective::t_dtype col_type){
     perspective::t_str name = colname_i;
     perspective::t_col_sptr col = tbl.get_column(name);
+    _import_array();
 
     switch(col_type){
         case perspective::DTYPE_NP_INT64 : {
@@ -133,18 +135,11 @@ _fill_data_single_column(perspective::t_table& tbl,
             break;
         }
         case perspective::DTYPE_NP_FLOAT64 : {
+            _fill_col<perspective::t_float64>(dcol, col);
             break;
         }
         case perspective::DTYPE_NP_STR : {
-            break;
-        }
-        case perspective::DTYPE_NP_COMPLEX128 : {
-            break;
-        }
-        case perspective::DTYPE_NP_DATE : {
-            break;
-        }
-        case perspective::DTYPE_NP_TIME : {
+            _fill_col<perspective::t_str>(dcol, col);
             break;
         }
         default: {
