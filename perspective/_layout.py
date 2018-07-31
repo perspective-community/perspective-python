@@ -3,6 +3,7 @@ from six import iteritems
 from .exception import PSPException
 from .view import View
 from .aggregate import Aggregate
+from .sort import Sort
 
 
 def layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False):
@@ -64,7 +65,13 @@ def layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, ag
     elif isinstance(sort, str):
         ret['sort'] = [sort]
     elif isinstance(sort, list):
-        ret['sort'] = sort
+        ret['sort'] = []
+        for col, s in sort:
+            if isinstance(s, Sort):
+                s = s.value
+            elif not isinstance(s, str) or s not in Sort.options():
+                raise PSPException('Unrecognized Sort: %s', s)
+            ret['sort'].append([col, s])
     else:
         raise PSPException('Cannot parse sort type: %s', str(type(sort)))
 
