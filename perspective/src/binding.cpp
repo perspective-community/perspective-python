@@ -30,7 +30,7 @@ _fill_col(std::vector<T>& dcol, perspective::t_col_sptr col)
     for (auto i = 0; i < nrows; ++i)
     {
         auto elem = dcol[i];
-        std::cout << elem << std::endl;
+        // std::cout << elem << std::endl;
         col->set_nth(i, elem);
     }
 }
@@ -45,7 +45,7 @@ _fill_col_np(np::ndarray& dcol, perspective::t_col_sptr col)
         // auto elem = dcol[i];
         auto elem = reinterpret_cast<T *>(dcol.get_data()+(i*sizeof(T)));
         // T elem = py::extract<T>(dcol[i]);
-        std::cout << *elem << std::endl;
+        // std::cout << *elem << std::endl;
         col->set_nth(i, *elem);
     }
 }
