@@ -7,6 +7,8 @@
  *
  */
 
+#if defined(PSP_ENABLE_PYTHONE_PYTHON_JPM) || defined(PSP_ENABLE_PYTHON)
+
 #include <perspective/first.h>
 
 #define PY_ARRAY_UNIQUE_SYMBOL _perspectiveNumpy
@@ -16,17 +18,29 @@
 #include <perspective/numpy.h>
 #include <perspective/raw_types.h>
 
+#ifdef PSP_ENABLE_PYTHON
+namespace py = boost::python;
+namespace np = boost::python::numpy;
+#endif
+
 extern "C" {
 void PERSPECTIVE_EXPORT
 perspective_import_numpy()
 {
+#ifdef PSP_ENABLE_PYTHON_JPM
     import_array();
+#endif
+
+#ifdef PSP_ENABLE_PYTHON
+    _import_array();
+#endif
 }
 }
 
 namespace perspective
 {
 
+#ifdef PSP_ENABLE_PYTHON_JPM
 t_dtype
 get_dtype_from_numpy(t_uindex ndtype)
 {
@@ -175,4 +189,82 @@ get_numpy_typenum_from_dtype(t_dtype dtype)
     }
     return NPY_DOUBLE;
 }
+
+#endif
+
+#ifdef PSP_ENABLE_PYTHON
+np::dtype
+get_numpy_typenum_from_dtype(t_dtype dtype)
+{
+    switch (dtype)
+    {
+        case DTYPE_INT8:
+        {
+            return np::dtype::get_builtin<t_int8>();
+        }
+        case DTYPE_UINT8:
+        {
+            return np::dtype::get_builtin<t_uint8>();
+        }
+        case DTYPE_INT16:
+        {
+            return np::dtype::get_builtin<t_int16>();
+        }
+        case DTYPE_UINT16:
+        {
+            return np::dtype::get_builtin<t_uint16>();
+        }
+        case DTYPE_INT32:
+        {
+            return np::dtype::get_builtin<t_int32>();
+        }
+        case DTYPE_UINT32:
+        {
+            return np::dtype::get_builtin<t_uint32>();
+        }
+        case DTYPE_UINT64:
+        {
+            return np::dtype::get_builtin<t_uint64>();
+        }
+        case DTYPE_INT64:
+        {
+            return np::dtype::get_builtin<t_int64>();
+        }
+        case DTYPE_FLOAT32:
+        {
+            return np::dtype::get_builtin<t_float32>();
+        }
+        case DTYPE_FLOAT64:
+        {
+            return np::dtype::get_builtin<t_float64>();
+        }
+        // TODO
+        // case DTYPE_STR:
+        // {
+        //     return np::dtype::get_builtin<t_str>();
+        // }
+        // case DTYPE_TIME:
+        // {
+        //     return NPY_DATETIME;
+        // }
+        // case DTYPE_DATE:
+        // {
+        //     return NPY_UINT32;
+        // }
+        case DTYPE_BOOL:
+        {
+            return np::dtype::get_builtin<t_bool>();
+        }
+        default:
+        {
+            PSP_COMPLAIN_AND_ABORT("Invalid type encountered");
+            return np::dtype::get_builtin<double>();
+        }
+    }
+    return np::dtype::get_builtin<double>();
 }
+
+#endif
+}
+
+#endif

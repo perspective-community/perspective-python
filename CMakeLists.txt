@@ -137,6 +137,7 @@ perspective/src/mask.cpp
 perspective/src/min_max.cpp
 perspective/src/multi_sort.cpp
 perspective/src/none.cpp
+perspective/src/numpy.cpp
 perspective/src/path.cpp
 perspective/src/pivot.cpp
 perspective/src/pool.cpp
@@ -199,6 +200,9 @@ if(DEFINED ENV{use_ems})
 else()
     add_library(psp SHARED ${SOURCE_FILES})
     target_link_libraries(psp tbb)
+    target_link_libraries(psp ${BOOST_PYTHON})
+    target_link_libraries(psp ${BOOST_NUMPY})
+    target_link_libraries(psp ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
     add_library(binding SHARED perspective/src/binding.cpp)
     target_link_libraries(binding psp)
@@ -210,6 +214,9 @@ else()
     add_executable(perspective_test perspective/src/main.cpp)
     target_link_libraries(perspective_test psp)
     target_link_libraries(perspective_test tbb)
+    target_link_libraries(perspective_test ${BOOST_PYTHON})
+    target_link_libraries(perspective_test ${BOOST_NUMPY})
+    target_link_libraries(perspective_test ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
     if(UNIX AND NOT APPLE)
         target_link_libraries(perspective_test pthread)

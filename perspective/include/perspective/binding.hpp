@@ -2,11 +2,7 @@
 #ifdef PSP_ENABLE_PYTHON
 #include <iostream>
 
-#include <boost/python.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/numpy.hpp>
-#include <numpy/arrayobject.h>
-
+#include <perspective/first.h>
 #include <perspective/base.h>
 #include <perspective/table.h>
  
@@ -24,25 +20,24 @@ void test(const char* name);
 perspective::t_schema* t_schema_init(py::list& columns, py::list& types);
 
 template<typename T>
-void
-_fill_col(std::vector<T>& dcol, perspective::t_col_sptr col);
+void _fill_col(std::vector<T>& dcol, perspective::t_col_sptr col);
 
 template<typename T>
-void
-_fill_col_np(np::ndarray& dcol, perspective::t_col_sptr col);
+void _fill_col_np(np::ndarray& dcol, perspective::t_col_sptr col);
 
 
-void
-_fill_data_single_column(perspective::t_table& tbl,
-                         const std::string& colname_i,
-                         py::list& data_cols_i,
-                         perspective::t_dtype col_type);
+void _fill_data_single_column(perspective::t_table& tbl,
+                              const std::string& colname_i,
+                              py::list& data_cols_i,
+                              perspective::t_dtype col_type);
 
-void
-_fill_data_single_column_np(perspective::t_table& tbl,
-                            const std::string& colname_i,
-                            np::ndarray& data_cols_i,
-                            perspective::t_dtype col_type);
+void _fill_data_single_column_np(perspective::t_table& tbl,
+                                 const std::string& colname_i,
+                                 np::ndarray& data_cols_i,
+                                 perspective::t_dtype col_type);
+
+np::ndarray _get_as_numpy(perspective::t_table& tbl, const std::string& colname_i);
+
 
 BOOST_PYTHON_MODULE(libbinding)
 {
@@ -104,7 +99,10 @@ BOOST_PYTHON_MODULE(libbinding)
     ;
 
 
-
+    //TODO
+    py::class_<perspective::t_column>("t_column", 
+        py::init<>())
+    ;
 
     // need boost:noncopyable for PSP_NON_COPYABLE
     py::class_<perspective::t_table, boost::noncopyable>("t_table", py::init<perspective::t_schema>())
@@ -138,6 +136,7 @@ BOOST_PYTHON_MODULE(libbinding)
         // .def("load_column", _fill_data_single_column)
         .def("load_column", static_cast<void (*)(perspective::t_table& tbl, const std::string& colname_i, py::list& data_cols_i, perspective::t_dtype col_type)>(_fill_data_single_column))
         .def("load_column", static_cast<void (*)(perspective::t_table& tbl, const std::string& colname_i, np::ndarray& data_cols_i, perspective::t_dtype col_type)>(_fill_data_single_column_np))
+        .def("get_column", _get_as_numpy)
     ;
 }
 

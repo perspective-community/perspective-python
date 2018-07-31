@@ -17,6 +17,12 @@ SUPPRESS_WARNINGS_VC(4505)
 #include <numpy/arrayobject.h>
 #endif
 
+#ifdef PSP_ENABLE_PYTHON
+namespace py = boost::python;
+namespace np = boost::python::numpy;
+#include <perspective/numpy.h>
+#endif
+
 #include <perspective/column.h>
 #include <perspective/defaults.h>
 #include <perspective/base.h>
@@ -230,6 +236,16 @@ t_column::_as_numpy_newref()
     }
 
     return arr;
+}
+#endif
+
+#ifdef PSP_ENABLE_PYTHON
+np::ndarray
+t_column::_as_numpy()
+{
+    if (is_vlen_dtype(m_dtype))
+        return m_data->_as_numpy(DTYPE_UINT64);
+    return m_data->_as_numpy(m_dtype);
 }
 #endif
 

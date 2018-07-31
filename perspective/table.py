@@ -84,3 +84,8 @@ class Perspective(object):
         # FIXME
         self.print()
         return ''
+
+    def __getitem__(self, col):
+        if not self._t_table.get_schema().has_column(col):
+            raise Exception('col not in table - %s' % col)
+        return self._t_table.get_column(col)

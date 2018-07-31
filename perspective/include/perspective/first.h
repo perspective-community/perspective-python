@@ -22,6 +22,13 @@
 #include <Python.h>
 #endif
 
+#ifdef PSP_ENABLE_PYTHON
+#include <boost/python.hpp>
+#include <boost/python/def.hpp>
+#include <boost/python/numpy.hpp>
+#include <numpy/arrayobject.h>
+#endif
+
 #ifdef PSP_VERIFY
 #define PSP_STORAGE_VERIFY
 #define PSP_COLUMN_VERIFY
