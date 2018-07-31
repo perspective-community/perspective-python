@@ -23,27 +23,30 @@ perspective::t_schema* t_schema_init(py::list& columns, py::list& types)
 
 template<typename T>
 void
-_fill_col(std::vector<T> dcol, perspective::t_col_sptr col)
+_fill_col(std::vector<T>& dcol, perspective::t_col_sptr col)
 {
     perspective::t_uindex nrows = col->size();
 
     for (auto i = 0; i < nrows; ++i)
     {
         auto elem = dcol[i];
+        std::cout << elem << std::endl;
         col->set_nth(i, elem);
     }
 }
 
 template<typename T>
 void
-_fill_col(np::ndarray& dcol, perspective::t_col_sptr col)
+_fill_col_np(np::ndarray& dcol, perspective::t_col_sptr col)
 {
-    _import_array();
     perspective::t_uindex nrows = col->size();
     for (auto i = 0; i < nrows; ++i)
     {
-        T elem = py::extract<T>(dcol[i]);
-        col->set_nth(i, elem);
+        // auto elem = dcol[i];
+        auto elem = reinterpret_cast<T *>(dcol.get_data()+(i*sizeof(T)));
+        // T elem = py::extract<T>(dcol[i]);
+        std::cout << *elem << std::endl;
+        col->set_nth(i, *elem);
     }
 }
 
@@ -121,25 +124,24 @@ _fill_data_single_column(perspective::t_table& tbl,
 }
 
 void
-_fill_data_single_column(perspective::t_table& tbl,
-                         const std::string& colname_i,
-                         np::ndarray& dcol,
-                         perspective::t_dtype col_type){
+_fill_data_single_column_np(perspective::t_table& tbl,
+                            const std::string& colname_i,
+                            np::ndarray& dcol,
+                            perspective::t_dtype col_type){
     perspective::t_str name = colname_i;
     perspective::t_col_sptr col = tbl.get_column(name);
-    _import_array();
 
     switch(col_type){
-        case perspective::DTYPE_NP_INT64 : {
-            _fill_col<perspective::t_int64>(dcol, col);
+        case perspective::DTYPE_INT64 : {
+            _fill_col_np<perspective::t_int64>(dcol, col);
             break;
         }
-        case perspective::DTYPE_NP_FLOAT64 : {
-            _fill_col<perspective::t_float64>(dcol, col);
+        case perspective::DTYPE_FLOAT64 : {
+            _fill_col_np<perspective::t_float64>(dcol, col);
             break;
         }
-        case perspective::DTYPE_NP_STR : {
-            _fill_col<perspective::t_str>(dcol, col);
+        case perspective::DTYPE_STR : {
+            _fill_col_np<perspective::t_str>(dcol, col);
             break;
         }
         default: {

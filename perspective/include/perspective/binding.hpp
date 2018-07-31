@@ -25,7 +25,12 @@ perspective::t_schema* t_schema_init(py::list& columns, py::list& types);
 
 template<typename T>
 void
-_fill_col(std::vector<T> dcol, perspective::t_col_sptr col);
+_fill_col(std::vector<T>& dcol, perspective::t_col_sptr col);
+
+template<typename T>
+void
+_fill_col_np(np::ndarray& dcol, perspective::t_col_sptr col);
+
 
 void
 _fill_data_single_column(perspective::t_table& tbl,
@@ -34,10 +39,10 @@ _fill_data_single_column(perspective::t_table& tbl,
                          perspective::t_dtype col_type);
 
 void
-_fill_data_single_column(perspective::t_table& tbl,
-                         const std::string& colname_i,
-                         np::ndarray& data_cols_i,
-                         perspective::t_dtype col_type);
+_fill_data_single_column_np(perspective::t_table& tbl,
+                            const std::string& colname_i,
+                            np::ndarray& data_cols_i,
+                            perspective::t_dtype col_type);
 
 BOOST_PYTHON_MODULE(libbinding)
 {
@@ -67,10 +72,6 @@ BOOST_PYTHON_MODULE(libbinding)
         .value("F64PAIR", perspective::DTYPE_F64PAIR)
         .value("USER_FIXED", perspective::DTYPE_USER_FIXED)
         .value("STR", perspective::DTYPE_STR)
-        .value("NP_INT64", perspective::DTYPE_NP_INT64)
-        .value("NP_FLOAT64", perspective::DTYPE_NP_FLOAT64)
-        .value("NP_STR", perspective::DTYPE_NP_STR)
-        .value("NP_BOOL", perspective::DTYPE_NP_BOOL)
         .value("USER_VLEN", perspective::DTYPE_USER_VLEN)
         .value("LAST_VLEN", perspective::DTYPE_LAST_VLEN)
         .value("LAST", perspective::DTYPE_LAST)
@@ -136,7 +137,7 @@ BOOST_PYTHON_MODULE(libbinding)
         // custom add ins
         // .def("load_column", _fill_data_single_column)
         .def("load_column", static_cast<void (*)(perspective::t_table& tbl, const std::string& colname_i, py::list& data_cols_i, perspective::t_dtype col_type)>(_fill_data_single_column))
-        .def("load_column", static_cast<void (*)(perspective::t_table& tbl, const std::string& colname_i, np::ndarray& data_cols_i, perspective::t_dtype col_type)>(_fill_data_single_column))
+        .def("load_column", static_cast<void (*)(perspective::t_table& tbl, const std::string& colname_i, np::ndarray& data_cols_i, perspective::t_dtype col_type)>(_fill_data_single_column_np))
     ;
 }
 

@@ -23,25 +23,28 @@ class Perspective(object):
             return _type
         if isinstance(_type, np.ndarray):
             if _type.dtype == np.int64:
-                return t_dtype.NP_INT64
+                return t_dtype.INT64
             if _type.dtype == np.float64:
-                return t_dtype.NP_FLOAT64
+                return t_dtype.FLOAT64
             if _type.dtype == np.str:
-                return t_dtype.NP_STR
+                return t_dtype.STR
             if _type.dtype == np.bool:
-                return t_dtype.NP_BOOL
-            if _type.dtype == np.complex128:
-                return t_dtype.NP_COMPLEX128
+                return t_dtype.BOOL
+            raise Exception('Type not recognized')
+        if isinstance(_type, list):
+            if isinstance(_type[0], int):
+                return t_dtype.INT64
+            if isinstance(_type[0], float):
+                return t_dtype.FLOAT64
+            if isinstance(_type[0], str):
+                return t_dtype.STR
+            if isinstance(_type[0], bool):
+                return t_dtype.BOOL
+            raise Exception('Type not recognized')
         if _type == np.int64:
-            return t_dtype.NP_INT64
+            return t_dtype.INT64
         if _type == np.float64:
-            return t_dtype.NP_FLOAT64
-        if _type == np.str:
-            return t_dtype.NP_STR
-        if _type == np.bool:
-            return t_dtype.NP_BOOL
-        if _type == np.complex128:
-            return t_dtype.NP_COMPLEX128
+            return t_dtype.FLOAT64
         if _type == int:
             return t_dtype.INT64
         if _type == float:
@@ -50,6 +53,10 @@ class Perspective(object):
             return t_dtype.BOOL
         if _type == str:
             return t_dtype.STR
+        if _type == np.str:
+            return t_dtype.STR
+        if _type == np.bool:
+            return t_dtype.BOOL
         else:
             raise Exception('%s not currently supported' % _type)
 
@@ -67,12 +74,8 @@ class Perspective(object):
         if not self._t_table.get_schema().has_column(col):
             raise Exception('schema change not implemented')
 
-        if isinstance(data, np.ndarray):
-            self._t_table.load_column(col, data, self._type_to_dtype(data))
-            return
-
         self._validate_col(data)
-        self._t_table.load_column(col, data, self._type_to_dtype(type(data[0])))
+        self._t_table.load_column(col, data, self._type_to_dtype(data))
 
     def print(self):
         self._t_table.pprint()

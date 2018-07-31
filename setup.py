@@ -47,7 +47,8 @@ class build_ext(build_ext_orig):
             '--config', config,
             '--', '-j8',
         ]
-
+        import pprint;
+        pprint.pprint(os.environ)
         os.chdir(str(build_temp))
         self.spawn(['cmake', str(cwd)] + cmake_args)
         if not self.dry_run:

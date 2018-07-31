@@ -38,17 +38,19 @@ include_directories("/usr/local/include/python3.7m")
 include_directories("/boost_includes")
 
 
-find_package(TBB)
+
+find_package( PythonInterp 3.7 REQUIRED )
+find_package( PythonLibs 3.7 REQUIRED )
+include_directories( ${PYTHON_INCLUDE_DIRS} )
 find_package(NumPy)
+
+find_package(TBB)
 find_package( Boost COMPONENTS python REQUIRED )
 find_library( BOOST_PYTHON boost_python)
 find_library( BOOST_NUMPY boost_numpy)
 include_directories( ${Boost_INCLUDE_DIR} )
 
 include_directories( ${PYTHON_NUMPY_INCLUDE_DIR})
-
-find_package( PythonLibs 3.7 REQUIRED )
-include_directories( ${PYTHON_INCLUDE_DIRS} )
 
 
 if(DEFINED ENV{use_ems})
@@ -80,15 +82,15 @@ if(DEFINED ENV{use_ems})
 
     set(SYNC_MODE_FLAGS "-s BINARYEN_ASYNC_COMPILATION=0 -s BINARYEN_METHOD='\"native-wasm\"' -s WASM=1")
     
-    set(ASYNC_MODE_FLAGS "-s BINARYEN_ASYNC_COMPILATION=1 -s BINARYEN_METHOD='\"native-wasm\"' -s WASM=1")
+    set(ASYNC_MODE_FLAGS "-s BINARYEN_ASYNC_COMPILATION=1 -s BINARYEN_MEwhicTHOD='\"native-wasm\"' -s WASM=1")
     
     set(ASMJS_MODE_FLAGS "-s BINARYEN_ASYNC_COMPILATION=0 -s BINARYEN_METHOD='\"asmjs\"' -Wno-almost-asm")
 
 else()
     if(DEFINED ENV{PSP_DEBUG})
-    	set(OPT_FLAGS "-O1 -g4 -s ASSERTIONS=2 -DPSP_ENABLE_PYTHON")
+    	set(OPT_FLAGS "-O0 -g -DPSP_ENABLE_PYTHON")
     else()
-        set(OPT_FLAGS "-O3 -g0 -DPSP_ENABLE_PYTHON")
+        set(OPT_FLAGS "-O3 -g -DPSP_ENABLE_PYTHON")
     endif()
 endif()
 

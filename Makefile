@@ -1,6 +1,11 @@
 build: ## build the package
 	python3 setup.py build
 
+builddebug: buildd  ## build the package
+
+buildd: ## build the package
+	PSP_DEBUG=True python3 setup.py build
+
 buildjs: ## build the package with emscripten
 	../emsdk/emsdk activate latest
 	bash "source ../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build"
@@ -9,6 +14,9 @@ buildext: ## build the package extensions
 	python3 setup.py build_ext
 
 buildip: build  ## build the package extensions
+	cp -r build/`ls build | grep lib`/perspective/*.so ./perspective
+
+buildipd: buildd  ## build the package extensions
 	cp -r build/`ls build | grep lib`/perspective/*.so ./perspective
 
 tests: ## Clean and Make unit tests
@@ -55,4 +63,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean test tests help annotate annotate_l docs dist build buildext buildjs buildip
+.PHONY: clean test tests help annotate annotate_l docs dist build buildext buildjs buildip buildd builddebug buildipd
