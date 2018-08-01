@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from .libbinding import t_schema, t_dtype, t_table
 
 
@@ -18,6 +19,7 @@ class Perspective(object):
         self._t_table = t_table(_schema)
         self._t_table.init()
 
+    @classmethod
     def _type_to_dtype(self, _type):
         if isinstance(_type, t_dtype):
             return _type
@@ -30,7 +32,9 @@ class Perspective(object):
                 return t_dtype.STR
             if _type.dtype == np.bool:
                 return t_dtype.BOOL
-            raise Exception('Type not recognized')
+            if _type.dtype == np.object:
+                return t_dtype.STR
+            raise Exception('Type not recognized - %s' % _type)
         if isinstance(_type, list):
             if isinstance(_type[0], int):
                 return t_dtype.INT64
@@ -40,7 +44,7 @@ class Perspective(object):
                 return t_dtype.STR
             if isinstance(_type[0], bool):
                 return t_dtype.BOOL
-            raise Exception('Type not recognized')
+            raise Exception('Type not recognized - %s' % _type)
         if _type == np.int64:
             return t_dtype.INT64
         if _type == np.float64:
@@ -57,6 +61,8 @@ class Perspective(object):
             return t_dtype.STR
         if _type == np.bool:
             return t_dtype.BOOL
+        elif _type == object:
+            return t_dtype.STR
         else:
             raise Exception('%s not currently supported' % _type)
 
@@ -89,3 +95,25 @@ class Perspective(object):
         if not self._t_table.get_schema().has_column(col):
             raise Exception('col not in table - %s' % col)
         return self._t_table.get_column(col)
+
+    def to_df(self):
+        df = pd.DataFrame()
+        for col in self._columns:
+            df[col] = self[col]
+        return df
+
+    @staticmethod
+    def from_df(df):
+        cols = []
+        types = []
+        for k, v in dict(df.dtypes).items():
+            cols.append(k)
+            types.append(Perspective._type_to_dtype(v))
+
+        t = Perspective(cols, types)
+        t._t_table.extend(len(df.index))
+
+        for col in cols:
+            t.load(col, df[col].values)
+
+        return t
