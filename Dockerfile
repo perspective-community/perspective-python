@@ -6,6 +6,8 @@ ADD . /usr/src/app
 RUN apt-get update
 RUN apt-get -y install apt-transport-https libtbb-dev cmake
 
+RUN python3 -m pip install numpy
+
 RUN wget https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz
 RUN tar xfzv boost_1_67_0.tar.gz
 RUN cd boost_1_67_0 && CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH:/usr/local/include/python3.7m" C_INCLUDE_PATH="$C_INCLUDE_PATH:/usr/local/include/python3.7m" ./bootstrap.sh --with-python=python3 
