@@ -74,7 +74,7 @@ class TestLayout:
             df = pd.DataFrame([1, 2], columns=['1'])
             psp(df, View.YBAR, None, ['1'])
             psp(df, View.YBAR, None, ['1'], None, None, None, 'test')
-            psp(df, View.YBAR, None, ['1'], None, None, None, ['test'])
+            psp(df, View.YBAR, None, ['1'], None, None, None, [['test', 'asc']])
             try:
                 psp(df, View.YBAR, None, ['1'], None, None, None, 5)
                 assert False

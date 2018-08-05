@@ -1,3 +1,5 @@
+import os
+import os.path
 
 
 class TestTable:
@@ -51,7 +53,7 @@ class TestTable:
         print(t.to_df())
 
         print('\nfrom dataframe test:\n')
-        df = pd.read_csv('~/Downloads/ohlc.csv')
+        df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'ohlc.csv'))
         t = Perspective.from_df(df[['open', 'high', 'low', 'close']].head())
 
         t.print()
