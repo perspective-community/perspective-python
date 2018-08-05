@@ -1,6 +1,7 @@
 import os
 import os.path
 import pathlib
+import pprint;
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext as build_ext_orig
 from codecs import open
@@ -45,9 +46,8 @@ class build_ext(build_ext_orig):
         # example of build args
         build_args = [
             '--config', config,
-            '--', '-j8',
+            '--', '-j2' if os.environ.get('DOCKER', '') else '-j4',
         ]
-        import pprint;
         pprint.pprint(os.environ)
         os.chdir(str(build_temp))
         self.spawn(['cmake', str(cwd)] + cmake_args)
