@@ -92,9 +92,6 @@ class PERSPECTIVE_EXPORT t_gnode
 
     void pprint() const;
     t_svec get_registered_contexts() const;
-#ifdef PSP_ENABLE_PYTHON_JPM
-    PyObject* get_mask() const;
-#endif
     t_schema get_tblschema() const;
     t_pivotvec get_pivots() const;
 
@@ -215,7 +212,7 @@ void
 t_gnode::notify_context(const t_table& flattened,
                         const t_ctx_handle& ctxh)
 {
-    CTX_T* ctx = static_cast<CTX_T*>(ctxh.m_ctx);
+    CTX_T* ctx = ctxh.get<CTX_T>();
     const t_table& delta =
         *(m_oports[PSP_PORT_DELTA]->get_table().get());
     const t_table& prev =

@@ -43,9 +43,6 @@ class PERSPECTIVE_EXPORT t_gstate
     void erase(const t_tscalar& pkey);
 
     void update_history(const t_table* tbl);
-#ifdef PSP_ENABLE_PYTHON_JPM
-    PyObject* get_mask() const;
-#endif
     t_mask get_cpp_mask() const;
 
     t_tscalar get_value(const t_tscalar& pkey,
@@ -112,7 +109,7 @@ class PERSPECTIVE_EXPORT t_gstate
     void reset();
 
     const t_schema& get_port_schema() const;
-	t_uidxvec get_pkeys_idx(const t_tscalvec& pkeys) const;
+    t_uidxvec get_pkeys_idx(const t_tscalvec& pkeys) const;
 
   protected:
     t_dtype get_pkey_dtype() const;

@@ -46,11 +46,21 @@ void
 t_vocab::rebuild_map()
 {
     m_map.clear();
+    m_map.reserve((size_t)m_vlenidx);
     for (t_uindex idx = 0; idx < m_vlenidx; ++idx)
     {
         m_map[unintern_c(idx)] = idx;
     }
 }
+
+void 
+t_vocab::reserve(size_t total_string_size, size_t string_count)
+{
+    m_vlendata->reserve( total_string_size );
+    m_extents->reserve( sizeof(t_uidxpair) * string_count );
+    rebuild_map();
+}
+
 
 t_bool
 t_vocab::string_exists(const char* c, t_stridx& interned) const
@@ -83,10 +93,12 @@ t_vocab::get_interned(const char* s)
         bidx = m_vlendata->size();
         eidx = bidx + len;
         const void* obase = m_vlendata->get_nth<const char>(0);
+        const void* oebase = m_extents->get_nth<t_uidxpair>(0);
         m_vlendata->push_back(static_cast<const void*>(s), len);
         m_extents->push_back(t_uidxpair(bidx, eidx));
         const void* nbase = m_vlendata->get_nth<const char>(0);
-        if (obase == nbase)
+        const void* nebase = m_extents->get_nth<t_uidxpair>(0);
+        if ((obase == nbase) && (oebase == nebase))
         {
             m_map[unintern_c(idx)] = idx;
         }
@@ -99,12 +111,14 @@ t_vocab::get_interned(const char* s)
     {
         idx = iter->second;
     }
+#ifndef PSP_ENABLE_WASM
 #ifdef PSP_COLUMN_VERIFY
     if (t_str(s) == "")
     {
         PSP_VERBOSE_ASSERT(idx == 0,
                            "Expected empty string to map to 0");
     }
+#endif
 #endif
     return idx;
 }
@@ -113,17 +127,6 @@ t_uindex
 t_vocab::genidx()
 {
     return m_vlenidx++;
-}
-
-t_str
-t_vocab::unintern(t_uindex idx) const
-{
-    const t_uidxpair* p = m_extents->get_nth<t_uidxpair>(idx);
-
-    const char* c =
-        static_cast<const char*>(m_vlendata->get_ptr(p->first));
-
-    return t_str(c);
 }
 
 void
@@ -135,7 +138,9 @@ t_vocab::init(t_bool from_recipe)
     {
         rebuild_map();
     }
-    //get_interned("");
+    #ifndef PSP_ENABLE_WASM
+    get_interned("");
+    #endif //PSP_ENABLE_WASM
 }
 
 t_uindex
@@ -154,13 +159,17 @@ t_vocab::verify() const
         rlookup[kv.second] = kv.first;
     }
 
+#ifndef PSP_ENABLE_WASM
     auto zero = rlookup.find(t_stridx(0));
     PSP_VERBOSE_ASSERT(zero != rlookup.end(), "0 Not found");
     PSP_VERBOSE_ASSERT(t_str(zero->second) == "",
                        "0 mapped to unknown");
+#endif
 
     std::unordered_set<t_str> seen;
+#ifndef PSP_ENABLE_WASM
     seen.insert(t_str(""));
+#endif
 
     for (t_uindex idx = 1; idx < m_vlenidx; ++idx)
     {
@@ -279,34 +288,11 @@ t_vocab::get_extents()
     return m_extents;
 }
 
-t_lstore_csptr
-t_vocab::get_vlendata() const
-{
-    return m_vlendata;
-}
-
-t_lstore_csptr
-t_vocab::get_extents() const
-{
-    return m_extents;
-}
-
 t_uindex
 t_vocab::get_vlenidx() const
 {
     return m_vlenidx;
 }
 
-
-t_uindex t_vocab::get_max_slen() const
-{
-    t_uindex rv = 0;
-
-    for (const auto kv: m_map)
-    {
-        rv = std::max(static_cast<t_uindex>(strlen(kv.first)), rv);
-    }
-    return rv;
-}
 
 } // end namespace perspective

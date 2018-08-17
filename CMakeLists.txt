@@ -1,25 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (psp)
 
-if(DEFINED ENV{use_jpm})
-    add_definitions(-DPSP_ENABLE_PYTHON_JPM)
-    set(CMAKE_C_COMPILER gcc)
-    set(CMAKE_CXX_COMPILER g++)
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-    set(CMAKE_AR ar)
-    set(CMAKE_RANLIB ranlib)
-    set(CMAKE_EXECUTABLE_SUFFIX ".exe")
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
-elseif(DEFINED ENV{use_ems})
-    add_definitions(-DPSP_ENABLE_WASM)
-    set(CMAKE_C_COMPILER emcc)
-    set(CMAKE_CXX_COMPILER em++)
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-    set(CMAKE_TOOLCHAIN_FILE "$ENV{EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake")
-    set(CMAKE_AR emar)
-    set(CMAKE_RANLIB emranlib)
-    set(CMAKE_EXECUTABLE_SUFFIX ".js")
-else()
+if(DEFINED ENV{PSP_ENABLE_PYTHON})
     add_definitions(-DPSP_ENABLE_PYTHON)
     set(CMAKE_C_COMPILER gcc)
     set(CMAKE_CXX_COMPILER g++)
@@ -28,6 +10,15 @@ else()
     set(CMAKE_RANLIB ranlib)
     set(CMAKE_EXECUTABLE_SUFFIX ".exe")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+else()
+    add_definitions(-DPSP_ENABLE_WASM)
+    set(CMAKE_C_COMPILER emcc)
+    set(CMAKE_CXX_COMPILER em++)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake")
+    set(CMAKE_AR emar)
+    set(CMAKE_RANLIB emranlib)
+    set(CMAKE_EXECUTABLE_SUFFIX ".js")
 endif()
 
 list(APPEND CMAKE_PREFIX_PATH /usr/local)
@@ -53,7 +44,13 @@ include_directories( ${Boost_INCLUDE_DIR} )
 include_directories( ${PYTHON_NUMPY_INCLUDE_DIR})
 
 
-if(DEFINED ENV{use_ems})
+if(DEFINED ENV{PSP_ENABLE_PYTHON})
+    if(DEFINED ENV{PSP_DEBUG})
+        set(OPT_FLAGS "-O0 -g -DPSP_ENABLE_PYTHON")
+    else()
+        set(OPT_FLAGS "-O3 -g -DPSP_ENABLE_PYTHON")
+    endif()
+else()
     set(EXTENDED_FLAGS " \
         --bind \
         --memory-init-file 1 \
@@ -86,12 +83,6 @@ if(DEFINED ENV{use_ems})
     
     set(ASMJS_MODE_FLAGS "-s BINARYEN_ASYNC_COMPILATION=0 -s BINARYEN_METHOD='\"asmjs\"' -Wno-almost-asm")
 
-else()
-    if(DEFINED ENV{PSP_DEBUG})
-    	set(OPT_FLAGS "-O0 -g -DPSP_ENABLE_PYTHON")
-    else()
-        set(OPT_FLAGS "-O3 -g -DPSP_ENABLE_PYTHON")
-    endif()
 endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTENDED_FLAGS} ${OPT_FLAGS} ")
@@ -105,8 +96,6 @@ perspective/src/base_impl_linux.cpp
 perspective/src/base_impl_osx.cpp
 perspective/src/base_impl_win.cpp
 perspective/src/build_filter.cpp
-perspective/src/calc_agg_dtype.cpp
-perspective/src/chart_interfaces.cpp
 perspective/src/column.cpp
 perspective/src/comparators.cpp
 perspective/src/compat.cpp
@@ -142,7 +131,6 @@ perspective/src/path.cpp
 perspective/src/pivot.cpp
 perspective/src/pool.cpp
 perspective/src/port.cpp
-perspective/src/query.cpp
 perspective/src/raii.cpp
 perspective/src/raii_impl_linux.cpp
 perspective/src/raii_impl_osx.cpp
@@ -174,7 +162,25 @@ perspective/src/vocab.cpp
 
 set(CMAKE_CXX_FLAGS " -std=c++0x ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 
-if(DEFINED ENV{use_ems})
+if(DEFINED ENV{PSP_ENABLE_PYTHON})
+    add_library(psp SHARED ${SOURCE_FILES})
+    target_link_libraries(psp tbb)
+    target_link_libraries(psp ${BOOST_PYTHON})
+    target_link_libraries(psp ${BOOST_NUMPY})
+    target_link_libraries(psp ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+
+    add_library(binding SHARED perspective/src/binding.cpp)
+    target_link_libraries(binding psp)
+    target_link_libraries(binding tbb)
+    target_link_libraries(binding ${BOOST_PYTHON})
+    target_link_libraries(binding ${BOOST_NUMPY})
+    target_link_libraries(binding ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+
+    if(APPLE)
+        set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+    endif(APPLE)
+
+else()
     add_library(psp ${SOURCE_FILES})
     set_target_properties(psp PROPERTIES COMPILE_FLAGS "${ASYNC_MODE_FLAGS}")
 
@@ -197,36 +203,4 @@ if(DEFINED ENV{use_ems})
     set_target_properties(perspective.asm PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../build/asmjs/")
     set_target_properties(perspective.asm PROPERTIES OUTPUT_NAME "psp")
     add_dependencies(perspective.asm perspective.sync)
-else()
-    add_library(psp SHARED ${SOURCE_FILES})
-    target_link_libraries(psp tbb)
-    target_link_libraries(psp ${BOOST_PYTHON})
-    target_link_libraries(psp ${BOOST_NUMPY})
-    target_link_libraries(psp ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-
-    add_library(binding SHARED perspective/src/binding.cpp)
-    target_link_libraries(binding psp)
-    target_link_libraries(binding tbb)
-    target_link_libraries(binding ${BOOST_PYTHON})
-    target_link_libraries(binding ${BOOST_NUMPY})
-    target_link_libraries(binding ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-
-    add_executable(perspective_test perspective/src/main.cpp)
-    target_link_libraries(perspective_test psp)
-    target_link_libraries(perspective_test tbb)
-    target_link_libraries(perspective_test ${BOOST_PYTHON})
-    target_link_libraries(perspective_test ${BOOST_NUMPY})
-    target_link_libraries(perspective_test ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-
-    if(UNIX AND NOT APPLE)
-        target_link_libraries(perspective_test pthread)
-    endif()
-
-    if(APPLE)
-        set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
-    endif(APPLE)
-
-
-    set_target_properties(perspective_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../")
-
 endif()

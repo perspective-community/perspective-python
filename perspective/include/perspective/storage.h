@@ -135,7 +135,6 @@ class PERSPECTIVE_MPROTECT_EXPORT t_lstore : public t_debug_helper
     void copy_helper(const t_lstore& other);
 
     void init();
-    void init(const t_lstore& other);
 
     t_szpair capacity_pair() const;
 
@@ -146,7 +145,6 @@ class PERSPECTIVE_MPROTECT_EXPORT t_lstore : public t_debug_helper
     void reserve(t_uindex capacity);
     void shrink(t_uindex capacity);
     void copy(t_lstore& out);
-    void mark_immutable();
     void load(const t_str& fname);
     void save(const t_str& fname);
     void warmup();
@@ -155,7 +153,7 @@ class PERSPECTIVE_MPROTECT_EXPORT t_lstore : public t_debug_helper
     t_uindex capacity() const;
 
     template <typename T>
-    void push_back(const T value);
+    void push_back(T value);
     void push_back(const void* ptr, t_uindex len);
 
     // idx is in bytes
@@ -190,14 +188,6 @@ class PERSPECTIVE_MPROTECT_EXPORT t_lstore : public t_debug_helper
     // assumed fixed size T
     template <typename T>
     T* extend(t_uindex idx);
-
-#ifdef PSP_ENABLE_PYTHON_JPM
-    /* Python bits */
-    PyObject* _as_numpy(t_dtype dtype);
-
-    // export as uchar np array
-    PyObject* _as_numpy();
-#endif
 
 #ifdef PSP_ENABLE_PYTHON
     /* Python bits */
@@ -397,8 +387,8 @@ template <typename DATA_T>
 void
 t_lstore::raw_fill(DATA_T v)
 {
-    DATA_T* biter = static_cast<DATA_T*>(m_base);
-    DATA_T* eiter = reinterpret_cast<DATA_T*>(
+    auto biter = static_cast<DATA_T*>(m_base);
+    auto eiter = reinterpret_cast<DATA_T*>(
         static_cast<char*>(m_base) + size());
     std::fill(biter, eiter, v);
 }
