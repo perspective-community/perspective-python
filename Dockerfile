@@ -23,4 +23,4 @@ RUN python3 -m pip install codecov nose mock
 RUN python3 -m pip install -r requirements.txt
 
 RUN DOCKER=true make test
-RUN codecov --token 10cff21a-48fa-4326-9714-fd63aa7c785d
+RUN codecov --token d33ecf96-a51f-43b6-8429-c11f83b961ad
