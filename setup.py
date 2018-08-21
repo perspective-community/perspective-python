@@ -48,6 +48,7 @@ class build_ext(build_ext_orig):
             '--config', config,
             '--', '-j2' if os.environ.get('DOCKER', '') else '-j4',
         ]
+        os.environ['PSP_ENABLE_PYTHON'] = '1'
         pprint.pprint(os.environ)
         os.chdir(str(build_temp))
         self.spawn(['cmake', str(cwd)] + cmake_args)

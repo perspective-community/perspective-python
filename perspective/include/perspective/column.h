@@ -27,7 +27,6 @@ namespace py = boost::python;
 namespace np = boost::python::numpy;
 #endif
 
-
 /*
 TODO -
 1. Implement implicit typepunning based on cardinality.
@@ -110,17 +109,9 @@ class PERSPECTIVE_EXPORT t_column
     template <typename DATA_T>
     void push_back(DATA_T elem, t_bool valid);
 
-#ifdef PSP_ENABLE_PYTHON_JPM 
-    /* Python bits */
-    PyObject* _as_numpy();
-    PyObject* _as_numpy_newref();
-#endif
-
 #ifdef PSP_ENABLE_PYTHON
     np::ndarray _as_numpy();
 #endif
-
-    t_bool string_exists(const char* c, t_stridx& interned) const;
 
     t_dtype get_dtype() const;
 
@@ -173,8 +164,6 @@ class PERSPECTIVE_EXPORT t_column
 
     t_uindex size() const;
 
-    t_uindex get_version() const;
-
     t_uindex get_vlenidx() const;
 
     const char* unintern_c(t_uindex idx) const;
@@ -182,18 +171,8 @@ class PERSPECTIVE_EXPORT t_column
     // Internal apis
 
     t_lstore* _get_data_lstore();
-    t_lstore* _get_vlendata_lstore();
-    t_lstore* _get_extents_lstore();
-    t_lstore* _get_valid_lstore();
 
     t_vocab* _get_vocab();
-
-    const t_lstore* _get_data_lstore() const;
-    const t_lstore* _get_vlendata_lstore() const;
-    const t_lstore* _get_extents_lstore() const;
-    const t_lstore* _get_valid_lstore() const;
-
-    t_uindex nbytes() const;
 
     t_tscalar get_scalar(t_uindex idx) const;
     void set_scalar(t_uindex idx, t_tscalar value);
@@ -213,10 +192,6 @@ class PERSPECTIVE_EXPORT t_column
               const t_uindex* bidx,
               const t_uindex* eidx) const;
 
-    void fill_float64(std::vector<t_float64>& vec,
-                      const t_uindex* bidx,
-                      t_uindex* eidx) const;
-
     void pprint() const;
 
     template <typename DATA_T>
@@ -228,17 +203,9 @@ class PERSPECTIVE_EXPORT t_column
     // indices should be > 0
     // scalars will be implicitly understood to be of dtype str
     template <typename VOCAB_T>
-    void set_vocabulary(const VOCAB_T& vocab);
+    void set_vocabulary(const VOCAB_T& vocab, size_t total_size = 0);
 
     void copy_vocabulary(const t_column* other);
-
-    t_histogram get_histogram(t_uindex nbuckets);
-    t_histogram get_histogram(t_uindex nbuckets,
-                              t_mask* mask = 0) const;
-
-    template <typename DATA_T>
-    t_histogram build_histogram(t_uindex nbuckets,
-                                t_mask* mask = 0) const;
 
     void pprint_vocabulary() const;
 
@@ -260,13 +227,7 @@ class PERSPECTIVE_EXPORT t_column
               const t_uidxvec& indices,
               t_uindex offset);
 
-    void set_vlenidx(t_uindex idx);
-
-    t_bool has_invalid_entry() const;
-
     void clear(t_uindex idx);
-
-    t_column_dynamic_ctx get_dynamic_context() const;
 
     void verify() const;
     void verify_size() const;
@@ -277,9 +238,6 @@ class PERSPECTIVE_EXPORT t_column
     void _rebuild_map();
 
     void borrow_vocabulary(const t_column& o);
-
-	template <typename T>
-	void fill_vector(const std::vector<T>& v);
 
   private:
     t_dtype m_dtype;
@@ -304,17 +262,6 @@ class PERSPECTIVE_EXPORT t_column
     t_uint32 m_elemsize;
 };
 
-template <typename T>
-void
-t_column::fill_vector(const std::vector<T>& v)
-{
-	t_uindex idx = 0;
-	for (const auto& e : v)
-	{
-		set_nth<T>(idx, e, true);
-		++idx;
-	}
-}
 
 typedef std::shared_ptr<t_column> t_col_sptr;
 typedef std::shared_ptr<const t_column> t_col_csptr;
@@ -337,14 +284,6 @@ t_column::push_back<std::string>(std::string elem);
 template <>
 PERSPECTIVE_EXPORT void
 t_column::push_back<t_tscalar>(t_tscalar elem);
-
-template <>
-PERSPECTIVE_EXPORT t_histogram t_column::build_histogram<t_str>(
-    t_uindex buckets, t_mask* mask) const;
-
-template <>
-PERSPECTIVE_EXPORT t_histogram t_column::build_histogram<t_bool>(
-    t_uindex buckets, t_mask* mask) const;
 
 template <>
 PERSPECTIVE_EXPORT void
@@ -500,69 +439,6 @@ t_column::set_nth_body(t_uindex idx, DATA_T elem, bool valid)
 }
 
 template <typename DATA_T>
-t_histogram
-t_column::build_histogram(t_uindex nbuckets, t_mask* mask) const
-{
-    DATA_T histmin = std::numeric_limits<DATA_T>::max();
-    DATA_T histmax = std::numeric_limits<DATA_T>::min();
-
-    t_uindex nrows = size();
-    t_bool valid_enabled = is_valid_enabled();
-
-    for (t_uindex idx = 0; idx < nrows; ++idx)
-    {
-        DATA_T v = *(get_nth<DATA_T>(idx));
-        t_bool valid = mask ? mask->get(idx) : true;
-        if (valid_enabled)
-        {
-            valid = valid && *(get_nth_valid(idx));
-        }
-
-        if (valid)
-        {
-            histmin = std::min(histmin, v);
-            histmax = std::max(histmax, v);
-        }
-    }
-
-    t_float64 range = histmax - histmin;
-    t_float64 bucket_size = range / nbuckets;
-
-    t_histogram rval(nbuckets);
-
-    for (t_uindex idx = 0; idx < nbuckets; ++idx)
-    {
-        rval.m_buckets[idx].m_begin.set(histmin + idx * bucket_size);
-        rval.m_buckets[idx].m_end.set(histmin +
-                                      (idx + 1) * bucket_size);
-    }
-
-    for (t_uindex idx = 0; idx < nrows; ++idx)
-    {
-
-        DATA_T v = *(get_nth<DATA_T>(idx));
-        t_bool valid = mask ? mask->get(idx) : true;
-        if (valid_enabled)
-        {
-            valid = valid && *(get_nth_valid(idx));
-        }
-
-        if (!valid)
-        {
-            continue;
-        }
-
-        t_uindex buck_num = v == histmax
-                                ? nbuckets - 1
-                                : static_cast<t_uindex>(std::floor(
-                                      (v - histmin) / bucket_size));
-
-        rval.m_buckets[buck_num].m_count += 1;
-    }
-    return rval;
-}
-
-template <typename DATA_T>
 void
 t_column::raw_fill(DATA_T v)
 {
@@ -571,12 +447,13 @@ t_column::raw_fill(DATA_T v)
 
 template <typename VOCAB_T>
 void
-t_column::set_vocabulary(const VOCAB_T& vocab)
+t_column::set_vocabulary(const VOCAB_T& vocab, size_t total_size)
 {
+    if( total_size )
+        m_vocab->reserve( total_size, vocab.size() + 1 );
+
     for (const auto& kv : vocab)
-    {
         m_vocab->get_interned(kv.first.get_char_ptr());
-    }
 }
 
 template <>

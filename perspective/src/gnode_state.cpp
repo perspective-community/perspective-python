@@ -18,10 +18,6 @@
 #include <tbb/tbb.h>
 #endif
 
-#ifdef PSP_ENABLE_PYTHON_JPM
-#include <perspective/config_proc.h>
-#endif
-
 namespace perspective
 {
 
@@ -158,10 +154,10 @@ t_gstate::update_history(const t_table* tbl)
          ++idx)
     {
         const t_str& cname = fschema.m_columns[idx];
-        col_translation[count] = idx;
-        fcolumns[idx] = tbl->get_const_column(cname).get();
-        ++count;
-    }
+            col_translation[count] = idx;
+            fcolumns[idx] = tbl->get_const_column(cname).get();
+            ++count;
+        }
 
     t_colptrvec scolumns(ncols);
 
@@ -442,15 +438,6 @@ t_gstate::pprint() const
     m_table->pprint(indices);
 }
 
-#ifdef PSP_ENABLE_PYTHON_JPM
-PyObject*
-t_gstate::get_mask() const
-{
-    auto msk = get_cpp_mask();
-    return msk.as_numpy();
-}
-#endif
-
 t_mask
 t_gstate::get_cpp_mask() const
 {
@@ -678,11 +665,7 @@ t_table*
 t_gstate::_get_pkeyed_table(const t_schema& schema,
                             const t_mask& mask) const
 {
-#ifdef PSP_ENABLE_PYTHON_JPM
-    static bool const enable_pkeyed_table_mask_fix = athena::Conf_proc::isFeatureEnabled("PSP_GNODE_PKEYED_TABLE_MASK_FIX");
-#else
     static bool const enable_pkeyed_table_mask_fix = true;
-#endif
     t_uindex o_ncols = schema.m_columns.size();
     auto sz = enable_pkeyed_table_mask_fix ? mask.count() : mask.size();
     auto rval = new t_table(schema, sz);
@@ -765,10 +748,29 @@ t_gstate::_get_pkeyed_table(const t_schema& schema,
     if (get_pkey_dtype() == DTYPE_STR)
     {
         static const t_tscalar empty = get_interned_tscalar("");
+        static bool const enable_pkeyed_table_vocab_reserve = true;
 
         t_uindex offset = has_pkey(empty) ? 0 : 1;
 
-        pkey_col->set_vocabulary(order);
+        size_t total_string_size = 0;
+
+        if( enable_pkeyed_table_vocab_reserve )
+        {
+            total_string_size += offset;
+            for (t_uindex idx = 0, loop_end = order.size();
+                 idx < loop_end;
+                 ++idx)
+            {
+                total_string_size += strlen(order[idx].first.get_char_ptr()) + 1;
+            }
+        }
+
+        // if the m_mapping is empty, get_pkey_dtype() may lie about our pkeys being strings
+        // don't try to reserve in this case
+        if( !order.size() )
+            total_string_size = 0;
+
+        pkey_col->set_vocabulary(order, total_string_size);
         auto base = pkey_col->get_nth<t_uindex>(0);
 
         for (t_uindex idx = 0, loop_end = order.size();

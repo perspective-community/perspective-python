@@ -10,6 +10,8 @@
 #pragma once
 
 #include <perspective/first.h>
+#include <perspective/raw_types.h>
+
 
 namespace perspective
 {
@@ -41,6 +43,10 @@ sanitize_get_data_extents(const CONTEXT_T& ctx,
 
     start_col = std::min(start_col, ncols);
     end_col = std::min(end_col, ncols);
+
+    start_col = std::max(t_tvidx(0), start_col);
+    end_col = std::max(t_tvidx(0), end_col);
+    end_col = std::max(start_col, end_col);
 
     t_get_data_extents rval;
     rval.m_srow = start_row;

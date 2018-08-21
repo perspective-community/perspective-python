@@ -1,5 +1,5 @@
 #ifdef PSP_ENABLE_PYTHON
-#include <perspective/binding.hpp>
+#include <perspective/binding.h>
 
 void test(const char* name) {
     std::cout << "Hello " <<  name << "!" << std::endl;

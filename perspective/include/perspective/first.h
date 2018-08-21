@@ -11,23 +11,19 @@
 #define PSP_PARALLEL_FOR
 #endif
 
-#pragma once
-#ifdef WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif // ifndex nominmax
-#endif // win32
-
-#ifdef PSP_ENABLE_PYTHON_JPM
-#include <Python.h>
-#endif
-
 #ifdef PSP_ENABLE_PYTHON
 #include <boost/python.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/numpy.hpp>
 #include <numpy/arrayobject.h>
 #endif
+
+#pragma once
+#ifdef WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif // ifndex nominmax
+#endif // win32
 
 #ifdef PSP_VERIFY
 #define PSP_STORAGE_VERIFY

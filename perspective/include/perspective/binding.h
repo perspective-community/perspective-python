@@ -124,7 +124,6 @@ BOOST_PYTHON_MODULE(libbinding)
 
         // when multiple overloading methods, need to static_cast to specify
         .def("num_rows", static_cast<perspective::t_uindex (perspective::t_table::*)() const> (&perspective::t_table::num_rows))
-        .def("num_rows", static_cast<perspective::t_uindex (perspective::t_table::*)(const perspective::t_mask&) const> (&perspective::t_table::num_rows))
         
         .def("pprint", static_cast<void (perspective::t_table::*)() const>(&perspective::t_table::pprint))
         .def("pprint", static_cast<void (perspective::t_table::*)(perspective::t_uindex, std::ostream*) const>(&perspective::t_table::pprint))

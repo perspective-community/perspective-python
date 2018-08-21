@@ -11,20 +11,10 @@
 
 #include <perspective/first.h>
 
-#ifdef PSP_ENABLE_PYTHON_JPM
-#define NO_IMPORT_ARRAY
-#define PY_ARRAY_UNIQUE_SYMBOL _perspectiveNumpy
-#include <numpy/arrayobject.h>
-#endif
-
 #include <perspective/base.h>
 #include <perspective/raw_types.h>
 #include <perspective/storage.h>
 #include <perspective/raii.h>
-
-#ifdef PSP_ENABLE_PYTHON_JPM
-#include <perspective/numpy.h>
-#endif
 
 #include <perspective/defaults.h>
 #include <perspective/compat.h>
