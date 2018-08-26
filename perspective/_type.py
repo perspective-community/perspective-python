@@ -60,7 +60,7 @@ def _is_dict(data, as_string=False):
 def _is_list(data, as_string=False):
     if isinstance(data, list):
         if as_string:
-            return 'list', data, ujson.dumps([data])
+            return 'list', data, ujson.dumps(data)
         else:
             return 'list', data, data
     return '', '', ''
