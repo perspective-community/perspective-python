@@ -18,6 +18,8 @@ class PerspectiveWidget(Widget):
     _view_module_version = Unicode('0.1.18').tag(sync=True)
 
     _data = List(default_value=[]).tag(sync=True)
+    # _data_tick = List(default_value=[]).tag(sync=True)
+
     _dat_orig = Any()
 
     datasrc = Unicode(default_value='').tag(sync=True)
@@ -29,7 +31,7 @@ class PerspectiveWidget(Widget):
     aggregates = Dict(trait=Dict(trait=Unicode()), default_value={}).tag(sync=True)
     sort = List(default_value=[]).tag(sync=True)
 
-    settings = Bool(False).tag(sync=True)
+    settings = Bool(True).tag(sync=True)
     dark = Bool(False).tag(sync=True)
 
     # FIXME
@@ -48,16 +50,12 @@ class PerspectiveWidget(Widget):
             self._dat_orig = dat_orig
         else:
             self._dat_orig = dat_orig
-            print('setting', dat_orig)
             self.set_trait('datasrc', 'static')
 
-        if self.schema and not isinstance(self.schema, str):
-            schema = ujson.dumps(self.schema)
-        else:
-            schema = {}
-
         if len(dat_orig) and typ:
-            self.set_trait('schema', schema or validate_schema(dat_orig, typ))
+            s = validate_schema(dat_orig, typ)
+            self.set_trait('schema', s)
+            self.set_trait('columns', list(map(lambda x: str(x), s.keys())))
         else:
             self.set_trait('schema', {})
 
