@@ -20,10 +20,10 @@ def convert_to_psp_schema(schema):
     return d
 
 
-def schema(data, typ):
-    if typ in ('', 'url', 'lantern', 'pyarrow'):
+def validate_schema(data, typ):
+    if typ in ('', 'url', 'lantern'):
         # TODO
-        return ''
+        return {}
     elif typ == 'dict':
         schema = {k: str(type(v)) for k, v in iteritems(data)}
     elif typ == 'list':
@@ -36,6 +36,9 @@ def schema(data, typ):
         schema = dict(data.dtypes.astype(str))
     else:
         raise NotImplemented()
+    return convert_to_psp_schema(schema)
 
-    schema = convert_to_psp_schema(schema)
+
+def schema(data, typ):
+    schema = validate_schema(data, typ)
     return ujson.dumps(schema)

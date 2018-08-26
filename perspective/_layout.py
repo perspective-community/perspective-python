@@ -6,47 +6,53 @@ from .aggregate import Aggregate
 from .sort import Sort
 
 
-def layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False):
-    ret = {}
-
+def validate_view(view):
     if isinstance(view, View):
-        ret['view'] = view.value
+        ret = view.value
     elif isinstance(view, str):
         if view not in View.options():
             raise PSPException('Unrecognized view: %s', view)
-        ret['view'] = view
+        ret = view
     else:
         raise PSPException('Cannot parse view type: %s', str(type(view)))
+    return ret
 
+
+def validate_columns(columns):
     if columns is None:
-        ret['columns'] = ''
+        ret = []
     elif isinstance(columns, str):
-        ret['columns'] = [columns]
+        ret = [columns]
     elif isinstance(columns, list):
-        ret['columns'] = columns
+        ret = columns
     else:
         raise PSPException('Cannot parse columns type: %s', str(type(columns)))
+    return ret
 
-    if rowpivots is None:
-        ret['row-pivots'] = ''
-    elif isinstance(rowpivots, str):
-        ret['row-pivots'] = [rowpivots]
-    elif isinstance(rowpivots, list):
-        ret['row-pivots'] = rowpivots
+
+def _validate_pivots(pivots):
+    if pivots is None:
+        ret = []
+    elif isinstance(pivots, str):
+        ret = [pivots]
+    elif isinstance(pivots, list):
+        ret = pivots
     else:
-        raise PSPException('Cannot parse rowpivots type: %s', str(type(rowpivots)))
+        raise PSPException('Cannot parse rowpivots type: %s', str(type(pivots)))
+    return ret
 
-    if columnpivots is None:
-        ret['column-pivots'] = ''
-    elif isinstance(columnpivots, str):
-        ret['column-pivots'] = [columnpivots]
-    elif isinstance(columnpivots, list):
-        ret['column-pivots'] = columnpivots
-    else:
-        raise PSPException('Cannot parse columnpivots type: %s', str(type(columnpivots)))
 
+def validate_rowpivots(rowpivots):
+    return _validate_pivots(rowpivots)
+
+
+def validate_columnpivots(columnpivots):
+    return _validate_pivots(columnpivots)
+
+
+def validate_aggregates(aggregates):
     if aggregates is None:
-        ret['aggregates'] = ''
+        ret = []
     elif isinstance(aggregates, dict):
         for k, v in iteritems(aggregates):
             if isinstance(v, Aggregate):
@@ -56,28 +62,38 @@ def layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, ag
                     raise PSPException('Unrecognized aggregate: %s', v)
             else:
                 raise PSPException('Cannot parse aggregation of type %s', str(type(v)))
-        ret['aggregates'] = aggregates
+        ret = aggregates
     else:
         raise PSPException('Cannot parse aggregates type: %s', str(type(aggregates)))
+    return ret
 
+
+def validate_sort(sort):
     if sort is None:
-        ret['sort'] = ''
+        ret = []
     elif isinstance(sort, str):
-        ret['sort'] = [sort]
+        ret = [sort]
     elif isinstance(sort, list):
-        ret['sort'] = []
+        ret = []
         for col, s in sort:
             if isinstance(s, Sort):
                 s = s.value
             elif not isinstance(s, str) or s not in Sort.options():
                 raise PSPException('Unrecognized Sort: %s', s)
-            ret['sort'].append([col, s])
+            ret.append([col, s])
     else:
         raise PSPException('Cannot parse sort type: %s', str(type(sort)))
+    return ret
 
+
+def layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False):
+    ret = {}
+    ret['view'] = validate_view(view)
+    ret['columns'] = validate_columns(columns)
+    ret['row-pivots'] = validate_rowpivots(rowpivots)
+    ret['column-pivots'] = validate_columnpivots(columnpivots)
+    ret['aggregates'] = validate_aggregates(aggregates)
+    ret['sort'] = validate_sort(sort)
     ret['settings'] = settings
-
-    if dark:
-        ret['colorscheme'] = 'dark'
-
+    ret['colorscheme'] = dark
     return ujson.dumps(ret)

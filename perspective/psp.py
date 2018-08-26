@@ -21,7 +21,7 @@ def psp(data, view='hypergrid', schema=None, columns=None, rowpivots=None, colum
     '''
     from IPython.display import display
 
-    typ, dat_orig, dat = type_detect(data)
+    typ, dat_orig, dat = type_detect(data, True)
     if schema and not isinstance(schema, str):
         schema = ujson.dumps(schema)
 
@@ -32,4 +32,5 @@ def psp(data, view='hypergrid', schema=None, columns=None, rowpivots=None, colum
         'layout': layout(view, columns, rowpivots, columnpivots, aggregates, sort, settings, dark),
         'config': config(helper_config, dat_orig)
     }
+    print(bundle)
     return display(bundle, raw=True)
