@@ -103,26 +103,6 @@ class TestTypedetect:
         assert y == '[{"a":"simple test"}]'
         assert t == 'dict'
 
-    def test_pyarrow(self):
-        from perspective._type import type_detect
-        try:
-            import pyarrow as pa
-            x1 = pa.Array(['test', 'test2'])
-            x2 = pa.frombuffer(b'test')
-
-            type_detect(x1)
-            type_detect(x2)
-
-            import sys
-            sys.modules['pyarrow'] = Nope()
-            type_detect('test', True)
-            sys.modules['pyarrow'] = pa
-        except ImportError:
-            import sys
-            sys.modules['pyarrow'] = Nope()
-            type_detect('test', True)
-            del sys.modules['pyarrow']
-
     def test_webroutes(self):
         from perspective._type import type_detect
         x = ['https://', 'http://', 'wss://', 'ws://', 'sio://']
