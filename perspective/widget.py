@@ -114,7 +114,6 @@ class PerspectiveWidget(Widget):
 
     def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config='', **kwargs):
         super(PerspectiveWidget, self).__init__(**kwargs)
-        self.data = data
         self.view = view
         self.schema = schema or {}
         self.columns = columns or []
@@ -125,3 +124,4 @@ class PerspectiveWidget(Widget):
         self.settings = settings
         self.dark = dark
         self.helper_config = helper_config
+        self.data = data
