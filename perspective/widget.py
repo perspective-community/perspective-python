@@ -112,17 +112,16 @@ class PerspectiveWidget(Widget):
         conf = config(proposal.value, self._dat_orig)
         return conf
 
-    @staticmethod
-    def new(data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False, helper_config=None, **kwargs):
-        return PerspectiveWidget(
-            data=data,
-            schema=schema,
-            view=view,
-            columns=columns,
-            rowpivots=rowpivots,
-            columnpivots=columnpivots,
-            aggregates=aggregates,
-            sort=sort,
-            settings=settings,
-            dark=dark,
-            helper_config=helper_config)
+    def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config='', **kwargs):
+        super(PerspectiveWidget, self).__init__(**kwargs)
+        self.data = data
+        self.view = view
+        self.schema = schema or {}
+        self.columns = columns or []
+        self.rowpivots = rowpivots or []
+        self.columnpivots = columnpivots or []
+        self.aggregates = aggregates or {}
+        self.sort = sort or []
+        self.settings = settings
+        self.dark = dark
+        self.helper_config = helper_config
