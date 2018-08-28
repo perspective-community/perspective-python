@@ -1,6 +1,10 @@
 from .widget import PerspectiveWidget
 
 
+def _or_default(name, _def):
+    return name if name else _def
+
+
 def psp(data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config=None):
     '''Render a perspective javascript widget in jupyter
 

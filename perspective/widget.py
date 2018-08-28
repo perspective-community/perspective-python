@@ -1,5 +1,3 @@
-import ujson
-
 from ipywidgets import Widget
 from traitlets import Unicode, List, Bool, Dict, Any, validate
 
@@ -113,7 +111,7 @@ class PerspectiveWidget(Widget):
 
     @validate('helper_config')
     def _validate_helper_config(self, proposal):
-        conf = config(proposal.value, self._dat_orig)
+        conf = config(proposal.value, self._dat_orig, False)
         return conf
 
     def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config=None, **kwargs):
