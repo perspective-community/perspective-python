@@ -11,11 +11,11 @@ with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='perspective-python',
-    version='0.0.12',
+    version='0.0.13',
     description='Analytics library',
     long_description=long_description,
     url='https://github.com/timkpaine/perspective-python',
-    download_url='https://github.com/timkpaine/perspective-python/archive/v0.0.12.tar.gz',
+    download_url='https://github.com/timkpaine/perspective-python/archive/v0.0.13.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='Apache 2.0',
