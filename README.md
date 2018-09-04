@@ -1,7 +1,7 @@
 # perspective-python
 Python APIs for [perspective](https://github.com/jpmorganchase/perspective) front end
 
-# This package now lives under [Perspective](https://github.com/jpmorganchase/perspective)
+# This package now lives partially under [Perspective](https://github.com/jpmorganchase/perspective)
 
 [![Build Status](https://travis-ci.org/timkpaine/perspective-python.svg?branch=master)](https://travis-ci.org/timkpaine/perspective-python)
 [![GitHub issues](https://img.shields.io/github/issues/timkpaine/perspective-python.svg)]()
