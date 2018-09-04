@@ -1,28 +1,10 @@
 build: ## build the package
 	python3 setup.py build
 
-builddebug: buildd  ## build the package
-
-buildd: ## build the package
-	PSP_DEBUG=True python3 setup.py build
-
-buildjs: ## build the package with emscripten
-	../emsdk/emsdk activate latest
-	bash "source ../emsdk/emsdk_env.sh && use_ems=True python3 setup.py build"
-
-buildext: ## build the package extensions
-	python3 setup.py build_ext
-
-buildip: build  ## build the package extensions
-	cp -r build/`ls build | grep lib`/perspective/*.so ./perspective
-
-buildipd: buildd  ## build the package extensions
-	cp -r build/`ls build | grep lib`/perspective/*.so ./perspective
-
 tests: ## Clean and Make unit tests
 	python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 	
-test: clean build buildip ## run the tests for travis CI
+test: clean build ## run the tests for travis CI
 	@ python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 
 annotate: ## MyPy type annotation check
