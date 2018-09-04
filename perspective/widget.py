@@ -1,4 +1,3 @@
-from enum import Enum
 from ipywidgets import Widget
 from traitlets import Unicode, List, Bool, Dict, Any, validate
 
@@ -55,7 +54,15 @@ class PerspectiveWidget(Widget):
         if len(dat_orig) and typ:
             s = validate_schema(dat_orig, typ)
             self.schema = s
-            self.columns = list(map(lambda x: str(x), s.keys()))
+            if not self.columns:
+                columns = list(map(lambda x: str(x), s.keys()))
+                if not self.rowpivots:
+                    if 'index' in dat_orig.columns:
+                        self.rowpivots = ['index']
+                        if 'index' in columns:
+                            columns.remove('index')
+                self.columns = columns
+
         else:
             self.schema = {}
 
@@ -128,5 +135,5 @@ class PerspectiveWidget(Widget):
         self.columnpivots = validate_columnpivots(columnpivots) or []
         self.aggregates = validate_aggregates(aggregates) or {}
 
-        self.data = data
         self.columns = validate_columns(columns) or []
+        self.data = data
