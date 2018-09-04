@@ -56,7 +56,7 @@ class PerspectiveWidget(Widget):
             self.schema = s
             if not self.columns:
                 columns = list(map(lambda x: str(x), s.keys()))
-                if not self.rowpivots:
+                if not self.rowpivots and self.view != 'hypergrid':
                     if 'index' in dat_orig.columns:
                         self.rowpivots = ['index']
                         if 'index' in columns:
