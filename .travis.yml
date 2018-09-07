@@ -1,17 +1,21 @@
 language: python
 cache: pip
 
-services:
-  - docker
-
-os:
-  - linux
-  # - osx
-
 python:
   - "3.6"
 
-script: docker build .
+install:
+    - pip install -r requirements.txt
+    - pip install codecov
+
+
+before_script: # configure a headless display to test plot generation
+    - sleep 3 # give xvfb some time to start
+
+script: make test
+
+after_success:
+    - codecov --token d33ecf96-a51f-43b6-8429-c11f83b961ad
 
 branches:
   only:
