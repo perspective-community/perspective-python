@@ -37,17 +37,6 @@ def _is_pandas(data, as_string=False):
     return '', '', ''
 
 
-def _is_lantern(data, as_string=False):
-    try:
-        if 'lantern' in sys.modules:
-            import lantern as l
-            if isinstance(data, l.LanternLive):
-                return 'lantern', data, data.path()
-    except ImportError:
-        return '', '', ''
-    return '', '', ''
-
-
 def _is_remote(data, as_string=False):
     if isinstance(data, str):
         if ('http://' in data and 'http://' == data[:7]) or \
@@ -86,4 +75,4 @@ def type_detect(data, as_string=False):
     return '', data, data
 
 
-EXPORTERS = [_is_pandas, _is_lantern, _is_remote, _is_dict, _is_list]
+EXPORTERS = [_is_pandas, _is_remote, _is_dict, _is_list]

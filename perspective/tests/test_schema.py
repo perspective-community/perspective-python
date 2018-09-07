@@ -10,7 +10,6 @@ class TestLayout:
         from perspective._schema import schema
         assert schema(None, '') == '{}'
         assert schema(None, 'url') == '{}'
-        assert schema(None, 'lantern') == '{}'
 
         x = schema({'test': 3}, 'dict')
         assert x == '{"test": "integer"}'

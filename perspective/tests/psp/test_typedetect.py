@@ -8,10 +8,6 @@ class Nope(object):
         raise ImportError
 
     @property
-    def LanternLive(self):
-        raise ImportError
-
-    @property
     def Array(self):
         raise ImportError
 
@@ -71,31 +67,6 @@ class TestTypedetect:
         sys.modules['pandas'] = Nope()
         type_detect('test', True)
         sys.modules['pandas'] = pd
-
-    def test_lantern(self):
-        class Test(object):
-            def __init__(self):
-                pass
-
-            def path(self):
-                return 'test'
-
-        module_mock = MagicMock()
-        with patch.dict('sys.modules', **{
-                'lantern': module_mock,
-                'lantern.live': module_mock,
-                }):
-            module_mock.LanternLive = Test
-            from perspective._type import type_detect
-
-            t, _, x = type_detect(Test(), True)
-
-            assert x == 'test'
-            assert t == 'lantern'
-
-            import sys
-            sys.modules['lantern'] = Nope()
-            type_detect('test')
 
     def test_list(self):
         from perspective._type import type_detect

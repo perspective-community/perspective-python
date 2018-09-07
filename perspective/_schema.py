@@ -21,7 +21,7 @@ def convert_to_psp_schema(schema):
 
 
 def validate_schema(data, typ):
-    if typ in ('', 'url', 'lantern'):
+    if typ in ('', 'url'):
         # TODO
         return {}
     elif typ == 'dict':
