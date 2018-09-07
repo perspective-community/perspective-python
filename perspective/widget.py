@@ -35,10 +35,14 @@ class PerspectiveWidget(Widget):
     # FIXME
     helper_config = Dict(default_value={}).tag(sync=True)
 
-    def _get_data(self):
-        return self._dat_orig
+    def delete(self):
+        self.send({'type': 'delete'})
 
-    def _set_data(self, value):
+    def update(self, data):
+        typ, dat_orig, data_new = type_detect(data)
+        self.send({'type': 'update', 'data': data_new})
+
+    def load(self, value):
         typ, dat_orig, dat = type_detect(value)
         if isinstance(dat, str):
             # unconvertable, must be http/ws/sio/comm
@@ -70,12 +74,6 @@ class PerspectiveWidget(Widget):
             self.datasrc = data_src
 
         self._data = dat
-
-    # FIXME
-    data = property(_get_data, _set_data)
-    # @validate('_data')
-    # def _validate_data(self, proposal):
-    #     return proposal.value
 
     @validate('datasrc')
     def _validate_datasrc(self, proposal):
@@ -122,6 +120,9 @@ class PerspectiveWidget(Widget):
         conf = config(proposal.value, self._dat_orig, False)
         return conf
 
+    def __del__(self):
+        self.send({'type': 'delete'})
+
     def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config=None, **kwargs):
         super(PerspectiveWidget, self).__init__(**kwargs)
         self.view = validate_view(view)
@@ -136,4 +137,4 @@ class PerspectiveWidget(Widget):
         self.aggregates = validate_aggregates(aggregates) or {}
 
         self.columns = validate_columns(columns) or []
-        self.data = data
+        self.load(data)
