@@ -2,6 +2,7 @@ import asyncio
 import json
 import websockets
 import tornado.httpclient
+from socketIO_client_nexus import SocketIO, BaseNamespace
 
 
 class GenBase(object):
@@ -99,28 +100,32 @@ class WSHelper(GenBase):
 
 
 class SIOHelper(GenBase):
-    def __init__(self, psp, url, channel='', records=False):
+    def __init__(self, psp, url, send=None, channel='', records=False):
         self.validate(url, 'sio')
         self.__type = 'sio'
         self.url = url
+        self.send = send
         self.channel = channel
         self.records = records
 
     # @asyncio.coroutine
     async def getData(self):
-        # websocket = yield from websockets.connect(self.url)
-        async with websockets.connect(self.url) as websocket:
-            if self.send:
-                # yield from websocket.send(self.send)
-                await websocket.send(self.send)
+        # FIXME
+        class Namespace(BaseNamespace):
+            def on_connect(self, *data):
+                pass
 
-            # data = yield from websocket.recv()
-            data = await websocket.recv()
+            def on_disconnect(self, *data):
+                pass
 
-            if self.records is False:
-                yield [data]
-            else:
-                yield data
+            def on_message(self, data):
+                return data
+
+        self.socketIO = SocketIO(self.url, 443)  # needs base url
+        namespace = self.socketIO.define(Namespace, self.url)  # needs path in url
+        if self.send:
+            namespace.emit(*self.send)
+        self.socketIO.wait()
 
 
 def type_to_helper(type):
