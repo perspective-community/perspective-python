@@ -1,11 +1,18 @@
+import sys
+import warnings
+
 from ipywidgets import Widget
 from traitlets import Unicode, List, Bool, Dict, Any, validate
-
-from .helpers import type_to_helper
 from ._type import type_detect
 from ._layout import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort
 from ._schema import validate_schema
 from ._config import config
+
+if sys.version_info[0] < 3:
+    warnings.warn('Python2 unsupported with perspective')
+    from .helpers_py27 import type_to_helper
+else:
+    from .helpers import type_to_helper
 
 
 class PerspectiveWidget(Widget):
@@ -113,13 +120,15 @@ class PerspectiveWidget(Widget):
     def __del__(self):
         self.send({'type': 'delete'})
 
-    def __repr__(self):
-        if self._helper:
-            self._helper.start()
-        return super(PerspectiveWidget, self).__repr__()
-
     def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config=None, **kwargs):
         super(PerspectiveWidget, self).__init__(**kwargs)
+
+        def cb(widget, **kwargs):
+            if widget._helper:
+                widget._helper.start()
+
+        self.on_displayed(callback=cb)
+
         self._helper = None
         self.datasrc = 'static'
         self.view = validate_view(view)

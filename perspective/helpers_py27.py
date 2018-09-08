@@ -1,7 +1,8 @@
-import asyncio
-import json
-import websockets
-import tornado.httpclient
+import trollius as asyncio
+from trollius import From, Return
+# import websockets  # not supported in python2
+from requests_futures.sessions import FuturesSession
+# from tornado.platform.asyncio import to_asyncio_future  # Deprecated trollius, need to do myself
 from socketIO_client_nexus import SocketIO, BaseNamespace
 
 
@@ -17,14 +18,12 @@ class GenBase(object):
             if not url.startswith('sio://'):
                 raise Exception('Invalid url for type socketio: %s' % url)
 
-    # @asyncio.coroutine
-    # def run(self):
-    #     while True:
-    #         item = yield from self.getData()
-    #         self.psp.update(item)
-
-    async def run(self):
-        async for item in self.getData():
+    @asyncio.coroutine
+    def run(self):
+        while True:
+            item = yield From(self.getData())
+            if item is None:
+                return
             self.psp.update(item)
 
     def start(self):
@@ -48,55 +47,54 @@ class HTTPHelper(GenBase):
         self.records = records
         self.repeat = repeat
         self.psp = psp
+        self.first = True
 
-    # @asyncio.coroutine
-    async def getData(self):
-        client = tornado.httpclient.AsyncHTTPClient()
-        dat = await client.fetch(self.url)
-        dat = json.loads(dat.body)
-
+    @asyncio.coroutine
+    def fetch(self):
+        session = FuturesSession()
+        dat = session.get(self.url).result().json()
         if self.field:
             dat = dat[self.field]
         if self.records is False:
             dat = [dat]
-        # yield asyncio.From(dat)
-        yield dat
+        raise Return(dat)
 
-        while(self.repeat >= 0):
-            await asyncio.sleep(self.repeat)
-            dat = await client.fetch(self.url)
-            dat = json.loads(dat.body)
-            if self.field:
-                dat = dat[self.field]
-            if self.records is False:
-                dat = [dat]
-            yield dat
-
-
-class WSHelper(GenBase):
-    def __init__(self, psp, url, send=None, records=True):
-        self.validate(url, 'ws')
-        self.__type = 'ws'
-        self.url = url
-        self.send = send
-        self.records = records
-        self.psp = psp
-
-    # @asyncio.coroutine
-    async def getData(self):
-        # websocket = yield from websockets.connect(self.url)
-        async with websockets.connect(self.url) as websocket:
-            if self.send:
-                # yield from websocket.send(self.send)
-                await websocket.send(self.send)
-
-            # data = yield from websocket.recv()
-            data = await websocket.recv()
-
-            if self.records is False:
-                yield [data]
+    @asyncio.coroutine
+    def getData(self):
+        if self.first:
+            self.first = False
+            dat = yield From(self.fetch())
+            raise Return(dat)
+        else:
+            if self.repeat > 0:
+                yield From(asyncio.sleep(self.repeat))
+                dat = yield From(self.fetch())
+                raise Return(dat)
             else:
-                yield data
+                raise Return(None)
+
+
+# class WSHelper(GenBase):
+#     def __init__(self, psp, url, send=None, records=True):
+#         self.validate(url, 'ws')
+#         self.__type = 'ws'
+#         self.url = url
+#         self.send = send
+#         self.records = records
+#         self.psp = psp
+
+#     @asyncio.coroutine
+#     def getData(self):
+#         websocket = yield From(websockets.connect(self.url))
+#         if self.send:
+#             yield From(websocket.send(self.send))
+
+#         data = yield From(websocket.recv())
+
+#         if self.records is False:
+#             raise Return([data])
+#         else:
+#             raise Return(data)
 
 
 class SIOHelper(GenBase):
@@ -110,8 +108,8 @@ class SIOHelper(GenBase):
 
         self._data = []
 
-    # @asyncio.coroutine
-    async def getData(self):
+    @asyncio.coroutine
+    def getData(self):
         # FIXME
         class Namespace(BaseNamespace):
             def on_connect(self, *data):
@@ -134,6 +132,7 @@ def type_to_helper(type):
     if type.startswith('http'):
         return HTTPHelper
     elif type.startswith('ws'):
-        return WSHelper
+        # return WSHelper
+        pass
     elif type.startswith('sio'):
         return SIOHelper

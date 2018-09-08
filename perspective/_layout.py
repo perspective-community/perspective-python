@@ -1,5 +1,5 @@
 import json
-from six import iteritems
+from six import iteritems, string_types
 from .exception import PSPException
 from .view import View
 from .aggregate import Aggregate
@@ -9,7 +9,7 @@ from .sort import Sort
 def validate_view(view):
     if isinstance(view, View):
         ret = view.value
-    elif isinstance(view, str):
+    elif isinstance(view, string_types):
         if view not in View.options():
             raise PSPException('Unrecognized view: %s', view)
         ret = view
@@ -21,7 +21,7 @@ def validate_view(view):
 def validate_columns(columns):
     if columns is None:
         ret = []
-    elif isinstance(columns, str):
+    elif isinstance(columns, string_types):
         ret = [columns]
     elif isinstance(columns, list):
         ret = columns
@@ -33,7 +33,7 @@ def validate_columns(columns):
 def _validate_pivots(pivots):
     if pivots is None:
         ret = []
-    elif isinstance(pivots, str):
+    elif isinstance(pivots, string_types):
         ret = [pivots]
     elif isinstance(pivots, list):
         ret = pivots
@@ -57,7 +57,7 @@ def validate_aggregates(aggregates):
         for k, v in iteritems(aggregates):
             if isinstance(v, Aggregate):
                 aggregates[k] = v.value
-            elif isinstance(v, str):
+            elif isinstance(v, string_types):
                 if v not in Aggregate.options():
                     raise PSPException('Unrecognized aggregate: %s', v)
             else:
@@ -71,14 +71,14 @@ def validate_aggregates(aggregates):
 def validate_sort(sort):
     if sort is None:
         ret = []
-    elif isinstance(sort, str):
+    elif isinstance(sort, string_types):
         ret = [sort]
     elif isinstance(sort, list):
         ret = []
         for col, s in sort:
             if isinstance(s, Sort):
                 s = s.value
-            elif not isinstance(s, str) or s not in Sort.options():
+            elif not isinstance(s, string_types) or s not in Sort.options():
                 raise PSPException('Unrecognized Sort: %s', s)
             ret.append([col, s])
     else:
