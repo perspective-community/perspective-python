@@ -2,10 +2,15 @@ import asyncio
 import json
 import websockets
 import tornado.httpclient
+import threading
+from urllib.parse import urlparse
 from socketIO_client_nexus import SocketIO, BaseNamespace
 
 
 class GenBase(object):
+    def __init__(self, psp):
+        self.psp = psp
+
     def validate(self, url, type):
         if type == 'http':
             if not url.startswith('http://') and not url.startswith('https://'):
@@ -41,7 +46,7 @@ class HTTPHelper(GenBase):
         self.field = field
         self.records = records
         self.repeat = repeat
-        self.psp = psp
+        super(HTTPHelper, self).__init__(psp)
 
     async def getData(self):
         client = tornado.httpclient.AsyncHTTPClient()
@@ -72,7 +77,7 @@ class WSHelper(GenBase):
         self.url = url
         self.send = send
         self.records = records
-        self.psp = psp
+        super(WSHelper, self).__init__(psp)
 
     async def getData(self):
         async with websockets.connect(self.url) as websocket:
@@ -80,7 +85,7 @@ class WSHelper(GenBase):
                 await websocket.send(self.send)
 
             data = await websocket.recv()
-
+            raise Exception(data)
             if self.records is False:
                 yield [data]
             else:
@@ -91,30 +96,37 @@ class SIOHelper(GenBase):
     def __init__(self, psp, url, send=None, channel='', records=False):
         self.validate(url, 'sio')
         self.__type = 'sio'
-        self.url = url
+        self.url = url.replace('sio://', '')
         self.send = send
         self.channel = channel
         self.records = records
 
         self._data = []
 
+        o = urlparse(self.url)
+
+        self.socketIO = SocketIO(o.scheme + '://' + o.netloc, o.port)
+        self.socketIO.on(self.channel, lambda data: self._data.append(data))
+        self.url = o.path
+
+        super(SIOHelper, self).__init__(psp)
+
     async def getData(self):
-        # FIXME
-        class Namespace(BaseNamespace):
-            def on_connect(self, *data):
-                pass
-
-            def on_disconnect(self, *data):
-                pass
-
-            def on_message(self, data):
-                return data
-
-        self.socketIO = SocketIO(self.url, 443)  # needs base url
-        namespace = self.socketIO.define(Namespace, self.url)  # needs path in url
         if self.send:
-            namespace.emit(*self.send)
-        self.socketIO.wait()
+            self.socketIO.emit(*self.send)
+        t = threading.Thread(target=self.socketIO.wait)
+        t.start()
+
+        while 1:
+            if self._data:
+                c = 0
+                for item in self._data:
+                    c += 1
+                    yield item
+                self._data = self._data[:c]
+
+            else:
+                await asyncio.sleep(1)
 
 
 def type_to_helper(type):
