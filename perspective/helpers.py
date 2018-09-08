@@ -62,8 +62,9 @@ class HTTPHelper(GenBase):
         yield dat
 
         while(self.repeat >= 0):
-            asyncio.sleep(self.repeat)
+            await asyncio.sleep(self.repeat)
             dat = await client.fetch(self.url)
+            dat = json.loads(dat.body)
             if self.field:
                 dat = dat[self.field]
             if self.records is False:
@@ -108,3 +109,12 @@ class SIOHelper(GenBase):
     @asyncio.coroutine
     def getData(self):
         pass
+
+
+def type_to_helper(type):
+    if type.startswith('http'):
+        return HTTPHelper
+    elif type.startswith('ws'):
+        return WSHelper
+    elif type.startswith('sio'):
+        return SIOHelper

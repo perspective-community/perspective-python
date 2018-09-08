@@ -1,6 +1,7 @@
 from ipywidgets import Widget
 from traitlets import Unicode, List, Bool, Dict, Any, validate
 
+from .helpers import type_to_helper
 from ._type import type_detect
 from ._layout import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort
 from ._schema import validate_schema
@@ -20,7 +21,7 @@ class PerspectiveWidget(Widget):
 
     _dat_orig = Any()
 
-    datasrc = Unicode(default_value='').tag(sync=True)
+    datasrc = Unicode(default_value='static').tag(sync=True)
     schema = Dict(default_value={}).tag(sync=True)
     view = Unicode('hypergrid').tag(sync=True)
     columns = List(default_value=[]).tag(sync=True)
@@ -32,9 +33,6 @@ class PerspectiveWidget(Widget):
     settings = Bool(True).tag(sync=True)
     dark = Bool(False).tag(sync=True)
 
-    # FIXME
-    helper_config = Dict(default_value={}).tag(sync=True)
-
     def delete(self):
         self.send({'type': 'delete'})
 
@@ -44,16 +42,16 @@ class PerspectiveWidget(Widget):
 
     def load(self, value):
         typ, dat_orig, dat = type_detect(value)
-        if isinstance(dat, str):
+
+        if typ == 'url':
             # unconvertable, must be http/ws/sio/comm
-            data_src = dat
             self._dat_orig = dat_orig
+            helper_config = config(self._helper_config, self._dat_orig, False)
+            self._helper = type_to_helper(dat)(self, dat, **helper_config)
             dat = []
             dat_orig = ''
         else:
-            data_src = ''
             self._dat_orig = dat_orig
-            self.datasrc = 'static'
 
         if len(dat_orig) and typ:
             s = validate_schema(dat_orig, typ)
@@ -69,9 +67,6 @@ class PerspectiveWidget(Widget):
 
         else:
             self.schema = {}
-
-        if data_src:
-            self.datasrc = data_src
 
         self._data = dat
 
@@ -115,22 +110,24 @@ class PerspectiveWidget(Widget):
         sort = validate_sort(proposal.value)
         return sort
 
-    @validate('helper_config')
-    def _validate_helper_config(self, proposal):
-        conf = config(proposal.value, self._dat_orig, False)
-        return conf
-
     def __del__(self):
         self.send({'type': 'delete'})
 
+    def __repr__(self):
+        if self._helper:
+            self._helper.start()
+        return super(PerspectiveWidget, self).__repr__()
+
     def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config=None, **kwargs):
         super(PerspectiveWidget, self).__init__(**kwargs)
+        self._helper = None
+        self.datasrc = 'static'
         self.view = validate_view(view)
         self.schema = schema or {}
         self.sort = validate_sort(sort) or []
         self.settings = settings
         self.dark = dark
-        self.helper_config = helper_config or {}
+        self._helper_config = helper_config or {}
 
         self.rowpivots = validate_rowpivots(rowpivots) or []
         self.columnpivots = validate_columnpivots(columnpivots) or []
