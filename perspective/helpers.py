@@ -17,12 +17,6 @@ class GenBase(object):
             if not url.startswith('sio://'):
                 raise Exception('Invalid url for type socketio: %s' % url)
 
-    # @asyncio.coroutine
-    # def run(self):
-    #     while True:
-    #         item = yield from self.getData()
-    #         self.psp.update(item)
-
     async def run(self):
         async for item in self.getData():
             self.psp.update(item)
@@ -49,7 +43,6 @@ class HTTPHelper(GenBase):
         self.repeat = repeat
         self.psp = psp
 
-    # @asyncio.coroutine
     async def getData(self):
         client = tornado.httpclient.AsyncHTTPClient()
         dat = await client.fetch(self.url)
@@ -59,7 +52,6 @@ class HTTPHelper(GenBase):
             dat = dat[self.field]
         if self.records is False:
             dat = [dat]
-        # yield asyncio.From(dat)
         yield dat
 
         while(self.repeat >= 0):
@@ -82,15 +74,11 @@ class WSHelper(GenBase):
         self.records = records
         self.psp = psp
 
-    # @asyncio.coroutine
     async def getData(self):
-        # websocket = yield from websockets.connect(self.url)
         async with websockets.connect(self.url) as websocket:
             if self.send:
-                # yield from websocket.send(self.send)
                 await websocket.send(self.send)
 
-            # data = yield from websocket.recv()
             data = await websocket.recv()
 
             if self.records is False:
@@ -110,7 +98,6 @@ class SIOHelper(GenBase):
 
         self._data = []
 
-    # @asyncio.coroutine
     async def getData(self):
         # FIXME
         class Namespace(BaseNamespace):
