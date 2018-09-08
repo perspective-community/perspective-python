@@ -2,7 +2,6 @@ import trollius as asyncio
 from trollius import From, Return
 # import websockets  # not supported in python2
 from requests_futures.sessions import FuturesSession
-# from tornado.platform.asyncio import to_asyncio_future  # Deprecated trollius, need to do myself
 from socketIO_client_nexus import SocketIO, BaseNamespace
 
 
