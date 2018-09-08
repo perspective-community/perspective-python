@@ -106,9 +106,21 @@ class SIOHelper(GenBase):
         self.channel = channel
         self.records = records
 
-    @asyncio.coroutine
-    def getData(self):
-        pass
+    # @asyncio.coroutine
+    async def getData(self):
+        # websocket = yield from websockets.connect(self.url)
+        async with websockets.connect(self.url) as websocket:
+            if self.send:
+                # yield from websocket.send(self.send)
+                await websocket.send(self.send)
+
+            # data = yield from websocket.recv()
+            data = await websocket.recv()
+
+            if self.records is False:
+                yield [data]
+            else:
+                yield data
 
 
 def type_to_helper(type):
