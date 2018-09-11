@@ -8,8 +8,9 @@ class TestConfig:
         from perspective._config import config
         assert config('', None) == '{}'
         assert config('{}', 'test') == '{}'
-        assert config({}, 'http://') == '{"field": "", "records": false, "repeat": 10}'
-        assert config({}, 'https://') == '{"field": "", "records": false, "repeat": 10}'
-        assert config({}, 'ws://') == '{"send": "{}", "records": false}'
-        assert config({}, 'wss://') == '{"send": "{}", "records": false}'
-        assert config({}, 'sio://') == '{"channel": "", "records": false}'
+        print(config({}, 'http://'))
+        assert config({}, 'http://') == '{"field": "", "records": true, "repeat": -1}'
+        assert config({}, 'https://') == '{"field": "", "records": true, "repeat": -1}'
+        assert config({}, 'ws://') == '{"send": "{}", "records": true}'
+        assert config({}, 'wss://') == '{"send": "{}", "records": true}'
+        assert config({}, 'sio://') == '{"channel": "", "records": true}'
