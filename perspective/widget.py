@@ -1,18 +1,8 @@
-import sys
-import warnings
-
 from ipywidgets import Widget
 from traitlets import Unicode, List, Bool, Dict, Any, validate
 from ._type import type_detect
 from ._layout import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort
 from ._schema import validate_schema
-from ._config import config
-
-if sys.version_info[0] < 3:
-    warnings.warn('Python2 unsupported with perspective')
-    from .helpers_py27 import type_to_helper
-else:
-    from .helpers import type_to_helper
 
 
 class PerspectiveWidget(Widget):
@@ -53,8 +43,6 @@ class PerspectiveWidget(Widget):
         if typ == 'url':
             # unconvertable, must be http/ws/sio/comm
             self._dat_orig = dat_orig
-            helper_config = config(self._helper_config, self._dat_orig, False)
-            self._helper = type_to_helper(dat)(self, dat, **helper_config)
             dat = []
             dat_orig = ''
         else:
@@ -120,15 +108,8 @@ class PerspectiveWidget(Widget):
     def __del__(self):
         self.send({'type': 'delete'})
 
-    def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, helper_config=None, **kwargs):
+    def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, *args, **kwargs):
         super(PerspectiveWidget, self).__init__(**kwargs)
-
-        def cb(widget, **kwargs):
-            if widget._helper:
-                widget._helper.start()
-
-        self.on_displayed(callback=cb)
-
         self._helper = None
         self.datasrc = 'static'
         self.view = validate_view(view)
@@ -136,7 +117,6 @@ class PerspectiveWidget(Widget):
         self.sort = validate_sort(sort) or []
         self.settings = settings
         self.dark = dark
-        self._helper_config = helper_config or {}
 
         self.rowpivots = validate_rowpivots(rowpivots) or []
         self.columnpivots = validate_columnpivots(columnpivots) or []
