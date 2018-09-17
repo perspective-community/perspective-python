@@ -3,12 +3,6 @@ from codecs import open
 import os
 import os.path
 
-import sys
-import warnings
-if sys.version_info[0] < 3:
-    warnings.warn('Python2 unsupported with perspective')
-    # set PYTHONDONTWRITEBYTECODE
-
 here = os.path.abspath(os.path.dirname(__file__))
 
 with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
