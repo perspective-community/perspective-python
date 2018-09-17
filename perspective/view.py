@@ -8,6 +8,7 @@ class View(Enum):
     XBAR = 'x_bar'
     YLINE = 'y_line'
     YAREA = 'y_area'
+    YSCATTER = 'y_scatter'
     XYLINE = 'xy_line'
     XYSCATTER = 'xy_scatter'
     TREEMAP = 'treemap'
