@@ -1,6 +1,6 @@
 from ipywidgets import Widget
 from six import iteritems
-from traitlets import Unicode, List, Bool, Dict, Any, validate
+from traitlets import Unicode, List, Bool, Int, Dict, Any, validate
 from .data import type_detect
 from ._layout import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort
 from ._schema import validate_schema
@@ -9,10 +9,10 @@ from ._schema import validate_schema
 class PerspectiveWidget(Widget):
     _model_name = Unicode('PerspectiveModel').tag(sync=True)
     _model_module = Unicode('@jpmorganchase/perspective-jupyterlab').tag(sync=True)
-    _model_module_version = Unicode('0.1.18').tag(sync=True)
+    _model_module_version = Unicode('0.2.7').tag(sync=True)
     _view_name = Unicode('PerspectiveView').tag(sync=True)
     _view_module = Unicode('@jpmorganchase/perspective-jupyterlab').tag(sync=True)
-    _view_module_version = Unicode('0.1.18').tag(sync=True)
+    _view_module_version = Unicode('0.2.7').tag(sync=True)
 
     _data = List(default_value=[]).tag(sync=True)
     _dat_orig = Any()
@@ -25,6 +25,8 @@ class PerspectiveWidget(Widget):
     columnpivots = List(trait=Unicode(), default_value=[]).tag(sync=True)
     aggregates = Dict(trait=Unicode(), default_value={}).tag(sync=True)
     sort = List(default_value=[]).tag(sync=True)
+    index = Unicode(default_value='').tag(sync=True)
+    limit = Int(default_value=-1).tag(sync=True)
 
     settings = Bool(True).tag(sync=True)
     dark = Bool(False).tag(sync=True)
@@ -111,13 +113,15 @@ class PerspectiveWidget(Widget):
     def __del__(self):
         self.send({'type': 'delete'})
 
-    def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=True, dark=False, *args, **kwargs):
+    def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, index='', limit=-1, settings=True, dark=False, *args, **kwargs):
         super(PerspectiveWidget, self).__init__(**kwargs)
         self._helper = None
         self.datasrc = 'static'
         self.view = validate_view(view)
         self.schema = schema or {}
         self.sort = validate_sort(sort) or []
+        self.index = index
+        self.limit = limit
         self.settings = settings
         self.dark = dark
 

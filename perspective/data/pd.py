@@ -8,7 +8,7 @@ class PandasData(Data):
         # level unstacking
         kwargs = {}
 
-        if isinstance(data.columns, pd.MultiIndex):
+        if isinstance(data, pd.DataFrame) and isinstance(data.columns, pd.MultiIndex):
             data = pd.DataFrame(data.unstack())
             columns = list(x for x in data.index.names if x)
             kwargs['columnpivots'] = list(x for x in data.index.names if x)
@@ -44,7 +44,7 @@ class PandasData(Data):
 
         # schema
         if isinstance(data, pd.Series):
-            schema = {data.name, str(data.dtype)}
+            schema = {data.name: str(data.dtype)}
         else:
             schema = df_processed.dtypes.astype(str)
 

@@ -5,4 +5,4 @@ from .exception import PSPException
 
 from .widget import PerspectiveWidget
 
-__version__ = '0.0.15'
+__version__ = '0.0.16'
