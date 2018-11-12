@@ -20,22 +20,7 @@ def convert_to_psp_schema(schema):
     return d
 
 
-def validate_schema(data, typ):
-    if typ in ('', 'url'):
-        # TODO
-        return {}
-    elif typ == 'dict':
-        schema = {k: str(type(v)) for k, v in iteritems(data)}
-    elif typ == 'list':
-        if isinstance(data[0], dict):
-            schema = {k: str(type(v)) for k, v in iteritems(data[0])}
-        else:
-            # TODO
-            raise NotImplemented()
-    elif typ == 'pandas':
-        schema = dict(data.dtypes.astype(str))
-    else:
-        raise NotImplemented()
+def validate_schema(schema):
     return convert_to_psp_schema(schema)
 
 

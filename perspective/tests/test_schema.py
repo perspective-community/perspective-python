@@ -1,25 +1,7 @@
-import pandas as pd
-
-
 class TestLayout:
     def setup(self):
         pass
         # setup() before each test method
-
-    def test_schema(self):
-        from perspective._schema import schema
-        assert schema(None, '') == '{}'
-        assert schema(None, 'url') == '{}'
-
-        x = schema({'test': 3}, 'dict')
-        assert x == '{"test": "integer"}'
-        x = schema([{'test': 3}], 'list')
-        assert x == '{"test": "integer"}'
-
-        x = pd.DataFrame([{'test': 3}])
-        x = schema(x, 'pandas')
-        print(x)
-        assert x == '{"test": "integer"}'
 
     def test_convert_to_psp_schema(self):
         from perspective._schema import convert_to_psp_schema
