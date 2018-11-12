@@ -44,7 +44,7 @@ class PerspectiveWidget(Widget):
             s = validate_schema(data_object.schema)
             self.schema = s
 
-            if not self.columns:
+            if not self.columns and 'columns' not in data_object.kwargs:
                 columns = list(map(lambda x: str(x), s.keys()))
 
                 # reasonable default, pivot by default in non-grid view
@@ -53,8 +53,12 @@ class PerspectiveWidget(Widget):
                         self.rowpivots = ['index']
                         if 'index' in columns:
                             columns.remove('index')
-
                 self.columns = columns
+
+            elif 'columns' in data_object.kwargs:
+                columns = list(map(lambda x: str(x), data_object.kwargs.pop('columns')))
+                self.columns = columns
+
         else:
             self.schema = {}
 

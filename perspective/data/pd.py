@@ -7,6 +7,32 @@ class PandasData(Data):
         import pandas as pd
         # level unstacking
         kwargs = {}
+
+        if isinstance(data.columns, pd.MultiIndex):
+            data = pd.DataFrame(data.unstack())
+            columns = list(x for x in data.index.names if x)
+            kwargs['columnpivots'] = list(x for x in data.index.names if x)
+            kwargs['rowpivots'] = []
+            orig_columns = [' ' for _ in data.columns.tolist()]
+
+            # deal with indexes
+            if len(columns) < len(data.index.names):
+                for i in range(len(data.index.names) - len(columns)):
+                    if i == 0:
+                        columns.append('index')
+                        kwargs['rowpivots'].append('index')
+                    else:
+                        columns.append('index-{}'.format(i))
+                        kwargs['rowpivots'].append('index-{}'.format(i))
+
+            # all columns in index
+            columns += orig_columns
+            data.reset_index(inplace=True)
+            data.columns = columns
+
+            # use these columns
+            kwargs['columns'] = orig_columns
+
         if isinstance(data.index, pd.MultiIndex):
             kwargs['rowpivots'] = list(data.index.names)
 
