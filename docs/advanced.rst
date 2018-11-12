@@ -7,9 +7,8 @@ Advanced
 The `data` argument for the `psp` function can accept a variety of types:
     
     - Pandas DataFrame
-    - Raw JSON
     - Python Dictionary
-    - `Lantern Live <http://pylantern.readthedocs.io/en/latest/live.html>`_ object
+    - Python List
 
 
 `psp` view types
@@ -24,6 +23,7 @@ The following view types are supported through psp plugins
         - Line (`'y_line'`)
         - Area (`'y_area'`)
         - XY Line (`'xy_line'`)
+        - XY Line (`'xy_scatter'`)
         - Treemap (`'treemap'`)
         - Sunburst (`'sunburst'`)
         - Heatmap (`'heatmap'`)
