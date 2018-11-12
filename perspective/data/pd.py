@@ -35,6 +35,7 @@ class PandasData(Data):
 
         if isinstance(data.index, pd.MultiIndex):
             kwargs['rowpivots'] = list(data.index.names)
+            kwargs['columns'] = data.columns
 
         # copy or not
         if isinstance(data, pd.Series) or 'index' not in map(lambda x: str(x).lower(), data.columns):
