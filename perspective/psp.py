@@ -13,6 +13,8 @@ def psp(data=None,
         columnpivots=None,
         aggregates=None,
         sort=None,
+        index='',
+        limit=-1,
         settings=True,
         dark=False,
         helper_config=None):
@@ -31,11 +33,18 @@ def psp(data=None,
             what names to use as rowpivots
         columnpivots : list of str
             what names to use as columnpivots
-        aggregates dict(str: str or Aggregate)
+        aggregates:  dict(str: str or Aggregate)
             dictionary of name to aggregate type (either string or enum Aggregate)
+        index : str
+            columns to use as index
+        limit : int
+            row limit
         settings : bool
             display settings
+        dark : bool
+            use dark theme
+
     '''
     data = [] if data is None else data
-    p = PerspectiveWidget(data, view, schema, columns, rowpivots, columnpivots, aggregates, sort, settings, dark, helper_config)
+    p = PerspectiveWidget(data, view, schema, columns, rowpivots, columnpivots, aggregates, sort, index, limit, settings, dark)
     return p

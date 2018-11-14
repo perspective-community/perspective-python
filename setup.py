@@ -8,9 +8,12 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+with open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
+    requires = f.read().split()
+
 setup(
     name='perspective-python',
-    version='0.1.0',
+    version='0.1.1',
     description='Analytics library',
     long_description=long_description,
     url='https://github.com/timkpaine/perspective-python',
@@ -18,6 +21,7 @@ setup(
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='Apache 2.0',
+    install_requires=requires,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python :: 3',
