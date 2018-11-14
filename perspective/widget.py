@@ -14,10 +14,10 @@ class PerspectiveWidget(Widget):
     ############
     _model_name = Unicode('PerspectiveModel').tag(sync=True)
     _model_module = Unicode('@jpmorganchase/perspective-jupyterlab').tag(sync=True)
-    _model_module_version = Unicode('0.2.7').tag(sync=True)
+    _model_module_version = Unicode('0.2.8').tag(sync=True)
     _view_name = Unicode('PerspectiveView').tag(sync=True)
     _view_module = Unicode('@jpmorganchase/perspective-jupyterlab').tag(sync=True)
-    _view_module_version = Unicode('0.2.7').tag(sync=True)
+    _view_module_version = Unicode('0.2.8').tag(sync=True)
     ############
 
     # Data (private)

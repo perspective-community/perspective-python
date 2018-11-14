@@ -9,4 +9,4 @@ from .widget import PerspectiveWidget
 table = psp
 plot = psp
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
