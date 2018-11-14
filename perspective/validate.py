@@ -1,5 +1,6 @@
 import json
 from six import iteritems, string_types
+from .computed import Functions
 from .exception import PSPException
 from .view import View
 from .aggregate import Aggregate
@@ -8,38 +9,37 @@ from .sort import Sort
 
 def validate_view(view):
     if isinstance(view, View):
-        ret = view.value
+        return view.value
     elif isinstance(view, string_types):
         if view not in View.options():
             raise PSPException('Unrecognized view: %s', view)
-        ret = view
+        return view
     else:
         raise PSPException('Cannot parse view type: %s', str(type(view)))
-    return ret
 
 
 def validate_columns(columns):
     if columns is None:
-        ret = []
+        return []
     elif isinstance(columns, string_types):
-        ret = [columns]
-    elif isinstance(columns, list):
-        ret = columns
+        columns = [columns]
+
+    if isinstance(columns, list):
+        return columns
     else:
         raise PSPException('Cannot parse columns type: %s', str(type(columns)))
-    return ret
 
 
 def _validate_pivots(pivots):
     if pivots is None:
-        ret = []
+        return []
     elif isinstance(pivots, string_types):
-        ret = [pivots]
-    elif isinstance(pivots, list):
-        ret = pivots
+        pivots = [pivots]
+
+    if isinstance(pivots, list):
+        return pivots
     else:
         raise PSPException('Cannot parse rowpivots type: %s', str(type(pivots)))
-    return ret
 
 
 def validate_rowpivots(rowpivots):
@@ -52,7 +52,7 @@ def validate_columnpivots(columnpivots):
 
 def validate_aggregates(aggregates):
     if aggregates is None:
-        ret = []
+        return []
     elif isinstance(aggregates, dict):
         for k, v in iteritems(aggregates):
             if isinstance(v, Aggregate):
@@ -62,18 +62,18 @@ def validate_aggregates(aggregates):
                     raise PSPException('Unrecognized aggregate: %s', v)
             else:
                 raise PSPException('Cannot parse aggregation of type %s', str(type(v)))
-        ret = aggregates
+        return aggregates
     else:
         raise PSPException('Cannot parse aggregates type: %s', str(type(aggregates)))
-    return ret
 
 
 def validate_sort(sort):
     if sort is None:
-        ret = []
+        return []
     elif isinstance(sort, string_types):
-        ret = [sort]
-    elif isinstance(sort, list):
+        sort = [sort]
+
+    if isinstance(sort, list):
         ret = []
         for col, s in sort:
             if isinstance(s, Sort):
@@ -81,19 +81,39 @@ def validate_sort(sort):
             elif not isinstance(s, string_types) or s not in Sort.options():
                 raise PSPException('Unrecognized Sort: %s', s)
             ret.append([col, s])
+        return ret
     else:
         raise PSPException('Cannot parse sort type: %s', str(type(sort)))
-    return ret
 
 
-def layout(view='hypergrid', columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, settings=False, dark=False):
-    ret = {}
-    ret['view'] = validate_view(view)
-    ret['columns'] = validate_columns(columns)
-    ret['row-pivots'] = validate_rowpivots(rowpivots)
-    ret['column-pivots'] = validate_columnpivots(columnpivots)
-    ret['aggregates'] = validate_aggregates(aggregates)
-    ret['sort'] = validate_sort(sort)
-    ret['settings'] = settings
-    ret['colorscheme'] = dark
-    return json.dumps(ret)
+def validate_computedcolumns(computedcolumns, columns=[]):
+    if computedcolumns is None:
+        return []
+
+    elif isinstance(computedcolumns, dict):
+        computedcolumns = [computedcolumns]
+
+    if isinstance(computedcolumns, list):
+        ret = []
+        for i, d in enumerate(computedcolumns):
+            if not isinstance(d, dict):
+                raise PSPException('Cannot parse computedcolumns')
+            if 'inputs' not in d or 'func' not in d:
+                raise PSPException('Cannot parse computedcolumns - inputs or func missing')
+            if 'name' not in d:
+                d['name'] = 'Anon-{}'.format(i)
+
+            inputs = d['inputs']
+            if not isinstance(inputs, list):
+                raise PSPException('Cannot parse computedcolumns - inputs is not list')
+            for i in inputs:
+                # FIXME check if column exists?
+                if columns and i not in columns:
+                    raise PSPException('Cannot parse computedcolumns - unrecognized column {}'.format(i))
+            if d['func'] not in Functions.options():
+                raise PSPException('Cannot parse computedcolumns - unrecognized function {}'.format(d['func']))
+            ret.append(d)
+        return ret
+
+    else:
+        raise PSPException('Cannot parse computedcolumns type: %s', str(type(computedcolumns)))

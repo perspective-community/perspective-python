@@ -2,23 +2,33 @@ from ipywidgets import Widget
 from six import iteritems
 from traitlets import Unicode, List, Bool, Int, Dict, Any, validate
 from .data import type_detect
-from ._layout import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort
-from ._schema import validate_schema
+from .validate import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort, validate_computedcolumns
+from .schema import validate_schema
 
 
 class PerspectiveWidget(Widget):
+    '''Perspective IPython Widget'''
+
+    ############
+    # Required #
+    ############
     _model_name = Unicode('PerspectiveModel').tag(sync=True)
     _model_module = Unicode('@jpmorganchase/perspective-jupyterlab').tag(sync=True)
     _model_module_version = Unicode('0.2.7').tag(sync=True)
     _view_name = Unicode('PerspectiveView').tag(sync=True)
     _view_module = Unicode('@jpmorganchase/perspective-jupyterlab').tag(sync=True)
     _view_module_version = Unicode('0.2.7').tag(sync=True)
+    ############
 
+    # Data (private)
     _data = List(default_value=[]).tag(sync=True)
     _dat_orig = Any()
 
-    datasrc = Unicode(default_value='static').tag(sync=True)
+    # Data source
+    datasrc = Unicode(default_value='').tag(sync=True)
     schema = Dict(default_value={}).tag(sync=True)
+
+    # layout
     view = Unicode('hypergrid').tag(sync=True)
     columns = List(default_value=[]).tag(sync=True)
     rowpivots = List(trait=Unicode(), default_value=[]).tag(sync=True, o=True)
@@ -27,22 +37,21 @@ class PerspectiveWidget(Widget):
     sort = List(default_value=[]).tag(sync=True)
     index = Unicode(default_value='').tag(sync=True)
     limit = Int(default_value=-1).tag(sync=True)
-
     computedcolumns = List(trait=Dict, default_value=[]).tag(sync=True)
-    # [{"name":"divide(Profit, Quantity)","inputs":["Profit","Quantity"],"func":"divide"}]
 
+    # show settings (currently broken)
     settings = Bool(True).tag(sync=True)
+
+    # dark mode
     dark = Bool(False).tag(sync=True)
 
-    def delete(self):
-        self.send({'type': 'delete'})
+    def delete(self): self.send({'type': 'delete'})
 
-    def update(self, data):
-        dat_obj = type_detect(data)
-        self.send({'type': 'update', 'data': dat_obj.data})
+    def update(self, data): self.send({'type': 'update', 'data': type_detect(data)})
 
     def load(self, value):
         data_object = type_detect(value)
+        self.datasrc = data_object.type
 
         # len in case dataframe
         if len(data_object.data) and data_object.type:
@@ -74,52 +83,81 @@ class PerspectiveWidget(Widget):
         self._data = data_object.data
 
     @validate('datasrc')
-    def _validate_datasrc(self, proposal):
-        datasrc = proposal.value
-        return datasrc
+    def _validate_datasrc(self, proposal): return proposal.value  # validated elsewhere
 
     @validate('schema')
-    def _validate_schema(self, proposal):
-        schema = proposal.value
-        return schema
+    def _validate_schema(self, proposal): return proposal.value  # validated elsewhere
 
     @validate('view')
-    def _validate_view(self, proposal):
-        view = validate_view(proposal.value)
-        return view
+    def _validate_view(self, proposal): return validate_view(proposal.value)
 
     @validate('columns')
-    def _validate_columns(self, proposal):
-        columns = validate_columns(proposal.value)
-        return columns
+    def _validate_columns(self, proposal): return validate_columns(proposal.value)
 
     @validate('rowpivots')
-    def _validate_rowpivots(self, proposal):
-        rowpivots = validate_rowpivots(proposal.value)
-        return rowpivots
+    def _validate_rowpivots(self, proposal): return validate_rowpivots(proposal.value)
 
     @validate('columnpivots')
-    def _validate_columnpivots(self, proposal):
-        columnpivots = validate_columnpivots(proposal.value)
-        return columnpivots
+    def _validate_columnpivots(self, proposal): return validate_columnpivots(proposal.value)
 
     @validate('aggregates')
-    def _validate_aggregates(self, proposal):
-        aggregates = validate_aggregates(proposal.value)
-        return aggregates
+    def _validate_aggregates(self, proposal): return validate_aggregates(proposal.value)
 
     @validate('sort')
-    def _validate_sort(self, proposal):
-        sort = validate_sort(proposal.value)
-        return sort
+    def _validate_sort(self, proposal): return validate_sort(proposal.value)
 
-    def __del__(self):
-        self.send({'type': 'delete'})
+    @validate('computedcolumns')
+    def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value)
 
-    def __init__(self, data, view='hypergrid', schema=None, columns=None, rowpivots=None, columnpivots=None, aggregates=None, sort=None, index='', limit=-1, settings=True, dark=False, *args, **kwargs):
+    def __del__(self): self.send({'type': 'delete'})
+
+    def __init__(self,
+                 data,
+                 view='hypergrid',
+                 schema=None,
+                 columns=None,
+                 rowpivots=None,
+                 columnpivots=None,
+                 aggregates=None,
+                 sort=None,
+                 index='',
+                 limit=-1,
+                 computedcolumns=None,
+                 settings=True,
+                 dark=False,
+                 *args,
+                 **kwargs):
+        '''Render a perspective javascript widget in jupyter
+
+        Arguments:
+            data : dataframe/list/dict
+                The static or live datasource
+
+        Keyword Arguments:
+            view : str or View
+                what view to use. available in the enum View (default: {'hypergrid'})
+            columns : list of str
+                what columns to display
+            rowpivots : list of str
+                what names to use as rowpivots
+            columnpivots : list of str
+                what names to use as columnpivots
+            aggregates:  dict(str: str or Aggregate)
+                dictionary of name to aggregate type (either string or enum Aggregate)
+            index : str
+                columns to use as index
+            limit : int
+                row limit
+            computedcolumns : list of dict
+                computed columns to set on the perspective viewer
+            settings : bool
+                display settings
+            dark : bool
+                use dark theme
+
+        '''
         super(PerspectiveWidget, self).__init__(**kwargs)
         self._helper = None
-        self.datasrc = 'static'
         self.view = validate_view(view)
         self.schema = schema or {}
         self.sort = validate_sort(sort) or []
@@ -133,4 +171,5 @@ class PerspectiveWidget(Widget):
         self.aggregates = validate_aggregates(aggregates) or {}
 
         self.columns = validate_columns(columns) or []
+        self.computedcolumns = validate_computedcolumns(computedcolumns) or []
         self.load(data)
