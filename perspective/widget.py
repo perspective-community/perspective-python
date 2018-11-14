@@ -42,6 +42,9 @@ class PerspectiveWidget(Widget):
     # show settings (currently broken)
     settings = Bool(True).tag(sync=True)
 
+    # set perspective in embedded mode (work outside jlab)
+    embed = Bool(False).tag(sync=True)
+
     # dark mode
     dark = Bool(False).tag(sync=True)
 
@@ -124,6 +127,7 @@ class PerspectiveWidget(Widget):
                  limit=-1,
                  computedcolumns=None,
                  settings=True,
+                 embed=False,
                  dark=False,
                  *args,
                  **kwargs):
@@ -152,6 +156,8 @@ class PerspectiveWidget(Widget):
                 computed columns to set on the perspective viewer
             settings : bool
                 display settings
+            settings : bool
+                embedded mode
             dark : bool
                 use dark theme
 
@@ -164,6 +170,7 @@ class PerspectiveWidget(Widget):
         self.index = index
         self.limit = limit
         self.settings = settings
+        self.embed = embed
         self.dark = dark
 
         self.rowpivots = validate_rowpivots(rowpivots) or []
