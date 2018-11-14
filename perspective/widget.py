@@ -28,6 +28,9 @@ class PerspectiveWidget(Widget):
     index = Unicode(default_value='').tag(sync=True)
     limit = Int(default_value=-1).tag(sync=True)
 
+    computedcolumns = List(trait=Dict, default_value=[]).tag(sync=True)
+    # [{"name":"divide(Profit, Quantity)","inputs":["Profit","Quantity"],"func":"divide"}]
+
     settings = Bool(True).tag(sync=True)
     dark = Bool(False).tag(sync=True)
 
