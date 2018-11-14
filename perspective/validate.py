@@ -106,10 +106,13 @@ def validate_computedcolumns(computedcolumns, columns=[]):
             inputs = d['inputs']
             if not isinstance(inputs, list):
                 raise PSPException('Cannot parse computedcolumns - inputs is not list')
-            for i in inputs:
+            for i, input in enumerate(inputs):
                 # FIXME check if column exists?
-                if columns and i not in columns:
-                    raise PSPException('Cannot parse computedcolumns - unrecognized column {}'.format(i))
+                if columns and input not in columns:
+                    raise PSPException('Cannot parse computedcolumns - unrecognized column {}'.format(input))
+                if not isinstance(input, string_types):
+                    inputs[i] = str(input)
+
             if d['func'] not in Functions.options():
                 raise PSPException('Cannot parse computedcolumns - unrecognized function {}'.format(d['func']))
             ret.append(d)

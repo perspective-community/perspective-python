@@ -50,7 +50,7 @@ class PerspectiveWidget(Widget):
 
     def delete(self): self.send({'type': 'delete'})
 
-    def update(self, data): self.send({'type': 'update', 'data': type_detect(data)})
+    def update(self, data): self.send({'type': 'update', 'data': type_detect(data).data})
 
     def load(self, value):
         data_object = type_detect(value)
@@ -61,6 +61,12 @@ class PerspectiveWidget(Widget):
             s = validate_schema(data_object.schema)
             self.schema = s
 
+            computedcolumns = []
+            if self.computedcolumns:
+                for c in self.computedcolumns:
+                    if c['name'] not in computedcolumns:
+                        computedcolumns.append(c['name'])
+
             if not self.columns and 'columns' not in data_object.kwargs:
                 columns = list(map(lambda x: str(x), s.keys()))
 
@@ -70,11 +76,17 @@ class PerspectiveWidget(Widget):
                         self.rowpivots = ['index']
                         if 'index' in columns:
                             columns.remove('index')
-                self.columns = columns
+
+                if self.computedcolumns:
+                    for c in self.computedcolumns:
+                        if c['name'] not in columns:
+                            columns.append(c['name'])
+
+                self.columns = columns + computedcolumns
 
             elif 'columns' in data_object.kwargs:
                 columns = list(map(lambda x: str(x), data_object.kwargs.pop('columns')))
-                self.columns = columns
+                self.columns = columns + computedcolumns
 
         else:
             self.schema = {}
