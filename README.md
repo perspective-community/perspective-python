@@ -41,5 +41,9 @@ or from source:
 
 
 ## Pandas Pivot integration
+
+#### Index - Multiindex pivot
 ![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/pandas1.png)
+
+#### Column - Multiindex pivot
 ![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/pandas2.png)
