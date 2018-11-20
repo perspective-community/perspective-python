@@ -35,4 +35,11 @@ or from source:
 ## Getting Started
 [Read the docs!](http://perspective-python.readthedocs.io/en/latest/index.html)
 
+[Example Notebooks](https://github.com/timkpaine/perspective-python/tree/master/examples)
+
 ![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/scatter.png)
+
+
+## Pandas Pivot integration
+![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/pandas1.png)
+![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/pandas2.png)
