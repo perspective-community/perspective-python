@@ -107,23 +107,23 @@ class PerspectiveBaseMixin(HasTraits):
     @validate('computedcolumns')
     def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value)
 
-    def __init__(self,
-                 data,
-                 view='hypergrid',
-                 schema=None,
-                 columns=None,
-                 rowpivots=None,
-                 columnpivots=None,
-                 aggregates=None,
-                 sort=None,
-                 index='',
-                 limit=-1,
-                 computedcolumns=None,
-                 settings=True,
-                 embed=False,
-                 dark=False,
-                 *args,
-                 **kwargs):
+    def setup(self,
+              data,
+              view='hypergrid',
+              schema=None,
+              columns=None,
+              rowpivots=None,
+              columnpivots=None,
+              aggregates=None,
+              sort=None,
+              index='',
+              limit=-1,
+              computedcolumns=None,
+              settings=True,
+              embed=False,
+              dark=False,
+              *args,
+              **kwargs):
         '''Setup perspective base class
 
         Arguments:
@@ -155,7 +155,6 @@ class PerspectiveBaseMixin(HasTraits):
                 use dark theme
 
         '''
-        super(PerspectiveBaseMixin, self).__init__(**kwargs)
         self.view = validate_view(view)
         self.schema = schema or {}
         self.sort = validate_sort(sort) or []

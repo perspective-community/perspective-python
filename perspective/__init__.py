@@ -1,3 +1,4 @@
+from .base import PerspectiveBaseMixin
 from .psp import psp
 from .view import View
 from .aggregate import Aggregate

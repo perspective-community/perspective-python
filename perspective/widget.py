@@ -71,20 +71,20 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                 use dark theme
 
         '''
-        super(PerspectiveWidget, self).__init__(
-                 data=data,
-                 view=view,
-                 schema=schema,
-                 columns=columns,
-                 rowpivots=rowpivots,
-                 columnpivots=columnpivots,
-                 aggregates=aggregates,
-                 sort=sort,
-                 index=index,
-                 limit=limit,
-                 computedcolumns=computedcolumns,
-                 settings=settings,
-                 embed=embed,
-                 dark=dark,
-                 *args,
-                 **kwargs)
+        super(PerspectiveWidget, self).__init__(*args, **kwargs)
+        self.setup(data=data,
+                   view=view,
+                   schema=schema,
+                   columns=columns,
+                   rowpivots=rowpivots,
+                   columnpivots=columnpivots,
+                   aggregates=aggregates,
+                   sort=sort,
+                   index=index,
+                   limit=limit,
+                   computedcolumns=computedcolumns,
+                   settings=settings,
+                   embed=embed,
+                   dark=dark,
+                   *args,
+                   **kwargs)
