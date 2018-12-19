@@ -9,6 +9,7 @@ class PerspectiveBaseMixin(HasTraits):
     '''Perspective Base Mixin'''
     # Data (private)
     _data = List(default_value=[]).tag(sync=True)
+    _bin_data = Any().tag(sync=True)
     _dat_orig = Any()
 
     # Data source
@@ -38,6 +39,10 @@ class PerspectiveBaseMixin(HasTraits):
     def load(self, value):
         data_object = type_detect(value)
         self.datasrc = data_object.type
+        if data_object.type in ('pyarrow'):
+            self._data = []
+            self._bin_data = data_object.data
+            return
 
         # len in case dataframe
         if len(data_object.data) and data_object.type:

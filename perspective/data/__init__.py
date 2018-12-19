@@ -1,7 +1,8 @@
 from .base import _is_dict, _is_list, Data
 from .pd import _is_pandas
+from .pa import _is_pyarrow
 
-EXPORTERS = [_is_dict, _is_list, _is_pandas]
+EXPORTERS = [_is_dict, _is_list, _is_pandas, _is_pyarrow]
 
 
 def type_detect(data):
