@@ -1,4 +1,3 @@
-import json
 from six import iteritems, string_types
 from .computed import Functions
 from .exception import PSPException

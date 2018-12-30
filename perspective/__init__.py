@@ -1,9 +1,9 @@
-from .base import PerspectiveBaseMixin
+from .base import PerspectiveBaseMixin  # noqa: F401
 from .psp import psp
-from .view import View
-from .aggregate import Aggregate
-from .exception import PSPException
-from .widget import PerspectiveWidget
+from .view import View  # noqa: F401
+from .aggregate import Aggregate  # noqa: F401
+from .exception import PSPException  # noqa: F401
+from .widget import PerspectiveWidget  # noqa: F401
 
 
 # export `plot` and `table` functions
