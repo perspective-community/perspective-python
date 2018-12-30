@@ -4,8 +4,12 @@ build: ## build the package
 tests: ## Clean and Make unit tests
 	python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 	
-test: clean build ## run the tests for travis CI
+test: clean build lint ## run the tests for travis CI
 	@ python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
+
+lint: ## run linter
+	pylint perspective || echo
+	flake8 perspective 
 
 annotate: ## MyPy type annotation check
 	mypy -s perspective
