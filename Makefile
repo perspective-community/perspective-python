@@ -2,10 +2,10 @@ build: ## build the package
 	python3 setup.py build
 
 tests: ## Clean and Make unit tests
-	python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
-	
+	python3 -m nose2 -v perspective --with-coverage --coverage=perspective
+
 test: clean build lint ## run the tests for travis CI
-	@ python3 -m nose -v ./build/`ls ./build | grep lib`/perspective/tests --with-coverage --cover-erase --cover-package=`find perspective -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
+	@ python3 -m nose2 -v perspective --with-coverage --coverage=perspective
 
 lint: ## run linter
 	pylint perspective || echo
