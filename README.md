@@ -47,3 +47,6 @@ or from source:
 
 #### Column - Multiindex pivot
 ![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/pandas2.png)
+
+## C++ Integration
+This package is primarily focused on integrating with the WebAssembly version of Perspective. To build the C++ side, install `perspective-python[table]`, from the [Perspective main library](https://github.com/jpmorganchase/perspective/tree/master/python).
