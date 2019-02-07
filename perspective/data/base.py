@@ -15,14 +15,14 @@ class Data(object):
 
 class DictData(Data):
     def __init__(self, data):
-        super(DictData, self).__init__('dict', [data], {k: str(type(v)) for k, v in iteritems(data)})
+        super(DictData, self).__init__('json', [data], {k: str(type(v)) for k, v in iteritems(data)})
 
 
 class ListData(Data):
     def __init__(self, data):
         if len(data) > 0 and not isinstance(data[0], dict):
             raise NotImplementedError()
-        super(ListData, self).__init__('list', data, {k: str(type(v)) for k, v in iteritems(data[0])} if len(data) > 0 else {})
+        super(ListData, self).__init__('json', data, {k: str(type(v)) for k, v in iteritems(data[0])} if len(data) > 0 else {})
 
 
 def _is_dict(data, as_string=False):

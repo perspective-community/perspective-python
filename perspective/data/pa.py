@@ -4,7 +4,7 @@ from .base import Data
 
 class ArrowData(Data):
     def __init__(self, data):
-        super(ArrowData, self).__init__('pyarrow', data.to_pybytes(), {})
+        super(ArrowData, self).__init__('arrow', data.to_pybytes(), {})
 
 
 def _is_pyarrow(data):

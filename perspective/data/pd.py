@@ -55,8 +55,7 @@ class PandasData(Data):
                 df_processed[x[0]] = df_processed[x[0]].astype(str)
 
         df_processed = df_processed.to_dict(orient='records')
-
-        super(PandasData, self).__init__('pandas', df_processed, schema, **kwargs)
+        super(PandasData, self).__init__('json', df_processed, schema, **kwargs)
 
 
 def _is_pandas(data):

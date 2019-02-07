@@ -1,3 +1,4 @@
+import json
 from six import iteritems
 from traitlets import HasTraits, Unicode, List, Bool, Int, Dict, Any, validate
 from .data import type_detect
@@ -39,7 +40,7 @@ class PerspectiveBaseMixin(HasTraits):
     def load(self, value):
         data_object = type_detect(value)
         self.datasrc = data_object.type
-        if data_object.type in ('pyarrow'):
+        if data_object.type in ('arrow'):
             self._data = []
             self._bin_data = data_object.data
             return
@@ -111,6 +112,28 @@ class PerspectiveBaseMixin(HasTraits):
 
     @validate('computedcolumns')
     def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value)
+
+    def _as_json(self, data_only=False):
+        ret = {}
+        ret['datasrc'] = getattr(self, 'datasrc')
+        ret['data'] = getattr(self, '_data')
+        if data_only:
+            return json.dumps(ret)
+
+        ret['schema'] = getattr(self, 'schema')
+        ret['view'] = getattr(self, 'view')
+        ret['columns'] = getattr(self, 'columns')
+        ret['rowPivots'] = getattr(self, 'rowpivots')
+        ret['columnPivots'] = getattr(self, 'columnpivots')
+        ret['aggregates'] = getattr(self, 'aggregates')
+        ret['sort'] = getattr(self, 'sort')
+        ret['index'] = getattr(self, 'index')
+        ret['limit'] = getattr(self, 'limit')
+        ret['computedColumns'] = getattr(self, 'computedcolumns')
+        ret['settings'] = getattr(self, 'settings')
+        ret['embed'] = getattr(self, 'embed')
+        ret['dark'] = getattr(self, 'dark')
+        return json.dumps(ret)
 
     def setup(self,
               data,
