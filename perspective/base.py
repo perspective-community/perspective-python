@@ -73,7 +73,7 @@ class PerspectiveBaseMixin(HasTraits):
 
                 self.columns = columns + computedcolumns
 
-            elif 'columns' in data_object.kwargs:
+            elif not self.columns and 'columns' in data_object.kwargs:
                 columns = list(map(lambda x: str(x), data_object.kwargs.pop('columns')))
                 self.columns = columns + computedcolumns
 
@@ -81,7 +81,8 @@ class PerspectiveBaseMixin(HasTraits):
             self.schema = {}
 
         for k, v in iteritems(data_object.kwargs):
-            setattr(self, k, v)
+            if not getattr(self, k):
+                setattr(self, k, v)
 
         # set data last
         self._data = data_object.data

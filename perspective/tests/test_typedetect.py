@@ -46,7 +46,7 @@ class TestTypedetect:
         print(o.data)
         print(expected)
         assert o.data == expected
-        assert o.type == 'pandas'
+        assert o.type == 'json'
 
         # series check
         df = pd.DataFrame([1, 2])
@@ -56,11 +56,11 @@ class TestTypedetect:
         print(o.data)
         print(expected)
         assert o.data == expected
-        assert o.type == 'pandas'
+        assert o.type == 'json'
 
         df = pd.DataFrame([[1, 2]], columns=['1', '2'], index=[datetime.today(), datetime.today()])
         o = type_detect(df)
-        assert o.type == 'pandas'
+        assert o.type == 'json'
 
         import sys
         sys.modules['pandas'] = Nope()
@@ -74,7 +74,7 @@ class TestTypedetect:
         o = type_detect(x)
         print(o.data)
         assert o.data == x
-        assert o.type == 'list'
+        assert o.type == 'json'
 
     def test_dict(self):
         from perspective.data import type_detect
@@ -83,7 +83,7 @@ class TestTypedetect:
         o = type_detect(x)
         print(o.data)
         assert o.data == [{"a": "simple test"}]
-        assert o.type == 'dict'
+        assert o.type == 'json'
 
     def test_other(self):
         from perspective.data import type_detect
