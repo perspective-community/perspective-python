@@ -71,7 +71,6 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                 use dark theme
 
         '''
-        super(PerspectiveWidget, self).__init__(*args, **kwargs)
         self.setup(data=data,
                    view=view,
                    schema=schema,
@@ -88,3 +87,4 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                    dark=dark,
                    *args,
                    **kwargs)
+        super(PerspectiveWidget, self).__init__(*args, **kwargs)
