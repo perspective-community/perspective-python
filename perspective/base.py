@@ -114,12 +114,12 @@ class PerspectiveBaseMixin(HasTraits):
     @validate('computedcolumns')
     def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value)
 
-    def _as_json(self, data_only=False):
+    def _as_json(self, data_only=False, allow_nan=False):
         ret = {}
         ret['datasrc'] = getattr(self, 'datasrc')
         ret['data'] = getattr(self, '_data')
         if data_only:
-            return json.dumps(ret)
+            return json.dumps(ret, allow_nan=allow_nan)
 
         ret['schema'] = getattr(self, 'schema')
         ret['view'] = getattr(self, 'view')
@@ -134,7 +134,7 @@ class PerspectiveBaseMixin(HasTraits):
         ret['settings'] = getattr(self, 'settings')
         ret['embed'] = getattr(self, 'embed')
         ret['dark'] = getattr(self, 'dark')
-        return json.dumps(ret)
+        return json.dumps(ret, allow_nan=allow_nan)
 
     def setup(self,
               data,

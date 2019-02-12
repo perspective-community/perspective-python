@@ -7,4 +7,4 @@ class PerspectiveHTTPMixin(object):
         self.psp.setup(**kwargs)
 
     def getData(self, data_only=False):
-        return self.psp._as_json(data_only=data_only)
+        return self.psp._as_json(data_only=data_only, allow_nan=False)
