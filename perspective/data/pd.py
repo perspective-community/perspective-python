@@ -54,7 +54,7 @@ class PandasData(Data):
             if 'date' in str(x[1]):
                 df_processed[x[0]] = df_processed[x[0]].astype(str)
 
-        df_processed.fillna('nan', inplace=True)
+        df_processed.fillna('', inplace=True)
         df_processed = df_processed.to_dict(orient='records')
         super(PandasData, self).__init__('json', df_processed, schema, **kwargs)
 
