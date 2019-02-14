@@ -2,10 +2,10 @@ build: ## build the package
 	python3 setup.py build
 
 tests: ## Clean and Make unit tests
-	python3 -m pytest perspective --cov=perspective
+	python3 -m pytest -v perspective --cov=perspective
 
 test: clean build lint ## run the tests for travis CI
-	@ python3 -m pytest perspective --cov=perspective
+	@ python3 -m pytest -v perspective --cov=perspective
 
 lint: ## run linter
 	pylint perspective || echo
