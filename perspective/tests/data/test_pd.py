@@ -1,12 +1,32 @@
-from mock import patch
+from datetime import date, datetime
 import pandas as pd
 import numpy as np
 import lantern as l
 from perspective import PerspectiveWidget
 
+DF2 = df = pd.DataFrame([
+    {
+       'int': 1,
+       'float': 1.5,
+       'string': '20150505',
+       'date': date.today(),
+       'datetime': datetime.now(),
+       'object': datetime,
+    },
+    {
+       'int': 1,
+       'float': 1.5,
+       'string': '20150506',
+       'date': None,
+       'datetime': None,
+       'object': None,
+    },
+])
 
 DF = l.superstore()
 LINE = l.line()
+CUSTOM_SCHEMA = {'int': 'int', 'float': 'float', 'string': 'date', 'date': 'date', 'datetime': 'date', 'object': 'string'}
+CUSTOM_SCHEMA_CONVERTED = {'index': 'integer', 'int': 'integer', 'float': 'float', 'string': 'date', 'date': 'date', 'datetime': 'date', 'object': 'string'}
 
 
 class TestPandas:
@@ -23,8 +43,8 @@ class TestPandas:
                                               'Product ID', 'Profit', 'Quantity', 'Row ID', 'Sales', 'Segment', 'Ship Date',
                                               'Ship Mode', 'State', 'Sub-Category'])
         assert psp.schema == {'Country': 'string', 'Region': 'string', 'Category': 'string', 'City': 'string', 'Customer ID': 'string', 'Discount': 'float',
-                              'Order Date': 'string', 'Order ID': 'string', 'Postal Code': 'string', 'Product ID': 'string', 'Profit': 'float', 'Quantity': 'integer',
-                              'Row ID': 'integer', 'Sales': 'integer', 'Segment': 'string', 'Ship Date': 'string', 'Ship Mode': 'string', 'State': 'string', 'Sub-Category': 'string'}
+                              'Order Date': 'date', 'Order ID': 'string', 'Postal Code': 'string', 'Product ID': 'string', 'Profit': 'float', 'Quantity': 'integer',
+                              'Row ID': 'integer', 'Sales': 'integer', 'Segment': 'string', 'Ship Date': 'date', 'Ship Mode': 'string', 'State': 'string', 'Sub-Category': 'string'}
 
     def test_pivottable(self):
         pt = pd.pivot_table(DF, values='Discount', index=['Country', 'Region'], columns='Category')
@@ -52,7 +72,9 @@ class TestPandas:
         assert psp.schema == {'first': 'string', 'second': 'string', 'third': 'string', 'index': 'string', ' ': 'float'}
 
     def test_schema_conversion(self):
-        pass
+        psp = PerspectiveWidget(DF2)
+        assert psp.schema == {'index': 'integer', 'date': 'date', 'datetime': 'date', 'float': 'float', 'int': 'integer', 'object': 'string', 'string': 'date'}
 
     def test_schema_no_ignore(self):
-        pass
+        psp = PerspectiveWidget(DF2, schema=CUSTOM_SCHEMA)
+        assert psp.schema == CUSTOM_SCHEMA_CONVERTED

@@ -8,7 +8,6 @@ test: clean build lint ## run the tests for travis CI
 	@ python3 -m pytest -v perspective --cov=perspective
 
 lint: ## run linter
-	pylint perspective || echo
 	flake8 perspective 
 
 annotate: ## MyPy type annotation check

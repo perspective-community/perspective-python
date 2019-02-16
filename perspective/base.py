@@ -38,7 +38,7 @@ class PerspectiveBaseMixin(HasTraits):
     dark = Bool(False).tag(sync=True)
 
     def load(self, value):
-        data_object = type_detect(value)
+        data_object = type_detect(value, schema=self.schema)
         self.datasrc = data_object.type
         if data_object.type in ('arrow'):
             self._data = []

@@ -3,10 +3,9 @@ from .base import Data
 
 
 class PandasData(Data):
-    def __init__(self, data):
+    def __init__(self, data, schema, **kwargs):
         import pandas as pd
         # level unstacking
-        kwargs = {}
 
         if isinstance(data, pd.DataFrame) and isinstance(data.columns, pd.MultiIndex):
             data = pd.DataFrame(data.unstack())
@@ -45,26 +44,33 @@ class PandasData(Data):
 
         # schema
         if isinstance(data, pd.Series):
-            schema = {data.name: str(data.dtype)}
+            derived_schema = {data.name: str(data.dtype)}
         else:
-            schema = df_processed.dtypes.astype(str)
+            derived_schema = df_processed.dtypes.astype(str)
 
         # datatype conversion
         for x in df_processed.dtypes.iteritems():
             if 'date' in str(x[1]):
                 df_processed[x[0]] = df_processed[x[0]].astype(str)
+            elif 'object' in str(x[1]):
+                # attempt to coerce to date, else convert to string
+                try:
+                    df_processed[x[0]] = pd.to_datetime(df_processed[x[0]]).astype(str)
+                    derived_schema[x[0]] = 'date'
+                except (TypeError, ValueError):
+                    df_processed[x[0]] = df_processed[x[0]].astype(str)
 
         df_processed.fillna('', inplace=True)
         df_processed = df_processed.to_dict(orient='records')
-        super(PandasData, self).__init__('json', df_processed, schema, **kwargs)
+        super(PandasData, self).__init__('json', df_processed, schema if schema else derived_schema, **kwargs)
 
 
-def _is_pandas(data):
+def _is_pandas(data, schema, **kwargs):
     try:
         if 'pandas' in sys.modules:
             import pandas as pd
             if isinstance(data, pd.DataFrame) or isinstance(data, pd.Series):
-                return PandasData(data)
+                return PandasData(data, schema, **kwargs)
     except ImportError:
         return Data.Empty()
     return Data.Empty()
