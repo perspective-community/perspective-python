@@ -11,4 +11,4 @@ from .web import PerspectiveHTTPMixin  # noqa: F401
 plot = psp
 grid = psp
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
