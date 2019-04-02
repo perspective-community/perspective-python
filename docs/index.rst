@@ -6,7 +6,7 @@
 perspective-python
 ===================================
 
-|build-status| |issues| |waffle| |codecov| |bch| |pypiv| |pypil| |docs|
+|build-status| |issues| |codecov| |bch| |pypiv| |pypil| |docs|
 
 
 .. toctree::
