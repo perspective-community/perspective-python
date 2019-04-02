@@ -28,11 +28,6 @@ perspective-python
     :scale: 100%
     :target: https://img.shields.io/github/issues/timkpaine/perspective-python.svg
 
-.. |waffle| image:: https://badge.waffle.io/timkpaine/perspective-python.svg?label=ready&title=Ready
-    :alt: Waffle
-    :scale: 100%
-    :target: http://waffle.io/timkpaine/perspective-python
-
 .. |codecov| image:: https://codecov.io/gh/timkpaine/perspective-python/branch/master/graph/badge.svg
     :alt: Codecov
     :scale: 100%

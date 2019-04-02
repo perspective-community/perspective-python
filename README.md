@@ -5,7 +5,6 @@ Python APIs for [perspective](https://github.com/jpmorganchase/perspective) fron
 
 [![Build Status](https://travis-ci.org/timkpaine/perspective-python.svg?branch=master)](https://travis-ci.org/timkpaine/perspective-python)
 [![GitHub issues](https://img.shields.io/github/issues/timkpaine/perspective-python.svg)]()
-[![Waffle.io](https://badge.waffle.io/timkpaine/perspective-python.svg?label=ready&title=Ready)](http://waffle.io/timkpaine/perspective-python)
 [![codecov](https://codecov.io/gh/timkpaine/perspective-python/branch/master/graph/badge.svg)](https://codecov.io/gh/timkpaine/perspective-python)
 [![BCH compliance](https://bettercodehub.com/edge/badge/timkpaine/perspective-python?branch=master)](https://bettercodehub.com/)
 [![PyPI](https://img.shields.io/pypi/v/perspective-python.svg)](https://pypi.python.org/pypi/perspective-python)
