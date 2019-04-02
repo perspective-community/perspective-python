@@ -11,11 +11,11 @@ elif [ $1 = "MICRO" ]; then
 
 elif [ $1 = "MINOR" ]; then
     echo "Bumping minor"
-    VERSION=`python3 -c "version='$VERSION'.split('.'); version[1] = str(int(version[1]) + 1); print('.'.join(version));"`
+    VERSION=`python3 -c "version='$VERSION'.split('.'); version[1] = str(int(version[1]) + 1); version[2] = '0'; print('.'.join(version));"`
 
 elif [ $1 = "MAJOR" ]; then
     echo "Bumping major"
-    VERSION=`python3 -c "version='$VERSION'.split('.'); version[0] = str(int(version[0]) + 1); print('.'.join(version));"`
+    VERSION=`python3 -c "version='$VERSION'.split('.'); version[0] = str(int(version[0]) + 1); version[2] = '0'; version[1] = '0'; print('.'.join(version));"`
 fi
 
 python3 scripts/deploy.py  --repourl https://github.com/timkpaine/perspective-python --version $VERSION
