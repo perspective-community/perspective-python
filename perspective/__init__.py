@@ -5,10 +5,8 @@ from .aggregate import Aggregate  # noqa: F401
 from .exception import PSPException  # noqa: F401
 from .widget import PerspectiveWidget  # noqa: F401
 from .web import PerspectiveHTTPMixin  # noqa: F401
-
+from ._version import VERSION as __version__
 
 # export `plot` and `grid` functions
 plot = psp
 grid = psp
-
-__version__ = '0.1.4'

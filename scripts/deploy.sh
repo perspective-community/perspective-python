@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 scripts/deploy.py  --repourl https://github.com/timkpaine/perspective-python --version  `git log --tags --decorate --simplify-by-decoration | grep ^commit|grep tag|sed -e 's/^.*: //' -e 's/)$//' -e 's/,.*$//' | head -n1 | cut -c2-`

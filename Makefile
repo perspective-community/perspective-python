@@ -37,6 +37,9 @@ preinstall:  ## install dependencies
 docs:  ## make documentation
 	make -C ./docs html
 
+predist:  ## steps before dist, defaults to previous tag
+	. scripts/deploy.sh
+
 dist:  ## dist to pypi
 	python3 setup.py sdist upload -r pypi
 
