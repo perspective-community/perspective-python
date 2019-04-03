@@ -29,21 +29,21 @@ def main(version, repourl):
         fp.write(template.render(
             VERSION=version,
             REPO_URL=repourl
-            ))
+            ) + '\n')
 
     # write out _version.py
     with open(VERSION_OUT, "w") as fp:
-        template = Environment(loader=BaseLoader).from_string("VERSION='v{{VERSION}}'")
+        template = Environment(loader=BaseLoader).from_string("VERSION = 'v{{VERSION}}'")
         fp.write(template.render(
             VERSION=version
-            ))
+            ) + '\n')
 
     # write out docs/conf.py
     with open(DOCS_CONF_OUT, "w") as fp:
         template = Environment(loader=BaseLoader).from_string(docs_conf_in)
         fp.write(template.render(
             VERSION=version
-            ))
+            ) + '\n')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
