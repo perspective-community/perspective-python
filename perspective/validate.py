@@ -85,7 +85,8 @@ def validate_sort(sort):
         raise PSPException('Cannot parse sort type: %s', str(type(sort)))
 
 
-def validate_computedcolumns(computedcolumns, columns=[]):
+def validate_computedcolumns(computedcolumns, columns=None):
+    columns = columns or []
     if computedcolumns is None:
         return []
 
@@ -97,18 +98,21 @@ def validate_computedcolumns(computedcolumns, columns=[]):
         for i, d in enumerate(computedcolumns):
             if not isinstance(d, dict):
                 raise PSPException('Cannot parse computedcolumns')
+
             if 'inputs' not in d or 'func' not in d:
                 raise PSPException('Cannot parse computedcolumns - inputs or func missing')
+
             if 'name' not in d:
                 d['name'] = 'Anon-{}'.format(i)
 
             inputs = d['inputs']
             if not isinstance(inputs, list):
                 raise PSPException('Cannot parse computedcolumns - inputs is not list')
+
             for i, input in enumerate(inputs):
                 # FIXME check if column exists?
-                if columns and input not in columns:
-                    raise PSPException('Cannot parse computedcolumns - unrecognized column {}'.format(input))
+                # if columns and (input not in columns):
+                #     raise PSPException('Cannot parse computedcolumns - unrecognized column {}'.format(input))
                 if not isinstance(input, string_types):
                     inputs[i] = str(input)
 

@@ -112,7 +112,7 @@ class PerspectiveBaseMixin(HasTraits):
     def _validate_sort(self, proposal): return validate_sort(proposal.value)
 
     @validate('computedcolumns')
-    def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value)
+    def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value, self.columns)
 
     def _as_json(self, data_only=False, allow_nan=False):
         ret = {}
