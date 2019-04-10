@@ -2,6 +2,9 @@
 Advanced
 ===============
 
+.. WARNING:: For API documentation, see the API section on the left
+
+
 `psp` function targets
 ==================
 The `data` argument for the `psp` function can accept a variety of types:

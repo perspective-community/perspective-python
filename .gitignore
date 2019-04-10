@@ -104,3 +104,4 @@ ENV/
 
 .autoversion
 _depr
+docs/api

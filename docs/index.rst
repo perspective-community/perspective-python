@@ -16,6 +16,7 @@ perspective-python
    installation
    quickstart
    advanced
+   api
 
 
 .. |build-status| image:: https://travis-ci.org/timkpaine/perspective-python.svg?branch=master
