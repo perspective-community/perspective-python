@@ -6,7 +6,7 @@ EXPORTERS = [_is_dict, _is_list, _is_pandas, _is_pyarrow]
 
 
 def type_detect(data, schema=None):
-    schema = None or {}
+    schema = schema or {}
     for foo in EXPORTERS:
         data_object = foo(data, schema)
         if data_object.type:
