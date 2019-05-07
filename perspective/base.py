@@ -2,7 +2,7 @@ import json
 from six import iteritems
 from traitlets import HasTraits, Unicode, List, Bool, Int, Dict, Any, Bytes, validate
 from .data import type_detect
-from .validate import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort, validate_computedcolumns
+from .validate import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort, validate_computedcolumns, validate_filters, validate_plugin_config
 from .schema import validate_schema
 
 
@@ -116,6 +116,12 @@ class PerspectiveBaseMixin(HasTraits):
     @validate('computedcolumns')
     def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value, self.columns)
 
+    @validate('filters')
+    def _validate_filters(self, proposal): return validate_filters(proposal.value, self.filters)
+
+    @validate('plugin_config')
+    def _validate_plugin_config(self, proposal): return validate_plugin_config(proposal.value)
+
     def _as_json(self, data_only=False, allow_nan=False):
         ret = {}
         ret['datasrc'] = getattr(self, 'datasrc')
@@ -133,6 +139,8 @@ class PerspectiveBaseMixin(HasTraits):
         ret['index'] = getattr(self, 'index')
         ret['limit'] = getattr(self, 'limit')
         ret['computedcolumns'] = getattr(self, 'computedcolumns')
+        ret['filters'] = getattr(self, 'filters')
+        ret['plugin_config'] = getattr(self, 'plugin_config')
         ret['settings'] = getattr(self, 'settings')
         ret['embed'] = getattr(self, 'embed')
         ret['dark'] = getattr(self, 'dark')
@@ -207,4 +215,8 @@ class PerspectiveBaseMixin(HasTraits):
 
         self.columns = validate_columns(columns) or []
         self.computedcolumns = validate_computedcolumns(computedcolumns) or []
+
+        self.filters = validate_filters(filters) or []
+        self.plugin_config = validate_plugin_config(plugin_config) or {}
+
         self.load(data)
