@@ -1,3 +1,4 @@
+# # # # GENERATED FILE -- DO NOT MODIFY # # # #
 from setuptools import setup, find_packages
 from codecs import open
 import os
@@ -13,11 +14,11 @@ with open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='perspective-python',
-    version='0.1.5',
+    version='0.1.6',
     description='Analytics library',
     long_description=long_description,
     url='https://github.com/timkpaine/perspective-python',
-    download_url='https://github.com/timkpaine/perspective-python/archive/v0.1.5.tar.gz',
+    download_url='https://github.com/timkpaine/perspective-python/archive/v0.1.6.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='Apache 2.0',

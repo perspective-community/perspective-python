@@ -35,6 +35,8 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                  index='',
                  limit=-1,
                  computedcolumns=None,
+                 filters=None,
+                 plugin_config=None,
                  settings=True,
                  embed=False,
                  dark=False,
@@ -63,9 +65,13 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                 row limit
             computedcolumns : list of dict
                 computed columns to set on the perspective viewer
+            filters: list of list
+                list of filters to apply to columns
+            plugin_config: dict
+                configuration dictionary to pass to perspective plugin
             settings : bool
                 display settings
-            settings : bool
+            embed : bool
                 embedded mode
             dark : bool
                 use dark theme
@@ -82,6 +88,8 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                    index=index,
                    limit=limit,
                    computedcolumns=computedcolumns,
+                   filters=filters,
+                   plugin_config=plugin_config,
                    settings=settings,
                    embed=embed,
                    dark=dark,

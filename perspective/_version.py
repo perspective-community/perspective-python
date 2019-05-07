@@ -1,1 +1,2 @@
-VERSION = 'v0.1.5'
+# # # # GENERATED FILE -- DO NOT MODIFY # # # #
+VERSION = 'v0.1.6'

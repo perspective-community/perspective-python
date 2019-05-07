@@ -27,6 +27,8 @@ class PerspectiveBaseMixin(HasTraits):
     index = Unicode(default_value='').tag(sync=True)
     limit = Int(default_value=-1).tag(sync=True)
     computedcolumns = List(trait=Dict, default_value=[]).tag(sync=True)
+    filters = List(trait=List, default_value=[]).tag(sync=True)
+    plugin_config = Dict(default_value={}).tag(sync=True)
 
     # show settings (currently broken)
     settings = Bool(True).tag(sync=True)
@@ -148,6 +150,8 @@ class PerspectiveBaseMixin(HasTraits):
               index='',
               limit=-1,
               computedcolumns=None,
+              filters=None,
+              plugin_config=None,
               settings=True,
               embed=False,
               dark=False,
@@ -176,9 +180,13 @@ class PerspectiveBaseMixin(HasTraits):
                 row limit
             computedcolumns : list of dict
                 computed columns to set on the perspective viewer
+            filters: list of list
+                list of filters to apply to columns
+            plugin_config: dict
+                configuration dictionary to pass to perspective plugin
             settings : bool
                 display settings
-            settings : bool
+            embed : bool
                 embedded mode
             dark : bool
                 use dark theme
