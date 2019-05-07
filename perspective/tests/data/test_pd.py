@@ -26,7 +26,7 @@ DF2 = df = pd.DataFrame([
 DF = l.superstore()
 LINE = l.line()
 CUSTOM_SCHEMA = {'int': 'int', 'float': 'float', 'string': 'date', 'date': 'date', 'datetime': 'date', 'object': 'string'}
-CUSTOM_SCHEMA_CONVERTED = {'index': 'integer', 'int': 'integer', 'float': 'float', 'string': 'date', 'date': 'date', 'datetime': 'date', 'object': 'string'}
+CUSTOM_SCHEMA_CONVERTED = {'int': 'integer', 'float': 'float', 'string': 'date', 'date': 'date', 'datetime': 'date', 'object': 'string'}
 
 
 class TestPandas:

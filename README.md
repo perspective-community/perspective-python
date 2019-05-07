@@ -1,7 +1,7 @@
 # perspective-python
-Python APIs for [perspective](https://github.com/jpmorganchase/perspective) front end
+Python APIs for [perspective](https://github.com/finos/perspective) front end
 
-# This package now lives partially under [Perspective](https://github.com/jpmorganchase/perspective)
+# This package now lives partially under [Perspective](https://github.com/finos/perspective)
 
 [![Build Status](https://travis-ci.org/timkpaine/perspective-python.svg?branch=master)](https://travis-ci.org/timkpaine/perspective-python)
 [![GitHub issues](https://img.shields.io/github/issues/timkpaine/perspective-python.svg)]()
@@ -10,7 +10,7 @@ Python APIs for [perspective](https://github.com/jpmorganchase/perspective) fron
 [![PyPI](https://img.shields.io/pypi/v/perspective-python.svg)](https://pypi.python.org/pypi/perspective-python)
 [![PyPI](https://img.shields.io/pypi/l/perspective-python.svg)](https://pypi.python.org/pypi/perspective-python)
 [![Docs](https://img.shields.io/readthedocs/perspective-python.svg)](https://perspective-python.readthedocs.io)
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/jpmorganchase/perspective)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/finos/perspective)
 
 
 ## Install
@@ -25,7 +25,7 @@ To Install from source:
 
 To install the JupyterLab extension:
 
-`jupyter labextension install @jpmorganchase/perspective-jupyterlab`
+`jupyter labextension install @finos/perspective-jupyterlab`
 
 or from source:
 
@@ -48,4 +48,4 @@ or from source:
 ![](https://github.com/timkpaine/perspective-python/raw/master/docs/img/pandas2.png)
 
 ## C++ Integration
-This package is primarily focused on integrating with the WebAssembly version of Perspective. To build the C++ side, install `perspective-python[table]`, from the [Perspective main library](https://github.com/jpmorganchase/perspective/tree/master/python).
+This package is primarily focused on integrating with the WebAssembly version of Perspective. To build the C++ side, install `perspective-python[table]`, from the [Perspective main library](https://github.com/finos/perspective/tree/master/python).

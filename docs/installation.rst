@@ -29,5 +29,5 @@ To install the JupyterLab extensions:
 
 .. code:: bash
 
-    jupyter labextension install @jpmorganchase/perspective-jupyterlab
+    jupyter labextension install @finos/perspective-jupyterlab
 
