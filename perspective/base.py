@@ -117,7 +117,7 @@ class PerspectiveBaseMixin(HasTraits):
     def _validate_computedcolumns(self, proposal): return validate_computedcolumns(proposal.value, self.columns)
 
     @validate('filters')
-    def _validate_filters(self, proposal): return validate_filters(proposal.value, self.filters)
+    def _validate_filters(self, proposal): return validate_filters(proposal.value, self.columns)
 
     @validate('plugin_config')
     def _validate_plugin_config(self, proposal): return validate_plugin_config(proposal.value)

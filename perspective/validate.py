@@ -4,6 +4,7 @@ from .exception import PSPException
 from .view import View
 from .aggregate import Aggregate
 from .sort import Sort
+from .filters import ALL_FILTERS
 
 
 def validate_view(view):
@@ -123,3 +124,39 @@ def validate_computedcolumns(computedcolumns, columns=None):
 
     else:
         raise PSPException('Cannot parse computedcolumns type: %s', str(type(computedcolumns)))
+
+
+def validate_filters(filters, columns=None):
+    columns = columns or []
+    if filters is None:
+        return []
+
+    elif isinstance(filters, list) and len(filters) > 0 and not isinstance(filters[0], list):
+        # wrap
+        filters = [filters]
+
+    if isinstance(filters, list):
+        ret = []
+        for i, d in enumerate(filters):
+            if not isinstance(d, list):
+                raise PSPException('Cannot parse computedcolumns')
+
+            if len(d) != 3:
+                raise PSPException('Cannot parse computedcolumns - unrecognized function {}'.format(d['func']))
+
+            for i, l in enumerate(d):
+                # FIXME check if column exists?
+                # if columns and (l not in columns):
+                #     raise PSPException('Cannot parse computedcolumns - unrecognized column {}'.format(input))
+                if i == 1:
+                    if l not in ALL_FILTERS:
+                        raise PSPException('Unrecognized filter operator: {}'.format(l))
+                pass
+            ret.append(d)
+        return ret
+    else:
+        raise PSPException('Cannot parse filters type: %s', str(type(filters)))
+
+
+def validate_plugin_config(plugin_config):
+    return plugin_config
