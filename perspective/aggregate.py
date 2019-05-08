@@ -2,18 +2,22 @@ from enum import Enum
 
 
 class Aggregate(Enum):
+    AND = 'and'
     ANY = 'any'
     AVG = 'avg'
     COUNT = 'count'
     DISTINCT_COUNT = 'distinct count'
+    DISTINCT_LEAF = 'distinct leaf'
     DOMINANT = 'dominant'
-    FIRST = 'first'
+    FIRST_BY_INDEX = 'first by index'
+    LAST_BY_INDEX = 'last by index'
     LAST = 'last'
     HIGH = 'high'
     LOW = 'low'
     MEAN = 'mean'
     MEAN_BY_COUNT = 'mean by count'
     MEDIAN = 'median'
+    OR = 'or'
     PCT_SUM_PARENT = 'pct sum parent'
     PCT_SUM_GRAND_TOTAL = 'pct sum grand total'
     SUM = 'sum'
