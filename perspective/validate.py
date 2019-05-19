@@ -74,6 +74,8 @@ def validate_sort(sort):
         sort = [sort]
 
     if isinstance(sort, list):
+        if len(sort) > 0 and not isinstance(sort[0], list):
+            sort = [sort]
         ret = []
         for col, s in sort:
             if isinstance(s, Sort):
