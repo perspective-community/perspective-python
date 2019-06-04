@@ -1,6 +1,6 @@
 import json
 from six import iteritems
-from traitlets import HasTraits, Unicode, List, Bool, Int, Dict, Any, Bytes, validate
+from traitlets import HasTraits, Unicode, List, Bool, Int, Dict, Any, Bytes, Union, validate
 from .data import type_detect
 from .validate import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort, validate_computedcolumns, validate_filters, validate_plugin_config
 from .schema import validate_schema
@@ -9,7 +9,7 @@ from .schema import validate_schema
 class PerspectiveBaseMixin(HasTraits):
     '''Perspective Base Mixin'''
     # Data (private)
-    _data = List(default_value=[]).tag(sync=True)
+    _data = Union((List(default_value=[]), Dict())).tag(sync=True)
     _bin_data = Bytes().tag(sync=True)  # binary data
     _dat_orig = Any()
 
@@ -39,8 +39,11 @@ class PerspectiveBaseMixin(HasTraits):
     # dark mode
     dark = Bool(False).tag(sync=True)
 
+    # try to use apache arrow to transfer data
+    transfer_as_arrow = Bool(True).tag(sync=True)
+
     def load(self, value):
-        data_object = type_detect(value, schema=self.schema)
+        data_object = type_detect(value, schema=self.schema, transfer_as_arrow=self.transfer_as_arrow)
         self.datasrc = data_object.type
         if data_object.type in ('arrow'):
             self._data = []
@@ -163,6 +166,7 @@ class PerspectiveBaseMixin(HasTraits):
               settings=True,
               embed=False,
               dark=False,
+              transfer_as_arrow=False,
               *args,
               **kwargs):
         '''Setup perspective base class
@@ -200,6 +204,7 @@ class PerspectiveBaseMixin(HasTraits):
                 use dark theme
 
         '''
+        self.transfer_as_arrow = transfer_as_arrow
         self.view = validate_view(view)
         self.schema = schema or {}
         self.sort = validate_sort(sort) or []

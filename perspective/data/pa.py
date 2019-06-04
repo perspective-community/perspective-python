@@ -7,7 +7,7 @@ class ArrowData(Data):
         super(ArrowData, self).__init__('arrow', data.to_pybytes(), schema, **kwargs)
 
 
-def _is_pyarrow(data, schema):
+def _is_pyarrow(data, schema, transfer_as_arrow=False):
     try:
         if 'pyarrow' in sys.modules:
             import pyarrow as pa

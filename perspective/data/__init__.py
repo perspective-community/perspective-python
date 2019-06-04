@@ -5,11 +5,14 @@ from .pa import _is_pyarrow
 EXPORTERS = [_is_dict, _is_list, _is_pandas, _is_pyarrow]
 
 
-def type_detect(data, schema=None):
+def type_detect(data, schema=None, transfer_as_arrow=False):
     schema = schema or {}
     for foo in EXPORTERS:
-        data_object = foo(data, schema)
+        data_object = foo(data, schema, transfer_as_arrow)
         if data_object.type:
-            return data_object
+            if transfer_as_arrow and foo != _is_pyarrow:
+                return _is_pyarrow(data_object.data, data_object.schema)
+            else:
+                return data_object
     # throw error?
     return Data.Empty()

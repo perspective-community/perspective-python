@@ -3,7 +3,7 @@ from .base import Data
 
 
 class PandasData(Data):
-    def __init__(self, data, schema, **kwargs):
+    def __init__(self, data, schema, transfer_as_arrow=False, **kwargs):
         import pandas as pd
         # level unstacking
 
@@ -61,16 +61,31 @@ class PandasData(Data):
                     df_processed[x[0]] = df_processed[x[0]].astype(str)
 
         df_processed.fillna('', inplace=True)
-        df_processed = df_processed.to_dict(orient='records')
+        if transfer_as_arrow:
+            df_processed = self.convert_to_arrow(df_processed)
+        else:
+            df_processed = df_processed.to_dict('list')
         super(PandasData, self).__init__('json', df_processed, schema if schema else derived_schema, **kwargs)
 
+    def convert_to_arrow(self, df):
+        try:
+            import pyarrow as pa
+            batch = pa.RecordBatch.from_pandas(df)
+            sink = pa.BufferOutputStream()
+            writer = pa.RecordBatchStreamWriter(sink, batch.schema)
+            writer.write_batch(batch)
+            writer.close()
+            return sink.getvalue()
+        except ImportError:
+            pass
 
-def _is_pandas(data, schema, **kwargs):
+
+def _is_pandas(data, schema, transfer_as_arrow=False, **kwargs):
     try:
         if 'pandas' in sys.modules:
             import pandas as pd
             if isinstance(data, pd.DataFrame) or isinstance(data, pd.Series):
-                return PandasData(data, schema, **kwargs)
+                return PandasData(data, schema=schema, transfer_as_arrow=transfer_as_arrow, **kwargs)
     except ImportError:
         return Data.Empty()
     return Data.Empty()

@@ -11,10 +11,10 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
     ############
     _model_name = Unicode('PerspectiveModel').tag(sync=True)
     _model_module = Unicode('@finos/perspective-jupyterlab').tag(sync=True)
-    _model_module_version = Unicode('0.3.0-rc.4').tag(sync=True)
+    _model_module_version = Unicode('0.3.0-rc.2').tag(sync=True)
     _view_name = Unicode('PerspectiveView').tag(sync=True)
     _view_module = Unicode('@finos/perspective-jupyterlab').tag(sync=True)
-    _view_module_version = Unicode('0.3.0-rc.4').tag(sync=True)
+    _view_module_version = Unicode('0.3.0-rc.2').tag(sync=True)
     ############
 
     def delete(self): self.send({'type': 'delete'})
@@ -40,6 +40,7 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                  settings=True,
                  embed=False,
                  dark=False,
+                 transfer_as_arrow=False,
                  *args,
                  **kwargs):
         '''Render a perspective javascript widget in jupyter
@@ -93,6 +94,7 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
                    settings=settings,
                    embed=embed,
                    dark=dark,
+                   transfer_as_arrow=transfer_as_arrow,
                    *args,
                    **kwargs)
         super(PerspectiveWidget, self).__init__(*args, **kwargs)
