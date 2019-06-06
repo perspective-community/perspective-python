@@ -57,7 +57,7 @@ class PandasData(Data):
                 try:
                     df_processed[x[0]] = pd.to_datetime(df_processed[x[0]]).astype(str)
                     derived_schema[x[0]] = 'date'
-                except (TypeError, ValueError):
+                except Exception:
                     df_processed[x[0]] = df_processed[x[0]].astype(str)
 
         df_processed.fillna('', inplace=True)
