@@ -43,7 +43,7 @@ class PerspectiveBaseMixin(HasTraits):
     transfer_as_arrow = Bool(True).tag(sync=True)
 
     def load(self, value):
-        data_object = type_detect(value, schema=self.schema, transfer_as_arrow=self.transfer_as_arrow)
+        data_object = type_detect(value, schema=self.schema, columns=self.columns, transfer_as_arrow=self.transfer_as_arrow)
         self.datasrc = data_object.type
         if data_object.type in ('arrow'):
             self._data = []
@@ -62,7 +62,7 @@ class PerspectiveBaseMixin(HasTraits):
                         computedcolumns.append(c['name'])
 
             if not self.columns and 'columns' not in data_object.kwargs:
-                columns = list(map(lambda x: str(x), s.keys()))
+                columns = list(map(lambda x: str(x), data_object.columns))
 
                 # reasonable default, pivot by default in non-grid view
                 if not self.rowpivots and self.view != 'hypergrid':

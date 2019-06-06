@@ -3,7 +3,7 @@ from .base import Data
 
 
 class PandasData(Data):
-    def __init__(self, data, schema, transfer_as_arrow=False, **kwargs):
+    def __init__(self, data, schema, columns, transfer_as_arrow=False, **kwargs):
         import pandas as pd
         # level unstacking
 
@@ -65,7 +65,13 @@ class PandasData(Data):
             df_processed = self.convert_to_arrow(df_processed)
         else:
             df_processed = df_processed.to_dict('list')
-        super(PandasData, self).__init__('json', df_processed, schema if schema else derived_schema, **kwargs)
+
+        super(PandasData, self).__init__('json',
+                                         df_processed,
+                                         schema if schema else derived_schema,
+                                         columns if columns
+                                         else kwargs.get('columns',
+                                                         data.columns if isinstance(data, pd.DataFrame) else [data.name]), **kwargs)
 
     def convert_to_arrow(self, df):
         try:
@@ -80,12 +86,12 @@ class PandasData(Data):
             pass
 
 
-def _is_pandas(data, schema, transfer_as_arrow=False, **kwargs):
+def _is_pandas(data, schema, columns, transfer_as_arrow=False, **kwargs):
     try:
         if 'pandas' in sys.modules:
             import pandas as pd
             if isinstance(data, pd.DataFrame) or isinstance(data, pd.Series):
-                return PandasData(data, schema=schema, transfer_as_arrow=transfer_as_arrow, **kwargs)
+                return PandasData(data, schema=schema, columns=columns, transfer_as_arrow=transfer_as_arrow, **kwargs)
     except ImportError:
         return Data.Empty()
     return Data.Empty()
