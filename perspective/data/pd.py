@@ -34,7 +34,7 @@ class PandasData(Data):
 
         if isinstance(data.index, pd.MultiIndex):
             kwargs['rowpivots'] = list(data.index.names)
-            kwargs['columns'] = data.columns
+            kwargs['columns'] = data.columns.tolist()
 
         # copy or not
         if isinstance(data, pd.Series) or 'index' not in map(lambda x: str(x).lower(), data.columns):
@@ -61,17 +61,26 @@ class PandasData(Data):
                     df_processed[x[0]] = df_processed[x[0]].astype(str)
 
         df_processed.fillna('', inplace=True)
+
+        columns = kwargs.pop('columns', columns)
+        if not columns:
+            columns = data.columns.tolist() if isinstance(data, pd.DataFrame) else [data.name]
+
         if transfer_as_arrow:
             df_processed = self.convert_to_arrow(df_processed)
+            super(PandasData, self).__init__(type='arrow',
+                                             data=df_processed,
+                                             schema=schema if schema else derived_schema,
+                                             columns=columns,
+                                             **kwargs)
+
         else:
             df_processed = df_processed.to_dict('list')
-
-        super(PandasData, self).__init__('json',
-                                         df_processed,
-                                         schema if schema else derived_schema,
-                                         columns if columns
-                                         else kwargs.get('columns',
-                                                         data.columns if isinstance(data, pd.DataFrame) else [data.name]), **kwargs)
+            super(PandasData, self).__init__(type='json',
+                                             data=df_processed,
+                                             schema=schema if schema else derived_schema,
+                                             columns=columns,
+                                             **kwargs)
 
     def convert_to_arrow(self, df):
         try:
