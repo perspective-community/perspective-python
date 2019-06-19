@@ -128,7 +128,11 @@ class PerspectiveBaseMixin(HasTraits):
     def _as_json(self, data_only=False, allow_nan=False):
         ret = {}
         ret['datasrc'] = getattr(self, 'datasrc')
-        ret['data'] = getattr(self, '_data')
+
+        if self.datasrc in ('arrow'):
+            ret['data'] = getattr(self, '_bin_data')
+        else:
+            ret['data'] = getattr(self, '_data')
         if data_only:
             return json.dumps(ret, allow_nan=allow_nan)
 
