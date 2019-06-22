@@ -11,7 +11,7 @@ class PerspectiveHTTPMixin(object):
         self.psp.setup(**kwargs)
 
     def getData(self, data_only=False):
-        if self.datasrc in ('arrow',):
+        if self.psp.datasrc in ('arrow',):
             # TODO think of alternative
             if 'tornado' in sys.modules:
                 import tornado.web
