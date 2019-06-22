@@ -21,7 +21,7 @@ class Data(object):
             sink = pa.BufferOutputStream()
             arrs = [pa.array([y[z] for y in self.data])
                     for z in self.schema.keys()]
-            batch = pa.RecordBatch.from_arrays(arrs, self.schema.keys())
+            batch = pa.RecordBatch.from_arrays(arrs, list(self.schema.keys()))
             sink = pa.BufferOutputStream()
             writer = pa.RecordBatchStreamWriter(sink, batch.schema)
             writer.write_batch(batch)
