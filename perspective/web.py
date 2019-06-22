@@ -1,3 +1,4 @@
+import sys
 from .base import PerspectiveBaseMixin
 
 
@@ -10,6 +11,13 @@ class PerspectiveHTTPMixin(object):
         self.psp.setup(**kwargs)
 
     def getData(self, data_only=False):
+        if self.datasrc in ('arrow',):
+            # TODO think of alternative
+            if 'tornado' in sys.modules:
+                import tornado.web
+                if isinstance(self, tornado.web.RequestHandler):
+                    if self.get_argument('_fetch_arrow', ''):
+                        return self.psp._as_json(data_only=True)
         return self.psp._as_json(data_only=data_only, allow_nan=False)
 
 

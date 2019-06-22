@@ -126,16 +126,18 @@ class PerspectiveBaseMixin(HasTraits):
     def _validate_plugin_config(self, proposal): return validate_plugin_config(proposal.value)
 
     def _as_json(self, data_only=False, allow_nan=False):
-        ret = {}
-        ret['datasrc'] = getattr(self, 'datasrc')
+        if data_only:
+            if self.datsrc in ('arrow',):
+                return getattr(self, '_bin_data')
+            else:
+                return json.dumps(getattr(self, '_data'), allow_nan=allow_nan)
 
+        ret = {}
         if self.datasrc in ('arrow'):
-            ret['data'] = getattr(self, '_bin_data')
+            ret['data'] = 'ARROW'
         else:
             ret['data'] = getattr(self, '_data')
-        if data_only:
-            return json.dumps(ret, allow_nan=allow_nan)
-
+        ret['datasrc'] = getattr(self, 'datasrc')
         ret['schema'] = getattr(self, 'schema')
         ret['view'] = getattr(self, 'view')
         ret['columns'] = getattr(self, 'columns')
