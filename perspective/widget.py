@@ -11,10 +11,10 @@ class PerspectiveWidget(PerspectiveBaseMixin, Widget):
     ############
     _model_name = Unicode('PerspectiveModel').tag(sync=True)
     _model_module = Unicode('@finos/perspective-jupyterlab').tag(sync=True)
-    _model_module_version = Unicode('0.3.0-rc.4').tag(sync=True)
+    _model_module_version = Unicode('0.3.0').tag(sync=True)
     _view_name = Unicode('PerspectiveView').tag(sync=True)
     _view_module = Unicode('@finos/perspective-jupyterlab').tag(sync=True)
-    _view_module_version = Unicode('0.3.0-rc.4').tag(sync=True)
+    _view_module_version = Unicode('0.3.0').tag(sync=True)
     ############
 
     def delete(self): self.send({'type': 'delete'})
