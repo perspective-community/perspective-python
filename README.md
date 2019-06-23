@@ -59,12 +59,9 @@ from perspective import PerspectiveHTTPMixin
 
 
 class MyHandler(PerspectiveHTTPMixin, tornado.web.RequestHandler):
-    def initialize(self, psp_kwargs=None):
-        self.psp_kwargs = psp_kwargs or {}  # e.g. {'view': 'y_bar'}
-
-    @tornado.gen.coroutine
     def get(self):
-        super(LastPriceHandler, self).loadData(data=list(dat.values()), **psp_kwargs)
+        super(LastPriceHandler, self).loadData(data=list(dat.values()))
+        super(LastPriceHandler, self).loadData(data=list(dat.values()), transfer_as_arrow=True) # if apache-arrow
         self.write(super(LastPriceHandler, self).getData())
 ```
 
