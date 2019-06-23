@@ -66,11 +66,15 @@ class PandasData(Data):
         if not columns:
             columns = data.columns.tolist() if isinstance(data, pd.DataFrame) else [data.name]
 
+        schema = kwargs.pop('schema', schema)
+        if not schema:
+            schema = derived_schema.to_dict()
+
         if transfer_as_arrow:
             df_processed = self.convert_to_arrow(df_processed)
             super(PandasData, self).__init__(type='arrow',
                                              data=df_processed,
-                                             schema=schema if schema else derived_schema,
+                                             schema=schema,
                                              columns=columns,
                                              **kwargs)
 
@@ -78,7 +82,7 @@ class PandasData(Data):
             df_processed = df_processed.to_dict('list')
             super(PandasData, self).__init__(type='json',
                                              data=df_processed,
-                                             schema=schema if schema else derived_schema,
+                                             schema=schema,
                                              columns=columns,
                                              **kwargs)
 

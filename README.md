@@ -49,3 +49,23 @@ or from source:
 
 ## C++ Integration
 This package is primarily focused on integrating with the WebAssembly version of Perspective. To build the C++ side, install `perspective-python[table]`, from the [Perspective main library](https://github.com/finos/perspective/tree/master/python).
+
+## Webserver Integration
+`perspective-pyton` can be integrated with a webserver, giving you the ability to configure `perspective-viewers` in javascript from python. Right now this functionality is limited to `tornado` webservers and the `perspective-phosphor` frontend. It relies on the [phosphor-perspective-utils](https://github.com/timkpaine/phosphor-perspective-utils) javascript package.
+
+```python3
+import tornado.web
+from perspective import PerspectiveHTTPMixin
+
+
+class MyHandler(PerspectiveHTTPMixin, tornado.web.RequestHandler):
+    def initialize(self, psp_kwargs=None):
+        self.psp_kwargs = psp_kwargs or {}  # e.g. {'view': 'y_bar'}
+
+    @tornado.gen.coroutine
+    def get(self):
+        super(LastPriceHandler, self).loadData(data=list(dat.values()), **psp_kwargs)
+        self.write(super(LastPriceHandler, self).getData())
+```
+
+
