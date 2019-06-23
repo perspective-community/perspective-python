@@ -60,8 +60,8 @@ from perspective import PerspectiveHTTPMixin
 
 class MyHandler(PerspectiveHTTPMixin, tornado.web.RequestHandler):
     def get(self):
-        super(LastPriceHandler, self).loadData(data=<data>, transfer_as_arrow=True)
-        self.write(super(LastPriceHandler, self).getData())
+        super(MyHandler, self).loadData(data=<data>, transfer_as_arrow=True)
+        self.write(super(MyHandler, self).getData())
 ```
 
 
