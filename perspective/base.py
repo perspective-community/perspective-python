@@ -47,6 +47,8 @@ class PerspectiveBaseMixin(HasTraits):
         self.datasrc = data_object.type
         if data_object.type in ('arrow'):
             self._data = []
+            self.schema = data_object.schema
+            self.columns = data_object.columns
             self._bin_data = data_object.data
             return
 
