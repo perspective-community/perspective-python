@@ -46,10 +46,10 @@ class PerspectiveBaseMixin(HasTraits):
         data_object = type_detect(value, schema=self.schema, columns=self.columns, transfer_as_arrow=self.transfer_as_arrow)
         self.datasrc = data_object.type
         if data_object.type in ('arrow'):
-            self._data = []
-            self.schema = validate_schema(data_object.schema)
-            self.columns = data_object.columns
+            # self.schema = validate_schema(data_object.schema)
+            # self.columns = data_object.columns
             self._bin_data = data_object.data
+            self._data = []
             return
 
         # len in case dataframe
