@@ -1,6 +1,6 @@
 import json
 from six import iteritems
-from traitlets import HasTraits, Unicode, List, Bool, Int, Dict, Any, Bytes, validate
+from traitlets import HasTraits, Unicode, List, Bool, Int, Dict, Any, Bytes, Union, validate
 from .data import type_detect
 from .validate import validate_view, validate_columns, validate_rowpivots, validate_columnpivots, validate_aggregates, validate_sort, validate_computedcolumns, validate_filters, validate_plugin_config
 from .schema import validate_schema
@@ -9,7 +9,7 @@ from .schema import validate_schema
 class PerspectiveBaseMixin(HasTraits):
     '''Perspective Base Mixin'''
     # Data (private)
-    _data = List(default_value=[]).tag(sync=True)
+    _data = Union((List(default_value=[]), Dict(default_value={}))).tag(sync=True)
     _bin_data = Bytes().tag(sync=True)  # binary data
     _dat_orig = Any()
 
@@ -46,8 +46,8 @@ class PerspectiveBaseMixin(HasTraits):
         data_object = type_detect(value, schema=self.schema, columns=self.columns, transfer_as_arrow=self.transfer_as_arrow)
         self.datasrc = data_object.type
         if data_object.type in ('arrow'):
-            # self.schema = validate_schema(data_object.schema)
-            # self.columns = data_object.columns
+            self.schema = validate_schema(data_object.schema)
+            self.columns = data_object.columns
             self._bin_data = data_object.data
             self._data = []
             return
