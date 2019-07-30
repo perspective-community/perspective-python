@@ -47,7 +47,7 @@ major:  ## steps before dist, defaults to previous tag + one micro
 	. scripts/deploy.sh MAJOR
 
 dist:  ## dist to pypi
-	python3 setup.py sdist upload -r pypi
+	python3 setup.py sdist bdist_wheel && twine upload -r pypi dist/*
 
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
