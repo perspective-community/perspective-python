@@ -17,6 +17,7 @@ setup(
     version='0.1.11',
     description='Analytics library',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/timkpaine/perspective-python',
     download_url='https://github.com/timkpaine/perspective-python/archive/v0.1.11.tar.gz',
     author='Tim Paine',
