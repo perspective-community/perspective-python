@@ -46,7 +46,7 @@ class PandasData(Data):
         if isinstance(data, pd.Series):
             derived_schema = {data.name: str(data.dtype)}
         else:
-            derived_schema = df_processed.dtypes.astype(str)
+            derived_schema = df_processed.dtypes.astype(str).to_dict()
 
         # datatype conversion
         for x in df_processed.dtypes.iteritems():
@@ -68,7 +68,7 @@ class PandasData(Data):
 
         schema = kwargs.pop('schema', schema)
         if not schema:
-            schema = derived_schema.to_dict()
+            schema = derived_schema
 
         if transfer_as_arrow:
             df_processed = self.convert_to_arrow(df_processed)
