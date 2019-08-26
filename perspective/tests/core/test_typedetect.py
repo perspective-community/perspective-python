@@ -1,4 +1,3 @@
-from mock import patch, MagicMock
 from datetime import datetime
 
 
@@ -17,27 +16,9 @@ class Nope(object):
 
 
 class TestTypedetect:
-    def setup(self):
-        pass
-        # setup() before each test method
-
-    def teardown(self):
-        pass
-        # teardown() after each test method
-
-    @classmethod
-    def setup_class(cls):
-        pass
-        # setup_class() before any methods in this class
-
-    @classmethod
-    def teardown_class(cls):
-        pass
-        # teardown_class() after any methods in this class
-
     def test_pandas(self):
         import pandas as pd
-        from perspective.data import type_detect
+        from perspective.core.data import type_detect
 
         df = pd.DataFrame([1, 2])
         o = type_detect(df)
@@ -68,7 +49,7 @@ class TestTypedetect:
         sys.modules['pandas'] = pd
 
     def test_list(self):
-        from perspective.data import type_detect
+        from perspective.core.data import type_detect
         x = [{'1': 'a'}, {'1': 'simple'}, {'1': 'test'}]
 
         o = type_detect(x)
@@ -77,7 +58,7 @@ class TestTypedetect:
         assert o.type == 'json'
 
     def test_dict(self):
-        from perspective.data import type_detect
+        from perspective.core.data import type_detect
         x = {'a': 'simple test'}
 
         o = type_detect(x)
@@ -86,7 +67,7 @@ class TestTypedetect:
         assert o.type == 'json'
 
     def test_other(self):
-        from perspective.data import type_detect
+        from perspective.core.data import type_detect
         o = type_detect('test')
         assert o.data == []
         assert o.type == ''
