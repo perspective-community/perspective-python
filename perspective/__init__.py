@@ -5,7 +5,7 @@ from .aggregate import Aggregate  # noqa: F401
 from .exception import PSPException  # noqa: F401
 from .widget import PerspectiveWidget  # noqa: F401
 from .web import PerspectiveHTTPMixin  # noqa: F401
-from ._version import VERSION as __version__  # noqa: F401
+from ._version import __version__  # noqa: F401
 try:
     from .table import *  # noqa: F401, F403
 except ImportError:

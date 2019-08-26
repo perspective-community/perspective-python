@@ -1,4 +1,3 @@
-# # # # GENERATED FILE -- DO NOT MODIFY # # # #
 from setuptools import setup, find_packages
 from codecs import open
 import os
@@ -23,7 +22,7 @@ setup(
     author_email='timothy.k.paine@gmail.com',
     license='Apache 2.0',
     install_requires=requires,
-    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pylint', 'flake8', 'pylantern']},
+    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pylint', 'flake8', 'bumpversion']},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python :: 3',
